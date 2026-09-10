@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { defaultLocale, locales, type Locale } from "@/lib/i18n";
+import { updateAdminSession } from "@/lib/supabase/proxy";
 
 const LOCALE_COOKIE = "NEXT_LOCALE";
 
@@ -19,12 +20,17 @@ function getPreferredLocale(request: NextRequest): Locale {
   return (preferred as Locale) ?? defaultLocale;
 }
 
-// Runs before rendering: bare paths (e.g. "/", "/services") are redirected to
-// their localized equivalent (e.g. "/en/services"). Paths that already carry
-// a locale segment pass through untouched. (Next 16 renames `middleware.ts`
-// to `proxy.ts`.)
-export function proxy(request: NextRequest) {
+// Runs before rendering. `/admin/*` is a separate, unlocalized zone — it goes
+// through Supabase session refresh + the signed-in check. Everything else:
+// bare paths (e.g. "/", "/services") are redirected to their localized
+// equivalent ("/en/services"); paths that already carry a locale pass through.
+// (Next 16 renames `middleware.ts` to `proxy.ts`.)
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    return updateAdminSession(request);
+  }
 
   const pathnameHasLocale = locales.some(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
