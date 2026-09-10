@@ -5,12 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@/components/icons/Icon";
 import { ArticleCard } from "@/components/cards/ArticleCard";
 import { EASE_PREMIUM } from "@/lib/motion";
-import { articles, articleCategories } from "@/data/articles";
+import { articles as allArticles, articleCategories, type ArticleItem } from "@/data/articles";
 import { siteContent } from "@/data/site";
 import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-export function ArticleLibrary({ locale }: { locale: Locale }) {
+export function ArticleLibrary({ locale, articles = allArticles }: { locale: Locale; articles?: ArticleItem[] }) {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState("all");
 
@@ -27,7 +27,7 @@ export function ArticleLibrary({ locale }: { locale: Locale }) {
         a.excerpt.ar.includes(q);
       return matchesCat && matchesQuery;
     });
-  }, [query, active]);
+  }, [query, active, articles]);
 
   return (
     <div>

@@ -9,7 +9,7 @@ export interface HeroContent {
   image: MediaImage;
 }
 
-type HeroKey = "home" | "about" | "services" | "contact";
+type HeroKey = "home" | "about" | "services" | "videos" | "articles" | "contact";
 
 /**
  * One hero design, four sets of copy + cover image. Every page's <Hero>
@@ -74,6 +74,42 @@ export const heroes: Record<HeroKey, HeroContent> = {
       alt: {
         en: "Modern operating theatre",
         ar: "غرفة عمليات حديثة",
+      },
+      position: "center 40%",
+    },
+  },
+
+  videos: {
+    eyebrow: { en: "Video Library", ar: "مكتبة الفيديو" },
+    headline: { en: "Men's Health,", ar: "صحة الرجل،" },
+    headlineAccent: { en: "Explained on Screen", ar: "مشروحة على الشاشة" },
+    description: {
+      en: "Short, direct videos from Dr. Walid Moussa on erectile health, fertility, hormones and surgery — the questions that come up most in clinic, answered plainly.",
+      ar: "فيديوهات قصيرة ومباشرة من د. وليد موسى عن صحة الانتصاب والخصوبة والهرمونات والجراحة — الأسئلة الأكثر تكرارًا في العيادة، مشروحة ببساطة.",
+    },
+    image: {
+      src: IMG.videoStudio,
+      alt: {
+        en: "Recording a men's-health explainer video",
+        ar: "تسجيل فيديو توعوي عن صحة الرجل",
+      },
+      position: "center 30%",
+    },
+  },
+
+  articles: {
+    eyebrow: { en: "Articles", ar: "المقالات" },
+    headline: { en: "In-Depth Reading,", ar: "قراءة متعمّقة،" },
+    headlineAccent: { en: "Written for Patients", ar: "مكتوبة للمرضى" },
+    description: {
+      en: "Longer, unhurried explanations of the conditions Dr. Walid Moussa treats — clear, evidence-based and free of jargon.",
+      ar: "شروحات أطول وغير متعجّلة للحالات التي يعالجها د. وليد موسى — واضحة وقائمة على الدليل وخالية من المصطلحات المعقّدة.",
+    },
+    image: {
+      src: IMG.readingDesk,
+      alt: {
+        en: "Reading a health article at a desk",
+        ar: "قراءة مقال صحي على المكتب",
       },
       position: "center 40%",
     },

@@ -16,6 +16,11 @@ export type IconName =
   | "calendar"
   | "globe"
   | "sparkle"
+  | "award"
+  | "graduation"
+  | "target"
+  | "stethoscope"
+  | "handshake"
   // — Contact / social —
   | "phone"
   | "whatsapp"
@@ -143,6 +148,49 @@ function renderIcon(name: IconName): ReactNode {
     case "sparkle":
       return (
         <path d="M12 3.5c.7 3.9 1.6 4.8 5.5 5.5-3.9.7-4.8 1.6-5.5 5.5-.7-3.9-1.6-4.8-5.5-5.5 3.9-.7 4.8-1.6 5.5-5.5ZM18 15c.3 1.7.7 2.1 2.4 2.4-1.7.3-2.1.7-2.4 2.4-.3-1.7-.7-2.1-2.4-2.4 1.7-.3 2.1-.7 2.4-2.4Z" />
+      );
+
+    case "award":
+      return (
+        <>
+          <circle cx="12" cy="9" r="5.5" />
+          <path d="m8.5 13.5-1.5 7 5-2.5 5 2.5-1.5-7" />
+          <path d="m9.7 9 1.6 1.6L14.3 7.5" />
+        </>
+      );
+    case "graduation":
+      return (
+        <>
+          <path d="M12 4 2.5 8.5 12 13l9.5-4.5L12 4Z" />
+          <path d="M6.5 10.5V15c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3v-4.5" />
+          <path d="M21.5 8.5v5" />
+        </>
+      );
+    case "target":
+      return (
+        <>
+          <circle cx="12" cy="12" r="8.5" />
+          <circle cx="12" cy="12" r="4.5" />
+          <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
+        </>
+      );
+    case "stethoscope":
+      return (
+        <>
+          <path d="M6 3.5v5a4 4 0 0 0 8 0v-5" />
+          <path d="M5 3.5h2M13 3.5h2" />
+          <path d="M10 16.5c0 2.8 2.2 4 4.5 4s4.5-1.6 4.5-4.5V14" />
+          <circle cx="19" cy="12" r="2.2" />
+        </>
+      );
+    case "handshake":
+      return (
+        <>
+          <path d="m11 6-3.5 3a2 2 0 0 0 2.6 3l1.4-1.2" />
+          <path d="m3 8 4-2 5 3 3-1 6 3" />
+          <path d="m21 8-3 6-4-2" />
+          <path d="M12 10.8 14 13a1.8 1.8 0 0 1-2.6 2.5L10 14" />
+        </>
       );
 
     case "phone":

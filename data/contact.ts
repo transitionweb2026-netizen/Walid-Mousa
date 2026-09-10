@@ -21,14 +21,21 @@ export const contactInfo = {
     ar: "برج النيل الطبي، الدور الخامس، ١٢ شارع البطل أحمد عبد العزيز، المهندسين، الجيزة، مصر",
   } satisfies Localized,
   addressShort: { en: "Mohandessin, Giza", ar: "المهندسين، الجيزة" } satisfies Localized,
-  /**
-   * Map embed URL. Currently an anonymous OpenStreetMap embed centred on
-   * Mohandessin — replace with the real clinic coordinates, or paste a
-   * Google Maps "Embed a map" iframe `src` here.
-   */
+
+  /* ─────────────────────────────────────────────────────────────────────────
+   *  CLINIC LOCATION — all placeholder. To drop in the real location later:
+   *   1. `mapEmbedSrc`  — paste the Google Maps → Share → "Embed a map"
+   *      iframe `src`. Leave it as "" to show the styled placeholder panel
+   *      instead of a live map (nothing else needs to change).
+   *   2. `mapQuery`     — the exact place name / "lat,lng" used to build the
+   *      "open in Google Maps" and "directions" links.
+   *  The <ClinicMap> component reads only these three values.
+   * ───────────────────────────────────────────────────────────────────────── */
   mapEmbedSrc:
     "https://www.openstreetmap.org/export/embed.html?bbox=31.1930%2C30.0470%2C31.2160%2C30.0700&layer=mapnik&marker=30.0585%2C31.2016",
-  mapLink: "https://www.google.com/maps/search/?api=1&query=Mohandessin%2C%20Giza%2C%20Egypt",
+  mapQuery: "Mohandessin, Giza, Egypt",
+  mapLink: "https://www.google.com/maps/search/?api=1&query=Mohandessin%2C+Giza%2C+Egypt",
+  mapDirectionsLink: "https://www.google.com/maps/dir/?api=1&destination=Mohandessin%2C+Giza%2C+Egypt",
 };
 
 export interface WorkingHoursRow {
@@ -71,6 +78,15 @@ export const contactIntro = {
   } satisfies Localized,
   locationTitle: { en: "Find the Clinic", ar: "موقع العيادة" } satisfies Localized,
   openInMaps: { en: "Open in Maps", ar: "افتح في الخرائط" } satisfies Localized,
+  getDirections: { en: "Get directions", ar: "احصل على الاتجاهات" } satisfies Localized,
+  mapHint: {
+    en: "Tap the map to open Google Maps with directions.",
+    ar: "اضغط على الخريطة لفتح خرائط جوجل مع الاتجاهات.",
+  } satisfies Localized,
+  mapPending: {
+    en: "The exact clinic map is being finalised. Tap here for the area on Google Maps.",
+    ar: "يجري إعداد خريطة العيادة الدقيقة. اضغط هنا لعرض المنطقة على خرائط جوجل.",
+  } satisfies Localized,
 };
 
 export interface ContactFormCopy {
@@ -80,6 +96,7 @@ export interface ContactFormCopy {
   preferredTime: { label: Localized; placeholder: Localized };
   message: { label: Localized; placeholder: Localized };
   submit: Localized;
+  actionsNote: Localized;
   required: Localized;
   invalidPhone: Localized;
   fixErrors: Localized;
@@ -114,7 +131,11 @@ export const contactFormCopy: ContactFormCopy = {
     label: { en: "Anything you'd like Dr. Moussa to know", ar: "أي شيء تود أن يعرفه د. موسى" },
     placeholder: { en: "Optional — a sentence or two is plenty.", ar: "اختياري — جملة أو اثنتان تكفيان." },
   },
-  submit: { en: "Open WhatsApp with my details", ar: "افتح واتساب ببياناتي" },
+  submit: { en: "Send on WhatsApp", ar: "أرسل عبر واتساب" },
+  actionsNote: {
+    en: "“Send on WhatsApp” opens WhatsApp with everything above written out, ready to send. Prefer to talk? Call the clinic directly.",
+    ar: "«أرسل عبر واتساب» يفتح واتساب وكل ما بالأعلى مكتوب وجاهز للإرسال. تفضّل التحدث؟ اتصل بالعيادة مباشرة.",
+  },
   required: { en: "This field is required.", ar: "هذا الحقل مطلوب." },
   invalidPhone: { en: "Please enter a valid phone number.", ar: "يرجى إدخال رقم هاتف صحيح." },
   fixErrors: { en: "Please complete the highlighted fields.", ar: "يرجى إكمال الحقول المميّزة." },

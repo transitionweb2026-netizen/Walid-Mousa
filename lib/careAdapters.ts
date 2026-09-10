@@ -3,6 +3,7 @@ import type { CareDetailItem } from "@/components/cards/CareDetailModal";
 import type { SurgeryItem } from "@/data/surgeries";
 import type { TreatmentItem } from "@/data/treatments";
 import type { TechnologyItem } from "@/data/technologies";
+import type { SpecialtyTreatment } from "@/data/specialties";
 import { siteContent } from "@/data/site";
 
 const recoveryLabel = { en: "Recovery", ar: "التعافي" };
@@ -53,5 +54,21 @@ export function technologyToDetail(t: TechnologyItem): CareDetailItem {
     description: t.explanation,
     paragraphs: t.details,
     sections: [],
+  };
+}
+
+export function specialtyTreatmentToCard(t: SpecialtyTreatment): CareCardData {
+  return { icon: t.icon, image: t.image, title: t.title, description: t.shortDescription };
+}
+
+export function specialtyTreatmentToDetail(t: SpecialtyTreatment): CareDetailItem {
+  return {
+    icon: t.icon,
+    image: t.image,
+    title: t.title,
+    description: t.shortDescription,
+    paragraphs: t.details,
+    sections: t.bullets.map((b) => ({ label: b.label, items: b.items, tone: b.tone })),
+    footnote: t.footnote,
   };
 }

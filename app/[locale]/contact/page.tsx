@@ -48,13 +48,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
 
   return (
     <>
-      <Hero
-        locale={locale}
-        variant="contact"
-        compact
-        primaryCta={{ label: { en: "Book an Appointment", ar: "احجز موعدك" }, href: `/${locale}/contact` }}
-        secondaryCta={{ label: { en: "Explore Services", ar: "استكشف الخدمات" }, href: `/${locale}/services` }}
-      />
+      <Hero locale={locale} variant="contact" showPanel />
 
       <Section tint="duo" glow="both" aria-labelledby="contact-heading">
         <h1 id="contact-heading" className="sr-only">

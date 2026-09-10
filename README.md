@@ -29,9 +29,14 @@ The site runs fully without either.
 `app/[locale]/` — `en` and `ar`, six routes: `/` (home), `/about`,
 `/services`, `/videos`, `/articles`, `/contact`. `proxy.ts` (Next 16's
 renamed `middleware.ts`) redirects bare paths to the visitor's locale.
-Home CTAs deep-link into the Services page via anchors
-(`/services#surgeries`, `/services#treatments`) and card modals open from
-`#surgery-<slug>` / `#treatment-<slug>` hashes (`lib/useHashSelection.ts`).
+Every page opens with the same full-bleed `<Hero>` + floating contact panel;
+only the copy and cover image change (`data/hero.ts`).
+
+Home CTAs deep-link into the Services page via anchors (`/services#surgeries`,
+`/services#treatments`); card modals open from `#surgery-<slug>` /
+`#treatment-<slug>` / `#tx-<specialty>-<slug>` hashes (`lib/useHashSelection.ts`).
+On `/services`, the **Choose Your Specialty** grid anchor-scrolls 1:1 to a
+matching `#specialty-<slug>` treatment section (4 cards + modals each).
 
 ## Content model — everything lives in `/data/*.ts`
 
@@ -45,17 +50,21 @@ copy, images or numbers, edit the data file — never the components.
 | `navigation.ts` | The 6 nav items |
 | `hero.ts` | Per-page hero copy + cover image + focal point |
 | `doctorIntro.ts`, `stats.ts`, `journey.ts`, `reviews.ts`, `faq.ts`, `cta.ts` | Home sections |
-| `surgeries.ts`, `treatments.ts`, `technologies.ts` | Services (home shows a `featured` subset) |
-| `videos.ts` | All videos; `featured` (3) surface on the home page |
-| `articles.ts` | All articles; `featured` (4) surface on the home page |
-| `about.ts` | Bio, philosophy, experience, education, certifications, achievements, gallery |
+| `surgeries.ts`, `treatments.ts`, `technologies.ts` | Home sections + Services surgeries/technologies anchors |
+| `specialties.ts` | Services page: 4 specialties × exactly 4 treatments each (+ modal detail), plus the Services FAQ intro |
+| `videos.ts` | All 9 videos (all phone-portrait); `featured` (3) surface on the home page |
+| `articles.ts` | All articles; `featured` (4) on home, `articles[0]` is the Articles-page lead |
+| `about.ts` | Bio + layered portrait, career (experience + education), certificates carousel, why-points, expertise (4), doctor's word, achievements, gallery |
 | `contact.ts` | **Placeholder** phone / WhatsApp / email / address / hours / socials / map |
 | `images.ts` | Central image registry (see below) |
 
 ### Going live — the checklist
 
 1. **`data/contact.ts`** — replace every placeholder (phone, WhatsApp
-   digits, email, address, `mapEmbedSrc`, `socialLinks` URLs, working hours).
+   digits, email, address, `socialLinks` URLs, working hours). For the map:
+   set `mapEmbedSrc` to the Google Maps "Embed a map" iframe `src` (or `""`
+   to show the styled placeholder panel) and `mapQuery` / `mapLink` /
+   `mapDirectionsLink` to the real location.
 2. **`data/images.ts`** — every photo is royalty-free Unsplash stock
    hotlinked via the Unsplash CDN. Replace each URL with a real photo of
    Dr. Moussa / the clinic (drop files in `public/images/…` and point the
@@ -85,6 +94,13 @@ copy, images or numbers, edit the data file — never the components.
   scroll-revealed content also has a `@media (scripting: none)` fallback.
 - **Layout**: `components/layout/*` (`Navbar`, `MobileMenu`,
   `LanguageSwitcher`, `Footer`, `Hero`, `HeroContactPanel`).
+- **Shared card/modal system**: `components/cards/*` — `CareCard` +
+  `CareGrid` + `CareDetailModal` back the Home surgeries/treatments grids and
+  every Services treatment section (fed via `lib/careAdapters.ts`);
+  `ArticleCard` / `ArticleModal` back both Home and the Articles page.
+- **Page sections**: `components/{home,about,services,videos,articles,contact}/*`
+  composed in each `app/[locale]/*/page.tsx`. All are data-driven — no copy
+  or imagery is hardcoded in JSX.
 
 ## Tech notes (Next.js 16)
 

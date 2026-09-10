@@ -8,6 +8,9 @@ export const aboutContent: {
     heading: Localized;
     paragraphs: Localized<string[]>;
     portrait: MediaImage;
+    /** Layered behind the main portrait card — partially visible, offset. */
+    portraitLayers: MediaImage[];
+    highlight: { value: Localized; label: Localized };
     signatureName: Localized;
     signatureRole: Localized;
   };
@@ -29,7 +32,29 @@ export const aboutContent: {
   certifications: {
     eyebrow: Localized;
     heading: Localized;
-    items: { title: Localized; issuer: Localized; image: MediaImage }[];
+    description: Localized;
+    items: { title: Localized; issuer: Localized; year: Localized; image: MediaImage }[];
+  };
+  why: {
+    eyebrow: Localized;
+    heading: Localized;
+    description: Localized;
+    image: MediaImage;
+    points: { icon: IconName; title: Localized; text: Localized }[];
+  };
+  expertise: {
+    eyebrow: Localized;
+    heading: Localized;
+    description: Localized;
+    items: { icon: IconName; image: MediaImage; title: Localized; description: Localized }[];
+  };
+  word: {
+    eyebrow: Localized;
+    heading: Localized;
+    image: MediaImage;
+    quote: Localized<string[]>;
+    name: Localized;
+    role: Localized;
   };
   achievements: {
     eyebrow: Localized;
@@ -43,10 +68,21 @@ export const aboutContent: {
   };
 } = {
   bio: {
-    eyebrow: { en: "Biography", ar: "السيرة الذاتية" },
+    eyebrow: { en: "About Dr. Walid Moussa", ar: "عن د. وليد موسى" },
     heading: {
       en: "A career built entirely around men's health",
       ar: "مسيرة مهنية بُنيت بالكامل حول صحة الرجل",
+    },
+    portraitLayers: [
+      { src: IMG.scrubsTeal, alt: { en: "Dr. Walid Moussa in the clinic", ar: "د. وليد موسى في العيادة" } },
+      { src: IMG.doctorConsult, alt: { en: "Dr. Walid Moussa reviewing a scan", ar: "د. وليد موسى يراجع أشعة" } },
+    ],
+    highlight: {
+      value: { en: "18+ years", ar: "+18 عامًا" },
+      label: {
+        en: "sub-specialised in andrology, microsurgery and men's sexual & reproductive health",
+        ar: "من التخصص الدقيق في أمراض الذكورة والجراحة الميكروسكوبية والصحة الجنسية والإنجابية للرجل",
+      },
     },
     paragraphs: {
       en: [
@@ -157,15 +193,155 @@ export const aboutContent: {
   },
 
   certifications: {
-    eyebrow: { en: "Memberships & Certification", ar: "العضويات والاعتماد" },
-    heading: { en: "Boards and societies", ar: "المجالس والجمعيات" },
+    eyebrow: { en: "Certificates & Credentials", ar: "الشهادات والاعتمادات" },
+    heading: { en: "Board certification and international membership", ar: "اعتماد البورد والعضويات الدولية" },
+    description: {
+      en: "Formal qualifications and the professional bodies whose standards guide the clinic's practice.",
+      ar: "المؤهلات الرسمية والهيئات المهنية التي توجّه معايير ممارسة العيادة.",
+    },
     items: [
-      { title: { en: "Board Certification in Andrology", ar: "شهادة البورد في أمراض الذكورة" }, issuer: { en: "Egyptian Board of Urology", ar: "البورد المصري لجراحة المسالك البولية" }, image: { src: IMG.lecture, alt: { en: "Board certification", ar: "شهادة البورد" } } },
-      { title: { en: "Member", ar: "عضو" }, issuer: { en: "European Association of Urology (EAU)", ar: "الرابطة الأوروبية للمسالك البولية" }, image: { src: IMG.meeting, alt: { en: "EAU membership", ar: "عضوية الرابطة الأوروبية" } } },
-      { title: { en: "Member", ar: "عضو" }, issuer: { en: "International Society for Sexual Medicine (ISSM)", ar: "الجمعية الدولية للطب الجنسي" }, image: { src: IMG.surgeryTeam, alt: { en: "ISSM membership", ar: "عضوية الجمعية الدولية للطب الجنسي" } } },
-      { title: { en: "Member", ar: "عضو" }, issuer: { en: "American Society for Reproductive Medicine (ASRM)", ar: "الجمعية الأمريكية لطب الخصوبة" }, image: { src: IMG.labResearch, alt: { en: "ASRM membership", ar: "عضوية الجمعية الأمريكية لطب الخصوبة" } } },
-      { title: { en: "Fellow", ar: "زميل" }, issuer: { en: "Middle East Society for Male Health", ar: "جمعية الشرق الأوسط لصحة الرجل" }, image: { src: IMG.doctorCorridor, alt: { en: "Society fellowship", ar: "زمالة الجمعية" } } },
+      { title: { en: "Board Certification in Andrology", ar: "شهادة البورد في أمراض الذكورة" }, issuer: { en: "Egyptian Board of Urology", ar: "البورد المصري لجراحة المسالك البولية" }, year: { en: "2014", ar: "2014" }, image: { src: IMG.lecture, alt: { en: "Board certification in andrology", ar: "شهادة البورد في أمراض الذكورة" } } },
+      { title: { en: "Fellowship, Reproductive Microsurgery", ar: "زمالة الجراحة الميكروسكوبية للخصوبة" }, issuer: { en: "European Centre for Reproductive Medicine", ar: "المركز الأوروبي لطب الخصوبة" }, year: { en: "2012", ar: "2012" }, image: { src: IMG.surgeryTeam, alt: { en: "Microsurgery fellowship certificate", ar: "شهادة زمالة الجراحة الميكروسكوبية" } } },
+      { title: { en: "Member", ar: "عضو" }, issuer: { en: "European Association of Urology (EAU)", ar: "الرابطة الأوروبية للمسالك البولية" }, year: { en: "2013", ar: "2013" }, image: { src: IMG.meeting, alt: { en: "EAU membership certificate", ar: "شهادة عضوية الرابطة الأوروبية" } } },
+      { title: { en: "Member", ar: "عضو" }, issuer: { en: "International Society for Sexual Medicine (ISSM)", ar: "الجمعية الدولية للطب الجنسي" }, year: { en: "2015", ar: "2015" }, image: { src: IMG.labResearch, alt: { en: "ISSM membership certificate", ar: "شهادة عضوية الجمعية الدولية للطب الجنسي" } } },
+      { title: { en: "Member", ar: "عضو" }, issuer: { en: "American Society for Reproductive Medicine (ASRM)", ar: "الجمعية الأمريكية لطب الخصوبة" }, year: { en: "2016", ar: "2016" }, image: { src: IMG.labCorridor, alt: { en: "ASRM membership certificate", ar: "شهادة عضوية الجمعية الأمريكية لطب الخصوبة" } } },
+      { title: { en: "Fellow", ar: "زميل" }, issuer: { en: "Middle East Society for Male Health", ar: "جمعية الشرق الأوسط لصحة الرجل" }, year: { en: "2018", ar: "2018" }, image: { src: IMG.doctorCorridor, alt: { en: "Society fellowship certificate", ar: "شهادة زمالة الجمعية" } } },
     ],
+  },
+
+  why: {
+    eyebrow: { en: "Why Dr. Walid Moussa?", ar: "لماذا د. وليد موسى؟" },
+    heading: { en: "What patients say makes the difference", ar: "ما يقول المرضى إنه يصنع الفارق" },
+    description: {
+      en: "The reasons men choose this clinic — and travel to it — are consistent, and none of them are about marketing.",
+      ar: "أسباب اختيار الرجال لهذه العيادة — وسفرهم إليها — ثابتة، ولا علاقة لأي منها بالدعاية.",
+    },
+    image: {
+      src: IMG.doctorScrubs,
+      alt: { en: "Dr. Walid Moussa", ar: "د. وليد موسى" },
+      position: "center 20%",
+    },
+    points: [
+      {
+        icon: "microscope",
+        title: { en: "A true sub-specialist", ar: "تخصص دقيق حقيقي" },
+        text: {
+          en: "Andrology is the whole practice, not a sideline — thousands of similar cases inform every plan.",
+          ar: "أمراض الذكورة هي الممارسة بأكملها، لا نشاطًا جانبيًا — آلاف الحالات المشابهة توجّه كل خطة.",
+        },
+      },
+      {
+        icon: "lock",
+        title: { en: "Discretion by design", ar: "خصوصية مصمَّمة" },
+        text: {
+          en: "Private scheduling, confidential records, and nothing discussed outside the room without your consent.",
+          ar: "حجز خاص، وسجلات سرية، ولا شيء يُناقَش خارج الغرفة دون موافقتك.",
+        },
+      },
+      {
+        icon: "diagnosis",
+        title: { en: "Cause before prescription", ar: "السبب قبل الوصفة" },
+        text: {
+          en: "The right tests, read properly, so treatment targets the actual problem — not just the symptom.",
+          ar: "الفحوصات الصحيحة، مقروءة بدقة، ليستهدف العلاج المشكلة الفعلية — لا العرض فقط.",
+        },
+      },
+      {
+        icon: "microscope",
+        title: { en: "Microsurgical precision", ar: "دقة الجراحة الميكروسكوبية" },
+        text: {
+          en: "European fellowship training and an operating microscope for varicocele, reversal and micro-TESE.",
+          ar: "تدريب زمالة أوروبي ومجهر جراحي لجراحات الدوالي وعكس القطع وميكرو-تيسي.",
+        },
+      },
+      {
+        icon: "consultation",
+        title: { en: "Unhurried consultations", ar: "استشارات غير متعجّلة" },
+        text: {
+          en: "Time to explain what is happening and why, and to answer every question before any decision.",
+          ar: "وقت لشرح ما يحدث ولماذا، وللإجابة عن كل سؤال قبل أي قرار.",
+        },
+      },
+      {
+        icon: "handshake",
+        title: { en: "Care for the couple", ar: "رعاية للزوجين" },
+        text: {
+          en: "Fertility is a shared journey — partners are welcome, and joint appointments are encouraged.",
+          ar: "الخصوبة رحلة مشتركة — الشريكات مُرحَّب بهنّ، والمواعيد المشتركة مُشجَّعة.",
+        },
+      },
+    ],
+  },
+
+  expertise: {
+    eyebrow: { en: "Areas of Expertise", ar: "مجالات الخبرة" },
+    heading: { en: "Four fields, one focus", ar: "أربعة مجالات، تركيز واحد" },
+    description: {
+      en: "Every part of male reproductive and sexual health, handled under one roof by one specialist.",
+      ar: "كل جانب من الصحة الإنجابية والجنسية للرجل، يُدار في مكان واحد على يد متخصص واحد.",
+    },
+    items: [
+      {
+        icon: "vitality",
+        image: { src: IMG.handsRings, alt: { en: "Erectile and sexual health", ar: "صحة الانتصاب والصحة الجنسية" } },
+        title: { en: "Erectile & Sexual Health", ar: "صحة الانتصاب والصحة الجنسية" },
+        description: {
+          en: "Erectile dysfunction, premature ejaculation and Peyronie's — from first-line therapy to shockwave, injections and implants.",
+          ar: "ضعف الانتصاب وسرعة القذف ومرض بيروني — من العلاج الأولي إلى الموجات التصادمية والحقن والدعامات.",
+        },
+      },
+      {
+        icon: "fertility",
+        image: { src: IMG.familyBaby, alt: { en: "Male fertility and microsurgery", ar: "خصوبة الرجل والجراحة الميكروسكوبية" } },
+        title: { en: "Male Fertility & Microsurgery", ar: "خصوبة الرجل والجراحة الميكروسكوبية" },
+        description: {
+          en: "Full couple work-ups, microsurgical varicocelectomy, vasectomy reversal and micro-TESE for azoospermia.",
+          ar: "فحوصات شاملة للزوجين، وجراحة دوالي ميكروسكوبية، وعكس القطع، وميكرو-تيسي لانعدام الحيوانات المنوية.",
+        },
+      },
+      {
+        icon: "diagnosis",
+        image: { src: IMG.manActive, alt: { en: "Hormonal and men's health", ar: "الهرمونات وصحة الرجل" } },
+        title: { en: "Hormonal & Men's Health", ar: "الهرمونات وصحة الرجل" },
+        description: {
+          en: "Low testosterone, andropause and the midlife health check — diagnosed properly and treated with fertility in mind.",
+          ar: "نقص التستوستيرون وسن اليأس عند الرجال والفحص الصحي لمنتصف العمر — تشخيص دقيق وعلاج يراعي الخصوبة.",
+        },
+      },
+      {
+        icon: "procedure",
+        image: { src: IMG.operatingRoom, alt: { en: "Reconstructive andrology surgery", ar: "جراحة الذكورة الترميمية" } },
+        title: { en: "Reconstructive Surgery", ar: "الجراحة الترميمية" },
+        description: {
+          en: "Penile prosthesis implantation, curvature correction and scrotal day surgery, with an infection-prevention protocol.",
+          ar: "زراعة دعامة القضيب وتصحيح الاعوجاج وجراحة كيس الصفن ليوم واحد، مع بروتوكول للوقاية من العدوى.",
+        },
+      },
+    ],
+  },
+
+  word: {
+    eyebrow: { en: "A Word from the Doctor", ar: "كلمة من الطبيب" },
+    heading: { en: "In his own words", ar: "بكلماته الخاصة" },
+    image: {
+      src: IMG.patientCare,
+      alt: { en: "Dr. Walid Moussa with a patient", ar: "د. وليد موسى مع أحد المرضى" },
+      position: "center 30%",
+    },
+    quote: {
+      en: [
+        "Most of the men I see have waited far too long before coming in — months, sometimes years — because the subject felt impossible to raise. By the time they sit down, they have usually convinced themselves the news will be bad.",
+        "It rarely is. Almost every problem in this field has a route to a solution, and the first step is simply naming it out loud to someone who deals with it every day. My job is to make that conversation ordinary, to find the real cause, and to lay out the options plainly so the decision stays yours.",
+        "I treat every patient the way I would want a member of my own family treated: with time, with honesty, and with complete discretion.",
+      ],
+      ar: [
+        "معظم الرجال الذين أراهم انتظروا طويلًا جدًا قبل الحضور — أشهرًا، وأحيانًا سنوات — لأن الموضوع بدا مستحيل الطرح. وبحلول وقت جلوسهم، يكونون عادةً قد أقنعوا أنفسهم بأن الخبر سيكون سيئًا.",
+        "نادرًا ما يكون كذلك. فلكل مشكلة تقريبًا في هذا المجال طريق إلى حل، والخطوة الأولى هي ببساطة تسميتها بصوت عالٍ لشخص يتعامل معها كل يوم. مهمتي أن أجعل هذا الحوار عاديًا، وأن أجد السبب الحقيقي، وأن أعرض الخيارات بوضوح ليبقى القرار قرارك.",
+        "أعامل كل مريض كما أتمنى أن يُعامَل به أحد أفراد عائلتي: بالوقت، وبالصدق، وبسرية تامة.",
+      ],
+    },
+    name: { en: "Dr. Walid Moussa", ar: "د. وليد موسى" },
+    role: { en: "Consultant Andrologist & Reproductive Microsurgeon", ar: "استشاري أمراض الذكورة وجرّاح الخصوبة الميكروسكوبي" },
   },
 
   achievements: {

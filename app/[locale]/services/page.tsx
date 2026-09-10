@@ -4,13 +4,16 @@ import { isLocale, type Locale } from "@/lib/i18n";
 import { buildAlternates } from "@/lib/seo";
 import { heroes } from "@/data/hero";
 import { surgeries, surgeriesIntro } from "@/data/surgeries";
-import { treatments, treatmentsIntro } from "@/data/treatments";
 import { technologies, technologiesIntro } from "@/data/technologies";
-import { surgeryToCard, surgeryToDetail, treatmentToCard, treatmentToDetail, technologyToCard, technologyToDetail } from "@/lib/careAdapters";
+import { specialties } from "@/data/specialties";
+import { surgeryToCard, surgeryToDetail, technologyToCard, technologyToDetail } from "@/lib/careAdapters";
 
 import { Hero } from "@/components/layout/Hero";
+import { SpecialtySelector } from "@/components/services/SpecialtySelector";
+import { SpecialtyTreatmentsSection } from "@/components/services/SpecialtyTreatmentsSection";
 import { CareAnchorSection } from "@/components/sections/CareAnchorSection";
 import { OtherServices } from "@/components/sections/OtherServices";
+import { ServicesFaq } from "@/components/services/ServicesFaq";
 import { CtaSection } from "@/components/sections/CtaSection";
 
 export async function generateMetadata({
@@ -34,17 +37,17 @@ export default async function ServicesPage({ params }: PageProps<"/[locale]/serv
   const locale = raw;
 
   const surgeryItems = surgeries.map((s) => ({ id: s.id, slug: s.slug, card: surgeryToCard(s), detail: surgeryToDetail(s) }));
-  const treatmentItems = treatments.map((t) => ({ id: t.id, slug: t.slug, card: treatmentToCard(t), detail: treatmentToDetail(t) }));
   const techItems = technologies.map((t) => ({ id: t.id, slug: t.slug, card: technologyToCard(t), detail: technologyToDetail(t) }));
 
   return (
     <>
-      <Hero
-        locale={locale}
-        variant="services"
-        primaryCta={{ label: { en: "Book a Consultation", ar: "احجز استشارة" }, href: `/${locale}/contact` }}
-        secondaryCta={{ label: { en: "See the Surgeries", ar: "شاهد العمليات" }, href: `/${locale}/services#surgeries` }}
-      />
+      <Hero locale={locale} variant="services" showPanel />
+
+      <SpecialtySelector locale={locale} />
+
+      {specialties.map((specialty, i) => (
+        <SpecialtyTreatmentsSection key={specialty.id} specialty={specialty} locale={locale} index={i} />
+      ))}
 
       <CareAnchorSection
         id="surgeries"
@@ -61,23 +64,6 @@ export default async function ServicesPage({ params }: PageProps<"/[locale]/serv
         items={surgeryItems}
       />
 
-      {/* "Medical problems" and "treatments" are the same list for andrology —
-          both anchors resolve here. */}
-      <span id="problems" className="block h-0 scroll-mt-24" aria-hidden />
-      <CareAnchorSection
-        id="treatments"
-        hashPrefix="treatment"
-        locale={locale}
-        eyebrow={treatmentsIntro.eyebrow}
-        title={treatmentsIntro.title}
-        description={treatmentsIntro.description}
-        tone="pink"
-        tint="pink"
-        glow="pink"
-        columns={3}
-        items={treatmentItems}
-      />
-
       <CareAnchorSection
         id="technologies"
         hashPrefix="technology"
@@ -92,6 +78,7 @@ export default async function ServicesPage({ params }: PageProps<"/[locale]/serv
       />
 
       <OtherServices locale={locale} />
+      <ServicesFaq locale={locale} />
       <CtaSection locale={locale} />
     </>
   );

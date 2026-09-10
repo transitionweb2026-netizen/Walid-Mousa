@@ -173,13 +173,25 @@ export function ContactForm({ locale }: { locale: Locale }) {
           </div>
         )}
 
-        <button
-          type="submit"
-          className="group mt-1 inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-brand px-6 py-3.5 font-heading text-sm font-semibold text-white shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-lg active:translate-y-0"
-        >
-          <Icon name="whatsapp" className="h-4 w-4" />
-          {c.submit[locale]}
-        </button>
+        {/* Two primary contact actions — WhatsApp (submits the form's details)
+            and a direct call. */}
+        <div className="mt-1 flex flex-col gap-3 sm:flex-row">
+          <button
+            type="submit"
+            className="group inline-flex flex-1 items-center justify-center gap-2.5 rounded-full bg-gradient-brand px-6 py-3.5 font-heading text-sm font-semibold text-white shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-lg active:translate-y-0"
+          >
+            <Icon name="whatsapp" className="h-4 w-4" />
+            {c.submit[locale]}
+          </button>
+          <a
+            href={`tel:${contactInfo.phone}`}
+            className="glass-panel inline-flex items-center justify-center gap-2.5 rounded-full px-6 py-3.5 font-heading text-sm font-semibold text-brand-ink transition-all duration-300 hover:-translate-y-0.5 hover:text-brand-teal-deep hover:shadow-glass-lg active:translate-y-0"
+          >
+            <Icon name="phone" className="h-4 w-4 text-brand-teal-deep" />
+            <span dir="ltr">{contactInfo.phoneDisplay[locale]}</span>
+          </a>
+        </div>
+        <p className="text-xs leading-relaxed text-brand-muted">{c.actionsNote[locale]}</p>
       </GlassCard>
     </form>
   );

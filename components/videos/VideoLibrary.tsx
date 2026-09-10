@@ -9,6 +9,10 @@ import { siteContent } from "@/data/site";
 import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
+/**
+ * Videos page gallery — a 3-across grid (3×3 for "All"). Every clip is
+ * phone-portrait, so the rows stay perfectly aligned; cards never stretch.
+ */
 export function VideoLibrary({ locale }: { locale: Locale }) {
   const [active, setActive] = useState("all");
 
@@ -39,23 +43,22 @@ export function VideoLibrary({ locale }: { locale: Locale }) {
         ))}
       </div>
 
-      {/* Masonry columns pack the mixed portrait / landscape frames without
-          leaving big gaps between rows. */}
-      <div className="mt-12 gap-8 sm:columns-2 lg:columns-3 [&>*]:mb-8 [&>*]:break-inside-avoid">
-        <AnimatePresence initial={false}>
+      <motion.div layout className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <AnimatePresence mode="popLayout">
           {filtered.map((video) => (
             <motion.div
               key={video.id}
-              initial={{ opacity: 0, y: 14 }}
+              layout
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: EASE_PREMIUM }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.35, ease: EASE_PREMIUM }}
             >
-              <VideoCard video={video} locale={locale} frame={video.aspect === "portrait" ? "phone" : "glass"} />
+              <VideoCard video={video} locale={locale} frame="phone" />
             </motion.div>
           ))}
         </AnimatePresence>
-      </div>
+      </motion.div>
 
       {filtered.length === 0 && (
         <p className="mt-12 text-center text-sm text-brand-muted">{siteContent.actions.noResults[locale]}</p>

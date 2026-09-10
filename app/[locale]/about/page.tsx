@@ -5,9 +5,12 @@ import { buildAlternates } from "@/lib/seo";
 import { heroes } from "@/data/hero";
 
 import { Hero } from "@/components/layout/Hero";
-import { BiographySection } from "@/components/about/BiographySection";
-import { ExperienceTimeline } from "@/components/about/ExperienceTimeline";
-import { EducationCertifications } from "@/components/about/EducationCertifications";
+import { AboutDoctorSection } from "@/components/about/AboutDoctorSection";
+import { CertificatesCarousel } from "@/components/about/CertificatesCarousel";
+import { CareerJourney } from "@/components/about/CareerJourney";
+import { WhyDoctor } from "@/components/about/WhyDoctor";
+import { AreasOfExpertise } from "@/components/about/AreasOfExpertise";
+import { WordFromDoctor } from "@/components/about/WordFromDoctor";
 import { AchievementsGallery } from "@/components/about/AchievementsGallery";
 import { StatsSection } from "@/components/sections/StatsSection";
 import { CtaSection } from "@/components/sections/CtaSection";
@@ -34,17 +37,15 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
 
   return (
     <>
-      <Hero
-        locale={locale}
-        variant="about"
-        primaryCta={{ label: { en: "Book an Appointment", ar: "احجز موعدك" }, href: `/${locale}/contact` }}
-        secondaryCta={{ label: { en: "Explore Services", ar: "استكشف الخدمات" }, href: `/${locale}/services` }}
-      />
-      <BiographySection locale={locale} />
-      <StatsSection locale={locale} showHeader={false} />
-      <ExperienceTimeline locale={locale} />
-      <EducationCertifications locale={locale} />
+      <Hero locale={locale} variant="about" showPanel />
+      <AboutDoctorSection locale={locale} />
+      <CertificatesCarousel locale={locale} />
+      <CareerJourney locale={locale} />
+      <WhyDoctor locale={locale} />
+      <AreasOfExpertise locale={locale} />
+      <WordFromDoctor locale={locale} />
       <AchievementsGallery locale={locale} />
+      <StatsSection locale={locale} />
       <CtaSection locale={locale} />
     </>
   );
