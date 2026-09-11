@@ -1,8 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/i18n";
-import { buildAlternates } from "@/lib/seo";
 import { siteContent } from "@/data/site";
+import { buildPageMetadata } from "@/lib/cms/publicSeo";
+import { getHomeSections } from "@/lib/cms/publicSections";
+import {
+  getStatistics,
+  getFeaturedSurgeries,
+  getFeaturedConditions,
+  getTechnologies,
+  getJourneySteps,
+  getReviews,
+  getFeaturedVideos,
+  getFaqs,
+  getFeaturedArticles,
+} from "@/lib/cms/publicContent";
+import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
 
 import { Hero } from "@/components/layout/Hero";
 import { DoctorIntro } from "@/components/home/DoctorIntro";
@@ -23,11 +36,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: raw } = await params;
   const locale: Locale = isLocale(raw) ? raw : "en";
-  return {
-    title: siteContent.seo.defaultTitle[locale],
-    description: siteContent.seo.defaultDescription[locale],
-    alternates: buildAlternates(locale, ""),
-  };
+  return buildPageMetadata({
+    locale,
+    path: "",
+    fallbackTitle: siteContent.seo.defaultTitle[locale],
+    fallbackDescription: siteContent.seo.defaultDescription[locale],
+  });
 }
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
@@ -35,19 +49,68 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
+  const [
+    sections,
+    stats,
+    surgeries,
+    conditions,
+    technologies,
+    journey,
+    reviews,
+    videos,
+    faqs,
+    articles,
+    cta,
+    contact,
+    social,
+  ] = await Promise.all([
+    getHomeSections(),
+    getStatistics(),
+    getFeaturedSurgeries(),
+    getFeaturedConditions(),
+    getTechnologies(),
+    getJourneySteps(),
+    getReviews(),
+    getFeaturedVideos(),
+    getFaqs("home"),
+    getFeaturedArticles(),
+    getFinalCta(),
+    getContactInfo(),
+    getSocialLinks(),
+  ]);
+
+  const localeRoot = `/${locale}`;
+  const href = (cta: { url: string }) => `${localeRoot}${cta.url}`;
+
   return (
     <>
-      <Hero locale={locale} variant="home" showPanel />
-      <DoctorIntro locale={locale} />
-      <StatsSection locale={locale} />
-      <SurgeriesSection locale={locale} />
-      <TreatmentsSection locale={locale} />
-      <TechnologiesSection locale={locale} />
-      <PatientJourney locale={locale} />
-      <ReviewsSection locale={locale} />
-      <FeaturedVideos locale={locale} />
-      <FaqArticles locale={locale} />
-      <CtaSection locale={locale} />
+      <Hero
+        locale={locale}
+        content={sections.hero.content}
+        primaryCta={{ label: sections.hero.primaryCta.label, href: href(sections.hero.primaryCta) }}
+        secondaryCta={{ label: sections.hero.secondaryCta.label, href: href(sections.hero.secondaryCta) }}
+        showPanel
+        contact={contact}
+        social={social}
+      />
+      {sections.doctorIntro && <DoctorIntro locale={locale} content={sections.doctorIntro} />}
+      {sections.statsIntro && <StatsSection locale={locale} stats={stats} intro={sections.statsIntro} />}
+      {sections.surgeriesIntro && <SurgeriesSection locale={locale} surgeries={surgeries} intro={sections.surgeriesIntro} />}
+      {sections.conditionsIntro && <TreatmentsSection locale={locale} conditions={conditions} intro={sections.conditionsIntro} />}
+      {sections.technologiesIntro && <TechnologiesSection locale={locale} technologies={technologies} intro={sections.technologiesIntro} />}
+      {sections.journeyIntro && <PatientJourney locale={locale} steps={journey} intro={sections.journeyIntro} />}
+      {sections.reviewsIntro && <ReviewsSection locale={locale} reviews={reviews} intro={sections.reviewsIntro} />}
+      {sections.featuredVideosIntro && <FeaturedVideos locale={locale} videos={videos} intro={sections.featuredVideosIntro} />}
+      {(sections.faqIntro || sections.featuredArticlesIntro) && (
+        <FaqArticles
+          locale={locale}
+          faqs={faqs}
+          articles={articles}
+          faqIntro={sections.faqIntro}
+          articlesIntro={sections.featuredArticlesIntro}
+        />
+      )}
+      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
     </>
   );
 }

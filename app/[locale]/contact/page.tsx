@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/i18n";
-import { buildAlternates } from "@/lib/seo";
 import { heroes } from "@/data/hero";
+import { siteContent } from "@/data/site";
+import { buildPageMetadata } from "@/lib/cms/publicSeo";
+import { getContactSections } from "@/lib/cms/publicSections";
+import { getContactAssurances } from "@/lib/cms/publicContent";
+import {
+  getContactInfo,
+  getContactFormSettings,
+  getContactIntro,
+  getSocialLinks,
+  getFooterContent,
+  getFinalCta,
+} from "@/lib/cms/publicSettings";
 
 import { Hero } from "@/components/layout/Hero";
 import { Section } from "@/components/ui/Section";
@@ -13,19 +24,6 @@ import { ContactChannels } from "@/components/contact/ContactChannels";
 import { ClinicMap } from "@/components/contact/ClinicMap";
 import { CtaSection } from "@/components/sections/CtaSection";
 
-const assurances = {
-  en: [
-    ["lock", "Held in confidence", "Your message goes only to a clinic coordinator — never a shared inbox."],
-    ["clock", "A quick reply", "Enquiries are usually answered the same working day."],
-    ["consultation", "No obligation", "A first message is just that. You decide every step after it."],
-  ],
-  ar: [
-    ["lock", "بسرية تامة", "تصل رسالتك إلى منسّق العيادة فقط — لا إلى بريد مشترك."],
-    ["clock", "رد سريع", "يُرد على الاستفسارات عادةً في نفس يوم العمل."],
-    ["consultation", "دون أي التزام", "الرسالة الأولى مجرد بداية. أنت من يقرر كل خطوة بعدها."],
-  ],
-} as const;
-
 export async function generateMetadata({
   params,
 }: {
@@ -34,11 +32,12 @@ export async function generateMetadata({
   const { locale: raw } = await params;
   const locale: Locale = isLocale(raw) ? raw : "en";
   const h = heroes.contact;
-  return {
-    title: `${h.headline[locale]} ${h.headlineAccent[locale]}`,
-    description: h.description[locale],
-    alternates: buildAlternates(locale, "contact"),
-  };
+  return buildPageMetadata({
+    locale,
+    path: "contact",
+    fallbackTitle: `${h.headline[locale]} ${h.headlineAccent[locale]}`,
+    fallbackDescription: h.description[locale],
+  });
 }
 
 export default async function ContactPage({ params }: PageProps<"/[locale]/contact">) {
@@ -46,42 +45,85 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
+  const [sections, contact, form, intro, social, footer, assurances, cta] = await Promise.all([
+    getContactSections(),
+    getContactInfo(),
+    getContactFormSettings(),
+    getContactIntro(),
+    getSocialLinks(),
+    getFooterContent(),
+    getContactAssurances(),
+    getFinalCta(),
+  ]);
+  const cref = (c: { url: string }) => `/${locale}${c.url}`;
+
   return (
     <>
-      <Hero locale={locale} variant="contact" showPanel />
+      <Hero
+        locale={locale}
+        content={sections.hero.content}
+        primaryCta={{ label: sections.hero.primaryCta.label, href: cref(sections.hero.primaryCta) }}
+        secondaryCta={{ label: sections.hero.secondaryCta.label, href: cref(sections.hero.secondaryCta) }}
+        showPanel
+        contact={contact}
+        social={social}
+      />
 
       <Section tint="duo" glow="both" aria-labelledby="contact-heading">
         <h1 id="contact-heading" className="sr-only">
-          {heroes.contact.headline[locale]} {heroes.contact.headlineAccent[locale]}
+          {sections.contactIntro.title[locale]}
         </h1>
 
         <div className="grid items-start gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <Reveal className="flex flex-col gap-6">
-            <ContactForm locale={locale} />
-            <div className="glass-card glass-sheen grid gap-5 rounded-3xl p-6 sm:grid-cols-3 sm:p-7">
-              {assurances[locale].map(([icon, title, text]) => (
-                <div key={title} className="flex flex-col gap-2">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-teal-tint text-brand-teal-deep">
-                    <Icon name={icon as "lock"} className="h-5 w-5" />
-                  </span>
-                  <h3 className="text-sm font-bold text-brand-ink">{title}</h3>
-                  <p className="text-xs leading-relaxed text-brand-muted">{text}</p>
-                </div>
-              ))}
-            </div>
+            <ContactForm locale={locale} settings={form} contact={contact} />
+            {assurances.length > 0 && (
+              <div className="glass-card glass-sheen grid gap-5 rounded-3xl p-6 sm:grid-cols-3 sm:p-7">
+                {assurances.map((a) => (
+                  <div key={a.id} className="flex flex-col gap-2">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-teal-tint text-brand-teal-deep">
+                      <Icon name={a.icon} className="h-5 w-5" />
+                    </span>
+                    <h3 className="text-sm font-bold text-brand-ink">{a.title[locale]}</h3>
+                    <p className="text-xs leading-relaxed text-brand-muted">{a.text[locale]}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </Reveal>
 
           <Reveal delay={0.1}>
-            <ContactChannels locale={locale} />
+            <ContactChannels
+              locale={locale}
+              contact={contact}
+              social={social}
+              footer={footer}
+              labels={{
+                channelsTitle: intro.channelsTitle,
+                channelsNote: intro.channelsNote,
+                whatsapp: siteContent.actions.whatsapp,
+                bookAppointment: siteContent.actions.bookAppointment,
+              }}
+            />
           </Reveal>
         </div>
 
         <Reveal className="mt-8">
-          <ClinicMap locale={locale} />
+          <ClinicMap
+            locale={locale}
+            contact={contact}
+            labels={{
+              locationTitle: intro.locationTitle,
+              openInMaps: intro.openInMaps,
+              getDirections: intro.getDirections,
+              mapHint: intro.mapHint,
+              mapPending: intro.mapPending,
+            }}
+          />
         </Reveal>
       </Section>
 
-      <CtaSection locale={locale} />
+      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
     </>
   );
 }

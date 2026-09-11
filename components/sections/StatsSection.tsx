@@ -3,19 +3,29 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Counter } from "@/components/motion/Counter";
 import { Reveal } from "@/components/motion/Reveal";
-import { stats, statsIntro } from "@/data/stats";
+import { stats as fallbackStats, statsIntro } from "@/data/stats";
+import type { StatItem } from "@/data/stats";
+import type { IntroContent } from "@/lib/cms/publicSections";
 import { localeTag, type Locale } from "@/lib/i18n";
 
-export function StatsSection({ locale, showHeader = true }: { locale: Locale; showHeader?: boolean }) {
+interface Props {
+  locale: Locale;
+  stats?: StatItem[];
+  intro?: IntroContent | null;
+  showHeader?: boolean;
+}
+
+export function StatsSection({ locale, stats = fallbackStats, intro, showHeader = true }: Props) {
+  const header = intro ?? statsIntro;
   return (
     <Section tint="duo" glow="both" aria-labelledby="stats-heading">
       {showHeader && (
         <SectionHeader
           locale={locale}
           headingId="stats-heading"
-          eyebrow={statsIntro.eyebrow}
-          title={statsIntro.title}
-          description={statsIntro.description}
+          eyebrow={header.eyebrow}
+          title={header.title}
+          description={header.description}
         />
       )}
 

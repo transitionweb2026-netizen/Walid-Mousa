@@ -8,11 +8,8 @@ import { Icon } from "@/components/icons/Icon";
 import { Button } from "@/components/ui/Button";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { EASE_PREMIUM } from "@/lib/motion";
-import type { Locale } from "@/lib/i18n";
-import { localeDirection } from "@/lib/i18n";
-import type { NavItem } from "@/data/navigation";
-import { siteContent } from "@/data/site";
-import { contactInfo } from "@/data/contact";
+import { localeDirection, type Locale } from "@/lib/i18n";
+import type { NavbarSettings, SiteBranding, ContactInfo } from "@/lib/cms/publicSettings";
 import { cn } from "@/lib/utils";
 
 interface MobileMenuProps {
@@ -20,12 +17,16 @@ interface MobileMenuProps {
   onClose: () => void;
   locale: Locale;
   isActive: (path: string) => boolean;
-  navigationItems: NavItem[];
+  nav: NavbarSettings;
+  branding: SiteBranding;
+  contact: ContactInfo;
 }
 
-export function MobileMenu({ open, onClose, locale, isActive, navigationItems }: MobileMenuProps) {
+export function MobileMenu({ open, onClose, locale, isActive, nav, branding, contact }: MobileMenuProps) {
   const localeRoot = `/${locale}`;
   const isRtl = localeDirection[locale] === "rtl";
+  const menuLabel = locale === "ar" ? "القائمة" : "Menu";
+  const closeLabel = locale === "ar" ? "إغلاق" : "Close";
 
   useEffect(() => {
     if (!open) return;
@@ -60,16 +61,14 @@ export function MobileMenu({ open, onClose, locale, isActive, navigationItems }:
             transition={{ duration: 0.4, ease: EASE_PREMIUM }}
             role="dialog"
             aria-modal="true"
-            aria-label={siteContent.actions.menu[locale]}
+            aria-label={menuLabel}
           >
             <div className="flex items-center justify-between">
-              <span className="font-heading text-base font-extrabold text-brand-ink">
-                {siteContent.brand.nameLocalized[locale]}
-              </span>
+              <span className="font-heading text-base font-extrabold text-brand-ink">{branding.orgName[locale]}</span>
               <button
                 type="button"
                 onClick={onClose}
-                aria-label={siteContent.actions.close[locale]}
+                aria-label={closeLabel}
                 className="glass-panel inline-flex h-10 w-10 items-center justify-center rounded-xl text-brand-ink transition-transform active:scale-95"
               >
                 <Icon name="close" className="h-5 w-5" />
@@ -77,7 +76,7 @@ export function MobileMenu({ open, onClose, locale, isActive, navigationItems }:
             </div>
 
             <nav className="mt-8 flex flex-col gap-1.5" aria-label="Mobile">
-              {navigationItems.map((item, i) => {
+              {nav.items.map((item, i) => {
                 const href = item.path ? `${localeRoot}/${item.path}` : localeRoot;
                 const active = isActive(item.path);
                 return (
@@ -107,17 +106,19 @@ export function MobileMenu({ open, onClose, locale, isActive, navigationItems }:
             </nav>
 
             <div className="mt-auto space-y-4 pt-6">
-              <a
-                href={`tel:${contactInfo.phone}`}
-                className="flex items-center gap-3 rounded-2xl bg-white/55 px-4 py-3 text-sm font-semibold text-brand-ink"
-              >
-                <Icon name="phone" className="h-4 w-4 text-brand-teal-deep" />
-                <span dir="ltr">{contactInfo.phoneDisplay[locale]}</span>
-              </a>
+              {contact.phone && (
+                <a
+                  href={`tel:${contact.phone}`}
+                  className="flex items-center gap-3 rounded-2xl bg-white/55 px-4 py-3 text-sm font-semibold text-brand-ink"
+                >
+                  <Icon name="phone" className="h-4 w-4 text-brand-teal-deep" />
+                  <span dir="ltr">{contact.phoneDisplay[locale]}</span>
+                </a>
+              )}
               <div className="flex items-center justify-between">
-                <LanguageSwitcher locale={locale} />
-                <Button href={`${localeRoot}/contact`} size="sm" onClick={onClose}>
-                  {siteContent.actions.bookAppointment[locale]}
+                {nav.showLanguageSwitcher && <LanguageSwitcher locale={locale} />}
+                <Button href={`${localeRoot}${nav.appointmentUrl}`} size="sm" onClick={onClose}>
+                  {nav.appointmentLabel[locale]}
                 </Button>
               </div>
             </div>

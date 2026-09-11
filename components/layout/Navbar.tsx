@@ -7,12 +7,18 @@ import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/icons/Icon";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileMenu } from "./MobileMenu";
-import { navigationItems } from "@/data/navigation";
-import { siteContent } from "@/data/site";
+import type { NavbarSettings, SiteBranding, ContactInfo } from "@/lib/cms/publicSettings";
 import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-export function Navbar({ locale }: { locale: Locale }) {
+interface NavbarProps {
+  locale: Locale;
+  nav: NavbarSettings;
+  branding: SiteBranding;
+  contact: ContactInfo;
+}
+
+export function Navbar({ locale, nav, branding, contact }: NavbarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -31,6 +37,8 @@ export function Navbar({ locale }: { locale: Locale }) {
     return pathname === full || pathname.startsWith(`${full}/`);
   };
 
+  const menuLabel = locale === "ar" ? "افتح القائمة" : "Open menu";
+
   return (
     <header className="sticky top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4">
       <nav
@@ -42,21 +50,21 @@ export function Navbar({ locale }: { locale: Locale }) {
       >
         <Link href={localeRoot} className="group flex items-center gap-2.5">
           <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-brand text-white shadow-glass">
-            <span className="font-heading text-sm font-black">W</span>
+            <span className="font-heading text-sm font-black">{branding.orgName.en.replace(/^Dr\.\s*/, "").charAt(0) || "W"}</span>
             <span aria-hidden className="glow-teal absolute -inset-1 -z-10 rounded-2xl opacity-50" />
           </span>
           <span className="flex flex-col leading-tight">
             <span className="font-heading text-[0.95rem] font-extrabold text-brand-ink sm:text-base">
-              {siteContent.brand.nameLocalized[locale]}
+              {branding.orgName[locale]}
             </span>
             <span className="hidden text-[0.66rem] font-medium text-brand-muted sm:block">
-              {siteContent.brand.credentials[locale]}
+              {branding.credentials[locale]}
             </span>
           </span>
         </Link>
 
         <ul className="hidden items-center gap-0.5 lg:flex">
-          {navigationItems.map((item) => {
+          {nav.items.map((item) => {
             const active = isActive(item.path);
             const href = item.path ? `${localeRoot}/${item.path}` : localeRoot;
             return (
@@ -80,18 +88,18 @@ export function Navbar({ locale }: { locale: Locale }) {
         </ul>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <LanguageSwitcher locale={locale} />
-          <Button href={`${localeRoot}/contact`} size="sm">
-            {siteContent.actions.bookAppointment[locale]}
+          {nav.showLanguageSwitcher && <LanguageSwitcher locale={locale} />}
+          <Button href={`${localeRoot}${nav.appointmentUrl}`} size="sm">
+            {nav.appointmentLabel[locale]}
           </Button>
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
-          <LanguageSwitcher locale={locale} />
+          {nav.showLanguageSwitcher && <LanguageSwitcher locale={locale} />}
           <button
             type="button"
             onClick={() => setOpen(true)}
-            aria-label={siteContent.actions.menu[locale]}
+            aria-label={menuLabel}
             aria-expanded={open}
             className="glass-panel inline-flex h-10 w-10 items-center justify-center rounded-xl text-brand-ink transition-transform active:scale-95"
           >
@@ -105,7 +113,9 @@ export function Navbar({ locale }: { locale: Locale }) {
         onClose={() => setOpen(false)}
         locale={locale}
         isActive={isActive}
-        navigationItems={navigationItems}
+        nav={nav}
+        branding={branding}
+        contact={contact}
       />
     </header>
   );

@@ -5,25 +5,34 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Icon } from "@/components/icons/Icon";
 import { EASE_PREMIUM } from "@/lib/motion";
-import { journeyIntro, journeySteps } from "@/data/journey";
+import { journeyIntro, journeySteps as fallbackSteps } from "@/data/journey";
+import type { JourneyStep } from "@/data/journey";
+import type { IntroContent } from "@/lib/cms/publicSections";
 import type { Locale } from "@/lib/i18n";
 
-export function PatientJourney({ locale }: { locale: Locale }) {
+interface Props {
+  locale: Locale;
+  steps?: JourneyStep[];
+  intro?: IntroContent | null;
+}
+
+export function PatientJourney({ locale, steps = fallbackSteps, intro }: Props) {
+  const header = intro ?? journeyIntro;
+  const cols = steps.length > 0 && steps.length <= 6 ? steps.length : 6;
+
   return (
     <Section tint="duo" glow="both" aria-labelledby="journey-heading">
       <SectionHeader
         locale={locale}
         headingId="journey-heading"
-        eyebrow={journeyIntro.eyebrow}
-        title={journeyIntro.title}
-        description={journeyIntro.description}
+        eyebrow={header.eyebrow}
+        title={header.title}
+        description={header.description}
       />
 
       <div className="relative mt-16">
-        {/* Desktop: horizontal flow */}
         <div className="hidden lg:block">
           <div className="relative">
-            {/* connecting rail */}
             <div className="absolute inset-x-0 top-7 h-0.5 rounded-full bg-brand-line" />
             <motion.div
               className="absolute inset-x-0 top-7 h-0.5 origin-left rounded-full bg-gradient-to-r from-brand-teal to-brand-pink rtl:origin-right"
@@ -32,8 +41,8 @@ export function PatientJourney({ locale }: { locale: Locale }) {
               viewport={{ once: true }}
               transition={{ duration: 1.4, ease: EASE_PREMIUM }}
             />
-            <ol className="relative grid grid-cols-6 gap-4">
-              {journeySteps.map((step, i) => (
+            <ol className="relative grid gap-4" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+              {steps.map((step, i) => (
                 <motion.li
                   key={step.id}
                   className="flex flex-col items-center text-center"
@@ -56,10 +65,9 @@ export function PatientJourney({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        {/* Mobile / tablet: vertical connected rail */}
         <ol className="relative space-y-6 ps-2 lg:hidden">
           <div className="absolute bottom-4 start-[1.85rem] top-4 w-0.5 rounded-full bg-gradient-to-b from-brand-teal to-brand-pink" />
-          {journeySteps.map((step, i) => (
+          {steps.map((step, i) => (
             <motion.li
               key={step.id}
               className="relative flex gap-4"

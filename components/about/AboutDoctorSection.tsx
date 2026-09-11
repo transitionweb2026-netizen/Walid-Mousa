@@ -4,15 +4,27 @@ import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { Icon } from "@/components/icons/Icon";
 import { aboutContent } from "@/data/about";
+import type { AboutDoctorContent } from "@/lib/cms/publicSections";
 import type { Locale } from "@/lib/i18n";
+
+const fb: AboutDoctorContent = {
+  eyebrow: aboutContent.bio.eyebrow,
+  heading: aboutContent.bio.heading,
+  paragraphs: aboutContent.bio.paragraphs,
+  highlight: aboutContent.bio.highlight,
+  portrait: aboutContent.bio.portrait,
+  portraitLayers: aboutContent.bio.portraitLayers,
+  signatureName: aboutContent.bio.signatureName,
+  signatureRole: aboutContent.bio.signatureRole,
+};
 
 /**
  * "About the Doctor" — LEFT: editorial bio column. RIGHT: the portrait as a
  * premium paper/glass card, with two more photos layered behind it at slight
  * offsets for depth. The front card tilts gently under the pointer (TiltCard).
  */
-export function AboutDoctorSection({ locale }: { locale: Locale }) {
-  const bio = aboutContent.bio;
+export function AboutDoctorSection({ locale, content = fb }: { locale: Locale; content?: AboutDoctorContent }) {
+  const bio = content;
   const [layerA, layerB] = bio.portraitLayers;
 
   return (

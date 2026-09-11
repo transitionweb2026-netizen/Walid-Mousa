@@ -4,10 +4,23 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import { aboutContent } from "@/data/about";
+import type { ExpertiseItem } from "@/lib/cms/publicContent";
+import type { IntroContent } from "@/lib/cms/publicSections";
 import type { Locale } from "@/lib/i18n";
 
-export function AreasOfExpertise({ locale }: { locale: Locale }) {
-  const expertise = aboutContent.expertise;
+interface Props {
+  locale: Locale;
+  items?: ExpertiseItem[];
+  intro?: IntroContent | null;
+}
+
+export function AreasOfExpertise({ locale, items, intro }: Props) {
+  const expertise = {
+    eyebrow: intro?.eyebrow ?? aboutContent.expertise.eyebrow,
+    heading: intro?.title ?? aboutContent.expertise.heading,
+    description: intro?.description ?? aboutContent.expertise.description,
+    items: items ?? aboutContent.expertise.items.map((x, i) => ({ id: String(i), ...x })),
+  };
 
   return (
     <Section tint="teal" glow="teal" aria-labelledby="expertise-heading">

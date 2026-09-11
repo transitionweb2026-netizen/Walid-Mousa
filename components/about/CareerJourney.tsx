@@ -6,6 +6,8 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Icon, type IconName } from "@/components/icons/Icon";
 import { EASE_PREMIUM } from "@/lib/motion";
 import { aboutContent } from "@/data/about";
+import type { CareerMilestone } from "@/lib/cms/publicContent";
+import type { IntroContent } from "@/lib/cms/publicSections";
 import type { Locale } from "@/lib/i18n";
 import type { Localized } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -33,35 +35,33 @@ function leadingYear(value: string): number {
   return match ? Math.max(...match.map(Number)) : 0;
 }
 
-export function CareerJourney({ locale }: { locale: Locale }) {
-  const { experience, education } = aboutContent;
+interface Props {
+  locale: Locale;
+  milestones?: CareerMilestone[];
+  intro?: IntroContent | null;
+}
 
-  const milestones: Milestone[] = [
-    ...experience.items.map((item) => ({
-      period: item.period,
-      title: item.role,
-      place: item.place,
-      detail: item.detail,
-      icon: "procedure" as IconName,
-      sortYear: leadingYear(item.period.en),
-    })),
-    ...education.items.map((item) => ({
-      period: item.year,
-      title: item.title,
-      place: item.place,
-      icon: "graduation" as IconName,
-      sortYear: leadingYear(item.year.en),
-    })),
-  ].sort((a, b) => b.sortYear - a.sortYear);
+export function CareerJourney({ locale, milestones: input, intro }: Props) {
+  const header = intro ?? careerIntro;
+  const source: CareerMilestone[] =
+    input ??
+    [
+      ...aboutContent.experience.items.map((item) => ({ id: item.role.en, period: item.period, title: item.role, place: item.place, detail: item.detail, icon: "procedure" as IconName, kind: "role" as const })),
+      ...aboutContent.education.items.map((item) => ({ id: item.title.en, period: item.year, title: item.title, place: item.place, icon: "graduation" as IconName, kind: "education" as const })),
+    ];
+
+  const milestones: Milestone[] = source
+    .map((m) => ({ period: m.period, title: m.title, place: m.place, detail: m.detail, icon: m.icon, sortYear: leadingYear(m.period.en) }))
+    .sort((a, b) => b.sortYear - a.sortYear);
 
   return (
     <Section tint="neutral" glow="teal" aria-labelledby="career-heading">
       <SectionHeader
         locale={locale}
         headingId="career-heading"
-        eyebrow={careerIntro.eyebrow}
-        title={careerIntro.title}
-        description={careerIntro.description}
+        eyebrow={header.eyebrow}
+        title={header.title}
+        description={header.description}
       />
 
       <ol className="relative mx-auto mt-16 max-w-3xl lg:max-w-4xl">

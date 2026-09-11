@@ -3,8 +3,8 @@
 import { useId, useState, type FormEvent } from "react";
 import { Icon } from "@/components/icons/Icon";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { contactInfo, contactFormCopy, contactIntro } from "@/data/contact";
-import { buildWhatsAppUrl, fillTemplate } from "@/lib/whatsapp";
+import { buildWhatsAppUrl, buildWhatsAppMessage } from "@/lib/whatsapp";
+import type { ContactFormSettings, ContactInfo } from "@/lib/cms/publicSettings";
 import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -13,14 +13,20 @@ const inputClasses =
   "outline-none transition-all duration-300 focus-visible:-translate-y-0.5 focus-visible:shadow-glass-lg " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-teal-strong";
 
-export function ContactForm({ locale }: { locale: Locale }) {
+interface Props {
+  locale: Locale;
+  settings: ContactFormSettings;
+  contact: ContactInfo;
+}
+
+export function ContactForm({ locale, settings: c, contact }: Props) {
   const formId = useId();
-  const c = contactFormCopy;
+  const options = c.topicOptions.length > 0 ? c.topicOptions : [{ value: "general", label: { en: "General enquiry", ar: "استفسار عام" } }];
 
   const [values, setValues] = useState({
     fullName: "",
     phone: "",
-    topic: c.topic.options[0].value,
+    topic: options[0].value,
     preferredTime: "",
     message: "",
   });
@@ -35,9 +41,9 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
   function validate() {
     const next: typeof errors = {};
-    if (!values.fullName.trim()) next.fullName = c.required[locale];
+    if (!values.fullName.trim()) next.fullName = c.requiredMessage[locale];
     const digits = values.phone.replace(/[^\d]/g, "");
-    if (!values.phone.trim()) next.phone = c.required[locale];
+    if (!values.phone.trim()) next.phone = c.requiredMessage[locale];
     else if (digits.length < 8) next.phone = c.invalidPhone[locale];
     setErrors(next);
     const ok = Object.keys(next).length === 0;
@@ -48,15 +54,15 @@ export function ContactForm({ locale }: { locale: Locale }) {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!validate()) return;
-    const topicLabel = c.topic.options.find((o) => o.value === values.topic)?.label[locale] ?? values.topic;
-    const message = fillTemplate(c.whatsappTemplate[locale], {
+    const topicLabel = options.find((o) => o.value === values.topic)?.label[locale] ?? values.topic;
+    const message = buildWhatsAppMessage(c.whatsappTemplate[locale], {
       name: values.fullName,
       phone: values.phone,
-      contact: topicLabel,
-      date: values.preferredTime,
+      topic: topicLabel,
+      time: values.preferredTime,
       message: values.message,
     });
-    window.open(buildWhatsAppUrl(contactInfo.whatsapp, message), "_blank", "noopener,noreferrer");
+    window.open(buildWhatsAppUrl(contact.whatsapp, message), "_blank", "noopener,noreferrer");
     setSent(true);
   }
 
@@ -64,13 +70,13 @@ export function ContactForm({ locale }: { locale: Locale }) {
     <form onSubmit={handleSubmit} noValidate>
       <GlassCard hover={false} strong className="flex flex-col gap-5 p-6 sm:p-8">
         <div>
-          <h2 className="font-heading text-xl font-extrabold text-brand-ink">{contactIntro.formTitle[locale]}</h2>
-          <p className="mt-2 text-sm leading-relaxed text-brand-muted">{contactIntro.formNote[locale]}</p>
+          <h2 className="font-heading text-xl font-extrabold text-brand-ink">{c.title[locale]}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-brand-muted">{c.description[locale]}</p>
         </div>
 
         <div>
           <label htmlFor={`${formId}-name`} className="mb-2 block text-sm font-semibold text-brand-ink">
-            {c.fullName.label[locale]}
+            {c.fields.fullName.label[locale]}
           </label>
           <input
             id={`${formId}-name`}
@@ -78,7 +84,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
             autoComplete="name"
             value={values.fullName}
             onChange={(e) => update("fullName", e.target.value)}
-            placeholder={c.fullName.placeholder[locale]}
+            placeholder={c.fields.fullName.placeholder[locale]}
             aria-invalid={Boolean(errors.fullName)}
             aria-describedby={errors.fullName ? `${formId}-name-err` : undefined}
             className={cn(inputClasses, errors.fullName && "outline outline-2 outline-brand-pink/70")}
@@ -92,7 +98,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
         <div>
           <label htmlFor={`${formId}-phone`} className="mb-2 block text-sm font-semibold text-brand-ink">
-            {c.phone.label[locale]}
+            {c.fields.phone.label[locale]}
           </label>
           <input
             id={`${formId}-phone`}
@@ -101,7 +107,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
             autoComplete="tel"
             value={values.phone}
             onChange={(e) => update("phone", e.target.value)}
-            placeholder={c.phone.placeholder[locale]}
+            placeholder={c.fields.phone.placeholder[locale]}
             aria-invalid={Boolean(errors.phone)}
             aria-describedby={errors.phone ? `${formId}-phone-err` : undefined}
             className={cn(inputClasses, "text-start", errors.phone && "outline outline-2 outline-brand-pink/70")}
@@ -115,7 +121,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
         <div>
           <label htmlFor={`${formId}-topic`} className="mb-2 block text-sm font-semibold text-brand-ink">
-            {c.topic.label[locale]}
+            {c.fields.topic.label[locale]}
           </label>
           <select
             id={`${formId}-topic`}
@@ -123,7 +129,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
             onChange={(e) => update("topic", e.target.value)}
             className={cn(inputClasses, "appearance-none")}
           >
-            {c.topic.options.map((opt) => (
+            {options.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label[locale]}
               </option>
@@ -133,28 +139,28 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
         <div>
           <label htmlFor={`${formId}-time`} className="mb-2 block text-sm font-semibold text-brand-ink">
-            {c.preferredTime.label[locale]}
+            {c.fields.preferredTime.label[locale]}
           </label>
           <input
             id={`${formId}-time`}
             type="text"
             value={values.preferredTime}
             onChange={(e) => update("preferredTime", e.target.value)}
-            placeholder={c.preferredTime.placeholder[locale]}
+            placeholder={c.fields.preferredTime.placeholder[locale]}
             className={inputClasses}
           />
         </div>
 
         <div>
           <label htmlFor={`${formId}-msg`} className="mb-2 block text-sm font-semibold text-brand-ink">
-            {c.message.label[locale]}
+            {c.fields.message.label[locale]}
           </label>
           <textarea
             id={`${formId}-msg`}
             rows={4}
             value={values.message}
             onChange={(e) => update("message", e.target.value)}
-            placeholder={c.message.placeholder[locale]}
+            placeholder={c.fields.message.placeholder[locale]}
             className={cn(inputClasses, "resize-none")}
           />
         </div>
@@ -169,29 +175,29 @@ export function ContactForm({ locale }: { locale: Locale }) {
         {sent && (
           <div role="status" className="flex items-start gap-3 rounded-2xl bg-brand-teal-tint p-4">
             <Icon name="check" className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal-deep" />
-            <p className="text-sm leading-relaxed text-brand-ink-soft">{c.success[locale]}</p>
+            <p className="text-sm leading-relaxed text-brand-ink-soft">{c.successMessage[locale]}</p>
           </div>
         )}
 
-        {/* Two primary contact actions — WhatsApp (submits the form's details)
-            and a direct call. */}
         <div className="mt-1 flex flex-col gap-3 sm:flex-row">
           <button
             type="submit"
             className="group inline-flex flex-1 items-center justify-center gap-2.5 rounded-full bg-gradient-brand px-6 py-3.5 font-heading text-sm font-semibold text-white shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glass-lg active:translate-y-0"
           >
             <Icon name="whatsapp" className="h-4 w-4" />
-            {c.submit[locale]}
+            {c.submitLabel[locale]}
           </button>
-          <a
-            href={`tel:${contactInfo.phone}`}
-            className="glass-panel inline-flex items-center justify-center gap-2.5 rounded-full px-6 py-3.5 font-heading text-sm font-semibold text-brand-ink transition-all duration-300 hover:-translate-y-0.5 hover:text-brand-teal-deep hover:shadow-glass-lg active:translate-y-0"
-          >
-            <Icon name="phone" className="h-4 w-4 text-brand-teal-deep" />
-            <span dir="ltr">{contactInfo.phoneDisplay[locale]}</span>
-          </a>
+          {contact.phone && (
+            <a
+              href={`tel:${contact.phone}`}
+              className="glass-panel inline-flex items-center justify-center gap-2.5 rounded-full px-6 py-3.5 font-heading text-sm font-semibold text-brand-ink transition-all duration-300 hover:-translate-y-0.5 hover:text-brand-teal-deep hover:shadow-glass-lg active:translate-y-0"
+            >
+              <Icon name="phone" className="h-4 w-4 text-brand-teal-deep" />
+              <span dir="ltr">{contact.phoneDisplay[locale]}</span>
+            </a>
+          )}
         </div>
-        <p className="text-xs leading-relaxed text-brand-muted">{c.actionsNote[locale]}</p>
+        {c.actionsNote[locale] && <p className="text-xs leading-relaxed text-brand-muted">{c.actionsNote[locale]}</p>}
       </GlassCard>
     </form>
   );

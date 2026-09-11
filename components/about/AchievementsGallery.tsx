@@ -5,11 +5,28 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import { Icon } from "@/components/icons/Icon";
 import { aboutContent } from "@/data/about";
+import type { GalleryImage } from "@/lib/cms/publicContent";
+import type { IntroContent } from "@/lib/cms/publicSections";
 import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-export function AchievementsGallery({ locale }: { locale: Locale }) {
-  const { achievements, gallery } = aboutContent;
+interface Props {
+  locale: Locale;
+  images?: GalleryImage[];
+  intro?: IntroContent | null;
+}
+
+export function AchievementsGallery({ locale, images, intro }: Props) {
+  const achievements = {
+    eyebrow: intro?.eyebrow ?? aboutContent.achievements.eyebrow,
+    heading: intro?.title ?? aboutContent.achievements.heading,
+    items: aboutContent.achievements.items,
+  };
+  const gallery = {
+    eyebrow: aboutContent.gallery.eyebrow,
+    heading: aboutContent.gallery.heading,
+    images: images ?? aboutContent.gallery.images.map((g, i) => ({ id: String(i), src: g.src, alt: g.alt })),
+  };
 
   return (
     <Section tint="pink" glow="pink" aria-labelledby="achievements-heading">

@@ -1,8 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/i18n";
-import { buildAlternates } from "@/lib/seo";
 import { heroes } from "@/data/hero";
+import { buildPageMetadata } from "@/lib/cms/publicSeo";
+import { getAboutSections } from "@/lib/cms/publicSections";
+import {
+  getStatistics,
+  getCertificates,
+  getCareerItems,
+  getWhyItems,
+  getExpertiseAreas,
+  getGalleryImages,
+} from "@/lib/cms/publicContent";
+import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
 
 import { Hero } from "@/components/layout/Hero";
 import { AboutDoctorSection } from "@/components/about/AboutDoctorSection";
@@ -23,11 +33,12 @@ export async function generateMetadata({
   const { locale: raw } = await params;
   const locale: Locale = isLocale(raw) ? raw : "en";
   const h = heroes.about;
-  return {
-    title: `${h.headline[locale]} ${h.headlineAccent[locale]}`,
-    description: h.description[locale],
-    alternates: buildAlternates(locale, "about"),
-  };
+  return buildPageMetadata({
+    locale,
+    path: "about",
+    fallbackTitle: `${h.headline[locale]} ${h.headlineAccent[locale]}`,
+    fallbackDescription: h.description[locale],
+  });
 }
 
 export default async function AboutPage({ params }: PageProps<"/[locale]/about">) {
@@ -35,18 +46,42 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
+  const [sections, stats, certificates, career, whyPoints, expertise, gallery, cta, contact, social] = await Promise.all([
+    getAboutSections(),
+    getStatistics(),
+    getCertificates(),
+    getCareerItems(),
+    getWhyItems(),
+    getExpertiseAreas(),
+    getGalleryImages(),
+    getFinalCta(),
+    getContactInfo(),
+    getSocialLinks(),
+  ]);
+
+  const localeRoot = `/${locale}`;
+  const cref = (c: { url: string }) => `${localeRoot}${c.url}`;
+
   return (
     <>
-      <Hero locale={locale} variant="about" showPanel />
-      <AboutDoctorSection locale={locale} />
-      <CertificatesCarousel locale={locale} />
-      <CareerJourney locale={locale} />
-      <WhyDoctor locale={locale} />
-      <AreasOfExpertise locale={locale} />
-      <WordFromDoctor locale={locale} />
-      <AchievementsGallery locale={locale} />
-      <StatsSection locale={locale} />
-      <CtaSection locale={locale} />
+      <Hero
+        locale={locale}
+        content={sections.hero.content}
+        primaryCta={{ label: sections.hero.primaryCta.label, href: cref(sections.hero.primaryCta) }}
+        secondaryCta={{ label: sections.hero.secondaryCta.label, href: cref(sections.hero.secondaryCta) }}
+        showPanel
+        contact={contact}
+        social={social}
+      />
+      <AboutDoctorSection locale={locale} content={sections.aboutDoctor} />
+      {sections.certificatesIntro && <CertificatesCarousel locale={locale} items={certificates} intro={sections.certificatesIntro} />}
+      {sections.careerIntro && <CareerJourney locale={locale} milestones={career} intro={sections.careerIntro} />}
+      {sections.why && <WhyDoctor locale={locale} section={sections.why} points={whyPoints} />}
+      {sections.expertiseIntro && <AreasOfExpertise locale={locale} items={expertise} intro={sections.expertiseIntro} />}
+      {sections.wordFromDoctor && <WordFromDoctor locale={locale} content={sections.wordFromDoctor} />}
+      {sections.achievementsIntro && <AchievementsGallery locale={locale} images={gallery} intro={sections.achievementsIntro} />}
+      {sections.statsIntro && <StatsSection locale={locale} stats={stats} intro={sections.statsIntro} />}
+      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
     </>
   );
 }

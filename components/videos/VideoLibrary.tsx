@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { VideoCard } from "@/components/media/VideoCard";
 import { EASE_PREMIUM } from "@/lib/motion";
-import { videos, videoCategories } from "@/data/videos";
+import { videos as fallbackVideos, videoCategories } from "@/data/videos";
+import type { VideoItem } from "@/data/videos";
 import { siteContent } from "@/data/site";
 import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -13,14 +14,14 @@ import { cn } from "@/lib/utils";
  * Videos page gallery — a 3-across grid (3×3 for "All"). Every clip is
  * phone-portrait, so the rows stay perfectly aligned; cards never stretch.
  */
-export function VideoLibrary({ locale }: { locale: Locale }) {
+export function VideoLibrary({ locale, videos = fallbackVideos }: { locale: Locale; videos?: VideoItem[] }) {
   const [active, setActive] = useState("all");
 
   const filtered = useMemo(() => {
     if (active === "all") return videos;
     const label = videoCategories.find((c) => c.key === active)?.label.en;
     return videos.filter((v) => v.category.en === label);
-  }, [active]);
+  }, [active, videos]);
 
   return (
     <div>

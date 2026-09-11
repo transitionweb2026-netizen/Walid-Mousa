@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/i18n";
-import { buildAlternates } from "@/lib/seo";
 import { heroes } from "@/data/hero";
-import { articles, articlesIntro } from "@/data/articles";
+import { buildPageMetadata } from "@/lib/cms/publicSeo";
+import { getArticlesSections } from "@/lib/cms/publicSections";
+import { getArticles } from "@/lib/cms/publicContent";
+import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
 
 import { Hero } from "@/components/layout/Hero";
 import { Section } from "@/components/ui/Section";
@@ -20,11 +22,12 @@ export async function generateMetadata({
   const { locale: raw } = await params;
   const locale: Locale = isLocale(raw) ? raw : "en";
   const h = heroes.articles;
-  return {
-    title: `${h.headline[locale]} ${h.headlineAccent[locale]}`.replace(/،|,/g, ""),
-    description: h.description[locale],
-    alternates: buildAlternates(locale, "articles"),
-  };
+  return buildPageMetadata({
+    locale,
+    path: "articles",
+    fallbackTitle: `${h.headline[locale]} ${h.headlineAccent[locale]}`.replace(/،|,/g, ""),
+    fallbackDescription: h.description[locale],
+  });
 }
 
 export default async function ArticlesPage({ params }: PageProps<"/[locale]/articles">) {
@@ -32,28 +35,47 @@ export default async function ArticlesPage({ params }: PageProps<"/[locale]/arti
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
+  const [sections, articles, cta, contact, social] = await Promise.all([
+    getArticlesSections(),
+    getArticles(),
+    getFinalCta(),
+    getContactInfo(),
+    getSocialLinks(),
+  ]);
+  const cref = (c: { url: string }) => `/${locale}${c.url}`;
+
   const lead = articles[0];
   const rest = articles.slice(1);
 
-  const moreTitle = { en: "More from the reading room", ar: "المزيد من غرفة القراءة" };
-
   return (
     <>
-      <Hero locale={locale} variant="articles" showPanel />
+      <Hero
+        locale={locale}
+        content={sections.hero.content}
+        primaryCta={{ label: sections.hero.primaryCta.label, href: cref(sections.hero.primaryCta) }}
+        secondaryCta={{ label: sections.hero.secondaryCta.label, href: cref(sections.hero.secondaryCta) }}
+        showPanel
+        contact={contact}
+        social={social}
+      />
 
       <Section tint="neutral" glow="teal" aria-labelledby="articles-library-heading">
         <h1 id="articles-library-heading" className="sr-only">
-          {heroes.articles.headline[locale]} {heroes.articles.headlineAccent[locale]}
+          {sections.featuredIntro.title[locale]}
         </h1>
 
-        <Reveal>
-          <FeaturedArticle article={lead} locale={locale} />
-        </Reveal>
+        {lead && (
+          <Reveal>
+            <FeaturedArticle article={lead} locale={locale} />
+          </Reveal>
+        )}
 
         <Reveal className="mt-16">
-          <h2 className="font-heading text-2xl font-extrabold text-brand-ink sm:text-3xl">{moreTitle[locale]}</h2>
+          <h2 className="font-heading text-2xl font-extrabold text-brand-ink sm:text-3xl">
+            {sections.gridIntro.title[locale]}
+          </h2>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-brand-muted sm:text-base">
-            {articlesIntro.description[locale]}
+            {sections.gridIntro.description[locale]}
           </p>
         </Reveal>
 
@@ -62,7 +84,7 @@ export default async function ArticlesPage({ params }: PageProps<"/[locale]/arti
         </div>
       </Section>
 
-      <CtaSection locale={locale} />
+      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
     </>
   );
 }

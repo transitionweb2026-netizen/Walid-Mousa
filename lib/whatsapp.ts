@@ -9,20 +9,34 @@ export function buildWhatsAppUrl(number: string, text?: string): string {
 }
 
 /**
- * Fills a `{name}` / `{phone}` / `{contact}` / `{date}` / `{message}`
- * template with form values, dropping empty lines.
+ * Fills a `{{name}}` / `{{phone}}` / `{{topic}}` / `{{time}}` / `{{message}}`
+ * template (from `contact_form_settings.whatsapp_template_*`, editable in the
+ * CMS) with form values. A whole line is dropped rather than left with an
+ * empty value when its only placeholder is an optional field.
+ *
+ * No "server-only" import: ContactForm (a Client Component) calls this from
+ * its submit handler using a template it received as a server-fetched prop.
  */
-export function fillTemplate(
+export function buildWhatsAppMessage(
   template: string,
-  values: Record<"name" | "phone" | "contact" | "date" | "message", string>
+  values: Record<"name" | "phone" | "topic" | "time" | "message", string>
 ): string {
+  const optional = new Set(["time", "message"]);
   return template
-    .replace(/\{name\}/g, values.name || "—")
-    .replace(/\{phone\}/g, values.phone || "—")
-    .replace(/\{contact\}/g, values.contact || "—")
-    .replace(/\{date\}/g, values.date || "—")
-    .replace(/\{message\}/g, values.message || "—")
     .split("\n")
-    .filter((line) => !/^\s*[^:]+:\s*—\s*$/.test(line))
+    .filter((line) => {
+      for (const key of optional) {
+        if (line.includes(`{{${key}}}`) && !values[key as keyof typeof values].trim()) return false;
+      }
+      return true;
+    })
+    .map((line) =>
+      line
+        .replaceAll("{{name}}", values.name || "—")
+        .replaceAll("{{phone}}", values.phone || "—")
+        .replaceAll("{{topic}}", values.topic || "—")
+        .replaceAll("{{time}}", values.time)
+        .replaceAll("{{message}}", values.message)
+    )
     .join("\n");
 }

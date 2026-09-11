@@ -5,14 +5,23 @@ import { IconBadge } from "@/components/ui/IconBadge";
 import { Reveal } from "@/components/motion/Reveal";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import { Icon } from "@/components/icons/Icon";
-import { specialties, specialtiesIntro } from "@/data/specialties";
+import { specialties as fallbackSpecialties, specialtiesIntro as fbIntro } from "@/data/specialties";
+import type { Specialty } from "@/data/specialties";
+import type { IntroContent } from "@/lib/cms/publicSections";
 import type { Locale } from "@/lib/i18n";
+
+interface Props {
+  locale: Locale;
+  specialties?: Specialty[];
+  intro?: IntroContent | null;
+}
 
 /**
  * "Choose Your Specialty" — one card per specialty, each anchor-linking to its
  * own treatment section below. Card count == treatment-section count (1:1).
  */
-export function SpecialtySelector({ locale }: { locale: Locale }) {
+export function SpecialtySelector({ locale, specialties = fallbackSpecialties, intro }: Props) {
+  const specialtiesIntro = intro ?? fbIntro;
   const viewLabel = locale === "ar" ? "طرق العلاج" : "Treatment routes";
 
   return (

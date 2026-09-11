@@ -5,10 +5,24 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import { Icon } from "@/components/icons/Icon";
 import { aboutContent } from "@/data/about";
+import type { WhySection } from "@/lib/cms/publicSections";
+import type { WhyPoint } from "@/lib/cms/publicContent";
 import type { Locale } from "@/lib/i18n";
 
-export function WhyDoctor({ locale }: { locale: Locale }) {
-  const why = aboutContent.why;
+interface Props {
+  locale: Locale;
+  section?: WhySection;
+  points?: WhyPoint[];
+}
+
+export function WhyDoctor({ locale, section, points }: Props) {
+  const why = {
+    eyebrow: section?.eyebrow ?? aboutContent.why.eyebrow,
+    heading: section?.heading ?? aboutContent.why.heading,
+    description: section?.description ?? aboutContent.why.description,
+    image: section?.image ?? aboutContent.why.image,
+    points: points ?? aboutContent.why.points.map((p, i) => ({ id: String(i), ...p })),
+  };
 
   return (
     <Section tint="pink" glow="pink" aria-labelledby="why-heading">

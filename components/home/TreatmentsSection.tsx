@@ -3,17 +3,39 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
 import { CareGrid } from "@/components/cards/CareGrid";
-import { featuredTreatments, treatmentsIntro } from "@/data/treatments";
-import { treatmentToCard, treatmentToDetail } from "@/lib/careAdapters";
+import { treatmentsIntro } from "@/data/treatments";
+import { specialties as fallbackSpecialties } from "@/data/specialties";
+import { conditionToCard, conditionToDetail } from "@/lib/careAdapters";
+import type { ConditionCardItem } from "@/lib/cms/publicContent";
 import { siteContent } from "@/data/site";
+import type { IntroContent } from "@/lib/cms/publicSections";
 import type { Locale } from "@/lib/i18n";
 
-export function TreatmentsSection({ locale }: { locale: Locale }) {
-  const items = featuredTreatments.map((t) => ({
-    id: t.id,
-    slug: t.slug,
-    card: treatmentToCard(t),
-    detail: treatmentToDetail(t),
+interface Props {
+  locale: Locale;
+  conditions?: ConditionCardItem[];
+  intro?: IntroContent | null;
+}
+
+const fbConditions: ConditionCardItem[] = fallbackSpecialties.slice(0, 4).map((s) => ({
+  id: s.id,
+  slug: s.slug,
+  icon: s.icon,
+  image: s.image,
+  title: s.title,
+  tagline: s.tagline,
+  description: s.description,
+  details: { en: [s.description.en], ar: [s.description.ar] },
+  signs: { en: [], ar: [] },
+}));
+
+export function TreatmentsSection({ locale, conditions = fbConditions, intro }: Props) {
+  const header = intro ?? treatmentsIntro;
+  const items = conditions.slice(0, 4).map((c) => ({
+    id: c.id,
+    slug: c.slug,
+    card: conditionToCard(c),
+    detail: conditionToDetail(c),
   }));
 
   return (
@@ -22,9 +44,9 @@ export function TreatmentsSection({ locale }: { locale: Locale }) {
         locale={locale}
         tone="pink"
         headingId="treatments-heading"
-        eyebrow={treatmentsIntro.eyebrow}
-        title={treatmentsIntro.title}
-        description={treatmentsIntro.description}
+        eyebrow={header.eyebrow}
+        title={header.title}
+        description={header.description}
       />
 
       <div className="mt-14">

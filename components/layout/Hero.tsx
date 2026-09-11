@@ -2,10 +2,11 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
 import { HeroContactPanel } from "./HeroContactPanel";
-import { heroes, type HeroContent } from "@/data/hero";
-import { siteContent } from "@/data/site";
+import type { HeroContent } from "@/data/hero";
 import { localeDirection, type Locale } from "@/lib/i18n";
 import type { Localized } from "@/lib/types";
+import type { ContactInfo } from "@/lib/cms/publicSettings";
+import type { SocialLink } from "@/data/contact";
 import { cn } from "@/lib/utils";
 
 interface HeroCta {
@@ -15,35 +16,33 @@ interface HeroCta {
 
 interface HeroProps {
   locale: Locale;
-  variant?: keyof typeof heroes;
-  content?: HeroContent;
-  primaryCta?: HeroCta;
-  secondaryCta?: HeroCta;
-  /** Compact heroes for secondary pages (Videos, Articles). */
+  content: HeroContent;
+  primaryCta: HeroCta;
+  secondaryCta: HeroCta;
   compact?: boolean;
   showPanel?: boolean;
+  contact?: ContactInfo;
+  social?: SocialLink[];
+  contactTitle?: Localized;
 }
 
 /**
  * The site's one Hero — full-bleed cover image, legibility scrim, ambient
- * glow, optional floating contact panel. Every page uses this component;
- * only the copy, image and CTAs change.
+ * glow, optional floating contact panel. Content, image and CTAs come from
+ * the CMS (page_sections.hero); the design never changes.
  */
 export function Hero({
   locale,
-  variant = "home",
-  content,
+  content: data,
   primaryCta,
   secondaryCta,
   compact = false,
   showPanel = false,
+  contact,
+  social,
+  contactTitle,
 }: HeroProps) {
-  const data = content ?? heroes[variant];
   const isRtl = localeDirection[locale] === "rtl";
-  const localeRoot = `/${locale}`;
-
-  const primary = primaryCta ?? { label: siteContent.actions.bookAppointment, href: `${localeRoot}/contact` };
-  const secondary = secondaryCta ?? { label: siteContent.actions.exploreServices, href: `${localeRoot}/services` };
 
   return (
     <section className="mx-3 mt-3 sm:mx-6 sm:mt-4 lg:mx-8" aria-label="Hero">
@@ -63,8 +62,6 @@ export function Hero({
           className="object-cover"
         />
 
-        {/* Legibility scrim, tinted to the page background so photo + page
-            read as one surface; clears the focal area. */}
         <div
           aria-hidden
           className={cn(
@@ -75,7 +72,6 @@ export function Hero({
         />
         <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-brand-ink/45 via-transparent to-transparent" />
 
-        {/* Ambient light — the site's continuous, subtle "gradient movement". */}
         <div aria-hidden className="glow-teal animate-float-slower absolute -top-16 end-[-4rem] h-64 w-64 rounded-full opacity-60" />
         <div aria-hidden className="glow-pink animate-float-slow absolute bottom-8 start-[-4rem] h-56 w-56 rounded-full opacity-45 [animation-delay:-3s]" />
 
@@ -112,20 +108,23 @@ export function Hero({
           {!compact && (
             <Reveal delay={0.3}>
               <div className="mt-8 flex flex-wrap items-center gap-3 sm:gap-4">
-                <Button href={primary.href} size="lg" withArrow>
-                  {primary.label[locale]}
+                <Button href={primaryCta.href} size="lg" withArrow>
+                  {primaryCta.label[locale]}
                 </Button>
-                <Button href={secondary.href} size="lg" variant="secondary">
-                  {secondary.label[locale]}
+                <Button href={secondaryCta.href} size="lg" variant="secondary">
+                  {secondaryCta.label[locale]}
                 </Button>
               </div>
             </Reveal>
           )}
         </div>
 
-        {showPanel && (
+        {showPanel && contact && social && (
           <HeroContactPanel
             locale={locale}
+            contact={contact}
+            social={social}
+            contactTitle={contactTitle}
             className="relative z-10 mx-6 mb-8 sm:mx-10 lg:absolute lg:bottom-10 lg:end-10 lg:mx-0 lg:mb-0"
           />
         )}

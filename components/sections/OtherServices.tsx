@@ -3,10 +3,12 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import type { IconName } from "@/components/icons/Icon";
+import type { OtherServiceItem } from "@/lib/cms/publicContent";
+import type { IntroContent } from "@/lib/cms/publicSections";
 import type { Locale } from "@/lib/i18n";
 import type { Localized } from "@/lib/types";
 
-const intro = {
+const fbIntro = {
   eyebrow: { en: "Also Available", ar: "متاح أيضًا" } satisfies Localized,
   title: { en: "Beyond procedures and prescriptions", ar: "أبعد من الإجراءات والوصفات" } satisfies Localized,
   description: {
@@ -15,7 +17,7 @@ const intro = {
   } satisfies Localized,
 };
 
-const items: { icon: IconName; title: Localized; text: Localized }[] = [
+const fbItems: { icon: IconName; title: Localized; text: Localized }[] = [
   {
     icon: "consultation",
     title: { en: "Second-Opinion Consultations", ar: "استشارات الرأي الثاني" },
@@ -50,18 +52,26 @@ const items: { icon: IconName; title: Localized; text: Localized }[] = [
   },
 ];
 
-export function OtherServices({ locale }: { locale: Locale }) {
+interface Props {
+  locale: Locale;
+  items?: OtherServiceItem[];
+  intro?: IntroContent | null;
+}
+
+export function OtherServices({ locale, items, intro }: Props) {
+  const header = intro ?? fbIntro;
+  const list = items ?? fbItems.map((it, i) => ({ id: String(i), ...it }));
   return (
     <Section tint="duo" glow="both" aria-labelledby="other-services-heading">
       <SectionHeader
         locale={locale}
         headingId="other-services-heading"
-        eyebrow={intro.eyebrow}
-        title={intro.title}
-        description={intro.description}
+        eyebrow={header.eyebrow}
+        title={header.title}
+        description={header.description}
       />
       <Stagger className="mt-14 grid gap-6 sm:grid-cols-2">
-        {items.map((item, i) => (
+        {list.map((item, i) => (
           <StaggerItem key={i} className="h-full">
             <div className="glass-card glass-card-hover glass-sheen flex h-full items-start gap-4 rounded-3xl p-6">
               <IconBadge icon={item.icon} size="md" tone={i % 2 ? "pink" : "solid"} />

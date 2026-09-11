@@ -4,6 +4,7 @@ import type { SurgeryItem } from "@/data/surgeries";
 import type { TreatmentItem } from "@/data/treatments";
 import type { TechnologyItem } from "@/data/technologies";
 import type { SpecialtyTreatment } from "@/data/specialties";
+import type { ConditionCardItem } from "@/lib/cms/publicContent";
 import { siteContent } from "@/data/site";
 
 const recoveryLabel = { en: "Recovery", ar: "التعافي" };
@@ -54,6 +55,24 @@ export function technologyToDetail(t: TechnologyItem): CareDetailItem {
     description: t.explanation,
     paragraphs: t.details,
     sections: [],
+  };
+}
+
+export function conditionToCard(c: ConditionCardItem): CareCardData {
+  return { icon: c.icon, image: c.image, title: c.title, description: c.tagline.en || c.tagline.ar ? c.tagline : c.description };
+}
+
+export function conditionToDetail(c: ConditionCardItem): CareDetailItem {
+  return {
+    icon: c.icon,
+    image: c.image,
+    title: c.title,
+    description: c.description,
+    paragraphs: c.details,
+    sections:
+      c.signs.en.length || c.signs.ar.length
+        ? [{ label: siteContent.actions.commonSigns, items: c.signs, tone: "pink" }]
+        : [],
   };
 }
 

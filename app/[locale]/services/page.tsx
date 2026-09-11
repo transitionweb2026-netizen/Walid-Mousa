@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/i18n";
-import { buildAlternates } from "@/lib/seo";
 import { heroes } from "@/data/hero";
-import { surgeries, surgeriesIntro } from "@/data/surgeries";
-import { technologies, technologiesIntro } from "@/data/technologies";
-import { specialties } from "@/data/specialties";
+import { buildPageMetadata } from "@/lib/cms/publicSeo";
+import { getServicesSections } from "@/lib/cms/publicSections";
+import { getSpecialties, getSurgeries, getTechnologies, getOtherServices, getFaqs } from "@/lib/cms/publicContent";
+import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
 import { surgeryToCard, surgeryToDetail, technologyToCard, technologyToDetail } from "@/lib/careAdapters";
 
 import { Hero } from "@/components/layout/Hero";
@@ -24,11 +24,12 @@ export async function generateMetadata({
   const { locale: raw } = await params;
   const locale: Locale = isLocale(raw) ? raw : "en";
   const h = heroes.services;
-  return {
-    title: `${h.headline[locale]} ${h.headlineAccent[locale]}`,
-    description: h.description[locale],
-    alternates: buildAlternates(locale, "services"),
-  };
+  return buildPageMetadata({
+    locale,
+    path: "services",
+    fallbackTitle: `${h.headline[locale]} ${h.headlineAccent[locale]}`,
+    fallbackDescription: h.description[locale],
+  });
 }
 
 export default async function ServicesPage({ params }: PageProps<"/[locale]/services">) {
@@ -36,50 +37,77 @@ export default async function ServicesPage({ params }: PageProps<"/[locale]/serv
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
+  const [sections, specialties, surgeries, technologies, otherServices, faqs, cta, contact, social] = await Promise.all([
+    getServicesSections(),
+    getSpecialties(),
+    getSurgeries(),
+    getTechnologies(),
+    getOtherServices(),
+    getFaqs("services"),
+    getFinalCta(),
+    getContactInfo(),
+    getSocialLinks(),
+  ]);
+
+  const cref = (c: { url: string }) => `/${locale}${c.url}`;
   const surgeryItems = surgeries.map((s) => ({ id: s.id, slug: s.slug, card: surgeryToCard(s), detail: surgeryToDetail(s) }));
   const techItems = technologies.map((t) => ({ id: t.id, slug: t.slug, card: technologyToCard(t), detail: technologyToDetail(t) }));
 
   return (
     <>
-      <Hero locale={locale} variant="services" showPanel />
+      <Hero
+        locale={locale}
+        content={sections.hero.content}
+        primaryCta={{ label: sections.hero.primaryCta.label, href: cref(sections.hero.primaryCta) }}
+        secondaryCta={{ label: sections.hero.secondaryCta.label, href: cref(sections.hero.secondaryCta) }}
+        showPanel
+        contact={contact}
+        social={social}
+      />
 
-      <SpecialtySelector locale={locale} />
+      <SpecialtySelector locale={locale} specialties={specialties} intro={sections.specialtiesIntro} />
 
       {specialties.map((specialty, i) => (
         <SpecialtyTreatmentsSection key={specialty.id} specialty={specialty} locale={locale} index={i} />
       ))}
 
-      <CareAnchorSection
-        id="surgeries"
-        hashPrefix="surgery"
-        locale={locale}
-        eyebrow={surgeriesIntro.eyebrow}
-        title={surgeriesIntro.title}
-        description={surgeriesIntro.description}
-        tone="teal"
-        tint="teal"
-        glow="teal"
-        framed
-        columns={3}
-        items={surgeryItems}
-      />
+      {sections.surgeriesIntro && (
+        <CareAnchorSection
+          id="surgeries"
+          hashPrefix="surgery"
+          locale={locale}
+          eyebrow={sections.surgeriesIntro.eyebrow}
+          title={sections.surgeriesIntro.title}
+          description={sections.surgeriesIntro.description}
+          tone="teal"
+          tint="teal"
+          glow="teal"
+          framed
+          columns={3}
+          items={surgeryItems}
+        />
+      )}
 
-      <CareAnchorSection
-        id="technologies"
-        hashPrefix="technology"
-        locale={locale}
-        eyebrow={technologiesIntro.eyebrow}
-        title={technologiesIntro.title}
-        description={technologiesIntro.description}
-        tone="teal"
-        tint="neutral"
-        columns={4}
-        items={techItems}
-      />
+      {sections.technologiesIntro && (
+        <CareAnchorSection
+          id="technologies"
+          hashPrefix="technology"
+          locale={locale}
+          eyebrow={sections.technologiesIntro.eyebrow}
+          title={sections.technologiesIntro.title}
+          description={sections.technologiesIntro.description}
+          tone="teal"
+          tint="neutral"
+          columns={4}
+          items={techItems}
+        />
+      )}
 
-      <OtherServices locale={locale} />
-      <ServicesFaq locale={locale} />
-      <CtaSection locale={locale} />
+      {sections.otherServicesIntro && (
+        <OtherServices locale={locale} items={otherServices} intro={sections.otherServicesIntro} />
+      )}
+      <ServicesFaq locale={locale} faqs={faqs} intro={sections.faqIntro} />
+      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
     </>
   );
 }

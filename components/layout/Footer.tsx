@@ -1,37 +1,46 @@
 import Link from "next/link";
 import { Icon } from "@/components/icons/Icon";
-import { navigationItems } from "@/data/navigation";
-import { siteContent } from "@/data/site";
-import { contactInfo, socialLinks, workingHours } from "@/data/contact";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import type { Locale } from "@/lib/i18n";
+import type {
+  NavbarSettings,
+  FooterContent,
+  ContactInfo,
+  SiteBranding,
+} from "@/lib/cms/publicSettings";
+import type { SocialLink } from "@/data/contact";
 
-export function Footer({ locale }: { locale: Locale }) {
+interface FooterProps {
+  locale: Locale;
+  nav: NavbarSettings;
+  footer: FooterContent;
+  social: SocialLink[];
+  contact: ContactInfo;
+  branding: SiteBranding;
+}
+
+export function Footer({ locale, nav, footer, social, contact, branding }: FooterProps) {
   const localeRoot = `/${locale}`;
   const year = new Date().getFullYear();
+  const initial = branding.orgName.en.replace(/^Dr\.\s*/, "").charAt(0) || "W";
 
   return (
     <footer className="relative mt-8 overflow-hidden px-3 pb-4 sm:px-6">
-      <div className="glass-card relative mx-auto max-w-7xl rounded-[2rem] p-8 sm:p-12" >
+      <div className="glass-card relative mx-auto max-w-7xl rounded-[2rem] p-8 sm:p-12">
         <span aria-hidden className="glow-teal absolute -top-20 end-10 h-56 w-56 rounded-full opacity-40" />
         <span aria-hidden className="glow-pink absolute -bottom-24 start-10 h-56 w-56 rounded-full opacity-30" />
 
         <div className="relative grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
-          {/* Brand */}
           <div>
             <div className="flex items-center gap-2.5">
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-brand text-sm font-black text-white shadow-glass">
-                W
+                {initial}
               </span>
-              <span className="font-heading text-base font-extrabold text-brand-ink">
-                {siteContent.brand.nameLocalized[locale]}
-              </span>
+              <span className="font-heading text-base font-extrabold text-brand-ink">{branding.orgName[locale]}</span>
             </div>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-brand-muted">
-              {siteContent.footer.tagline[locale]}
-            </p>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-brand-muted">{footer.tagline[locale]}</p>
             <div className="mt-5 flex gap-2">
-              {socialLinks.map((s) => (
+              {social.map((s) => (
                 <a
                   key={s.key}
                   href={s.href}
@@ -46,13 +55,12 @@ export function Footer({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          {/* Quick links */}
           <nav aria-label="Footer">
             <h3 className="text-xs font-bold uppercase tracking-wider text-brand-teal-deep">
-              {siteContent.footer.quickLinksTitle[locale]}
+              {footer.quickLinksTitle[locale]}
             </h3>
             <ul className="mt-4 space-y-2.5">
-              {navigationItems.map((item) => (
+              {nav.items.map((item) => (
                 <li key={item.key}>
                   <Link
                     href={item.path ? `${localeRoot}/${item.path}` : localeRoot}
@@ -65,49 +73,51 @@ export function Footer({ locale }: { locale: Locale }) {
             </ul>
           </nav>
 
-          {/* Contact */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-teal-deep">
-              {siteContent.footer.contactTitle[locale]}
-            </h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-teal-deep">{footer.contactTitle[locale]}</h3>
             <ul className="mt-4 space-y-3 text-sm text-brand-ink-soft">
-              <li>
-                <a href={`tel:${contactInfo.phone}`} className="flex items-start gap-2.5 hover:text-brand-teal-deep">
-                  <Icon name="phone" className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
-                  <span dir="ltr">{contactInfo.phoneDisplay[locale]}</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href={buildWhatsAppUrl(contactInfo.whatsapp)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-start gap-2.5 hover:text-brand-teal-deep"
-                >
-                  <Icon name="whatsapp" className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
-                  WhatsApp
-                </a>
-              </li>
-              <li>
-                <a href={`mailto:${contactInfo.email}`} className="flex items-start gap-2.5 break-all hover:text-brand-teal-deep">
-                  <Icon name="mail" className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
-                  {contactInfo.email}
-                </a>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <Icon name="map-pin" className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
-                {contactInfo.addressShort[locale]}
-              </li>
+              {contact.phone && (
+                <li>
+                  <a href={`tel:${contact.phone}`} className="flex items-start gap-2.5 hover:text-brand-teal-deep">
+                    <Icon name="phone" className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
+                    <span dir="ltr">{contact.phoneDisplay[locale]}</span>
+                  </a>
+                </li>
+              )}
+              {contact.whatsapp && (
+                <li>
+                  <a
+                    href={buildWhatsAppUrl(contact.whatsapp)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-start gap-2.5 hover:text-brand-teal-deep"
+                  >
+                    <Icon name="whatsapp" className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
+                    WhatsApp
+                  </a>
+                </li>
+              )}
+              {contact.email && (
+                <li>
+                  <a href={`mailto:${contact.email}`} className="flex items-start gap-2.5 break-all hover:text-brand-teal-deep">
+                    <Icon name="mail" className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
+                    {contact.email}
+                  </a>
+                </li>
+              )}
+              {contact.addressShort[locale] && (
+                <li className="flex items-start gap-2.5">
+                  <Icon name="map-pin" className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
+                  {contact.addressShort[locale]}
+                </li>
+              )}
             </ul>
           </div>
 
-          {/* Hours */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-teal-deep">
-              {siteContent.footer.hoursTitle[locale]}
-            </h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-teal-deep">{footer.hoursTitle[locale]}</h3>
             <ul className="mt-4 space-y-2 text-sm text-brand-ink-soft">
-              {workingHours.map((row, i) => (
+              {contact.workingHours.map((row, i) => (
                 <li key={i} className="flex items-center justify-between gap-3">
                   <span>{row.day[locale]}</span>
                   <span className={row.closed ? "text-brand-pink-deep" : "font-medium text-brand-ink"}>
@@ -116,18 +126,26 @@ export function Footer({ locale }: { locale: Locale }) {
                 </li>
               ))}
             </ul>
-            <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-brand-muted">
-              <Icon name="lock" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-teal" />
-              {siteContent.footer.privacyNote[locale]}
-            </p>
+            {footer.privacyNote[locale] && (
+              <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-brand-muted">
+                <Icon name="lock" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-teal" />
+                {footer.privacyNote[locale]}
+              </p>
+            )}
           </div>
         </div>
 
         <div className="relative mt-10 flex flex-col items-center justify-between gap-3 border-t border-brand-line/70 pt-6 text-xs text-brand-muted sm:flex-row">
           <p>
-            © {year} {siteContent.brand.nameLocalized[locale]}. {siteContent.footer.rights[locale]}
+            © {year} {branding.orgName[locale]}. {footer.copyright[locale]}
           </p>
-          <p>{siteContent.footer.credit[locale]}</p>
+          {footer.creditUrl ? (
+            <a href={footer.creditUrl} target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal-deep">
+              {footer.credit[locale]}
+            </a>
+          ) : (
+            <p>{footer.credit[locale]}</p>
+          )}
         </div>
       </div>
     </footer>

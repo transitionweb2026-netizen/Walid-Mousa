@@ -3,10 +3,20 @@ import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/motion/Reveal";
 import { Icon } from "@/components/icons/Icon";
 import { aboutContent } from "@/data/about";
+import type { WordFromDoctorContent } from "@/lib/cms/publicSections";
 import type { Locale } from "@/lib/i18n";
 
-export function WordFromDoctor({ locale }: { locale: Locale }) {
-  const word = aboutContent.word;
+const fb: WordFromDoctorContent = {
+  eyebrow: aboutContent.word.eyebrow,
+  heading: aboutContent.word.heading,
+  image: aboutContent.word.image,
+  quote: aboutContent.word.quote,
+  name: aboutContent.word.name,
+  role: aboutContent.word.role,
+};
+
+export function WordFromDoctor({ locale, content = fb }: { locale: Locale; content?: WordFromDoctorContent }) {
+  const word = content;
 
   return (
     <Section tint="duo" glow="both" aria-labelledby="word-heading">

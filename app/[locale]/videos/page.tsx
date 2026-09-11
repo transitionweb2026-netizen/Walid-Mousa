@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/i18n";
-import { buildAlternates } from "@/lib/seo";
 import { heroes } from "@/data/hero";
-import { videosIntro } from "@/data/videos";
+import { buildPageMetadata } from "@/lib/cms/publicSeo";
+import { getVideosSections } from "@/lib/cms/publicSections";
+import { getVideos } from "@/lib/cms/publicContent";
+import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
 
 import { Hero } from "@/components/layout/Hero";
 import { Section } from "@/components/ui/Section";
@@ -18,11 +20,12 @@ export async function generateMetadata({
   const { locale: raw } = await params;
   const locale: Locale = isLocale(raw) ? raw : "en";
   const h = heroes.videos;
-  return {
-    title: `${h.headline[locale]} ${h.headlineAccent[locale]}`.replace(/،|,/g, ""),
-    description: h.description[locale],
-    alternates: buildAlternates(locale, "videos"),
-  };
+  return buildPageMetadata({
+    locale,
+    path: "videos",
+    fallbackTitle: `${h.headline[locale]} ${h.headlineAccent[locale]}`.replace(/،|,/g, ""),
+    fallbackDescription: h.description[locale],
+  });
 }
 
 export default async function VideosPage({ params }: PageProps<"/[locale]/videos">) {
@@ -30,18 +33,35 @@ export default async function VideosPage({ params }: PageProps<"/[locale]/videos
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
+  const [sections, videos, cta, contact, social] = await Promise.all([
+    getVideosSections(),
+    getVideos(),
+    getFinalCta(),
+    getContactInfo(),
+    getSocialLinks(),
+  ]);
+  const cref = (c: { url: string }) => `/${locale}${c.url}`;
+
   return (
     <>
-      <Hero locale={locale} variant="videos" showPanel />
+      <Hero
+        locale={locale}
+        content={sections.hero.content}
+        primaryCta={{ label: sections.hero.primaryCta.label, href: cref(sections.hero.primaryCta) }}
+        secondaryCta={{ label: sections.hero.secondaryCta.label, href: cref(sections.hero.secondaryCta) }}
+        showPanel
+        contact={contact}
+        social={social}
+      />
 
       <Section tint="duo" glow="both" aria-labelledby="video-library-heading">
         <h1 id="video-library-heading" className="sr-only">
-          {videosIntro.title[locale]}
+          {sections.galleryIntro.title[locale]}
         </h1>
-        <VideoLibrary locale={locale} />
+        <VideoLibrary locale={locale} videos={videos} />
       </Section>
 
-      <CtaSection locale={locale} />
+      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
     </>
   );
 }

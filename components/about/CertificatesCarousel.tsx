@@ -7,15 +7,31 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/motion/Reveal";
 import { Icon } from "@/components/icons/Icon";
 import { aboutContent } from "@/data/about";
+import type { CertificateItem } from "@/lib/cms/publicContent";
+import type { IntroContent } from "@/lib/cms/publicSections";
 import { localeDirection, type Locale } from "@/lib/i18n";
+
+interface Props {
+  locale: Locale;
+  items?: CertificateItem[];
+  intro?: IntroContent | null;
+}
 
 /**
  * Certificates as a premium horizontal strip. Native scroll-snap handles
  * touch / trackpad swipe; the arrows page it on desktop. Certificate images
  * sit in a glass frame and are never cropped disproportionately.
  */
-export function CertificatesCarousel({ locale }: { locale: Locale }) {
-  const { certifications } = aboutContent;
+export function CertificatesCarousel({ locale, items, intro }: Props) {
+  const certItems: CertificateItem[] =
+    items ??
+    aboutContent.certifications.items.map((c) => ({ id: c.title.en, title: c.title, issuer: c.issuer, year: c.year, image: c.image }));
+  const certifications = {
+    eyebrow: intro?.eyebrow ?? aboutContent.certifications.eyebrow,
+    heading: intro?.title ?? aboutContent.certifications.heading,
+    description: intro?.description ?? aboutContent.certifications.description,
+    items: certItems,
+  };
   const isRtl = localeDirection[locale] === "rtl";
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
