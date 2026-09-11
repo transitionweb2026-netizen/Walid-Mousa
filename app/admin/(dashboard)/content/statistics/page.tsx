@@ -20,6 +20,7 @@ export default async function AdminStatisticsPage() {
       fields={fields}
       rows={rows}
       hasFeatured={false}
+      titleField="label"
       emptyRow={{ icon: "experience", value: 0, prefix: "", suffix: "+", is_active: true }}
     />
   );

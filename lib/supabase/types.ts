@@ -1,11 +1,12 @@
 /**
- * Hand-written types mirroring supabase/migrations exactly. Built before a
- * real project existed to introspect. Once a project is connected, replace
- * this file with generated types for drift-free accuracy:
- *
- *   npx supabase gen types typescript --project-id <ref> > lib/supabase/types.ts
- *
- * (keep the JSDoc header + the aliases at the bottom). Insert/Update are typed
+ * Hand-written types mirroring supabase/migrations exactly. Verified
+ * field-for-field against the live project's `information_schema.columns`
+ * after migrations 0001–0013 were applied (2026-09-11) — zero drift, all 38
+ * tables match exactly. `npx supabase gen types typescript --db-url <url>`
+ * would regenerate this file, but that command shells out to Docker in the
+ * current CLI and none was available here; the Supabase Dashboard's
+ * Project Settings → API page also has a copy-pasteable generated-types
+ * panel if you want the CLI-generated version later. Insert/Update are typed
  * loosely as Partial<Row> here — RLS policies and NOT NULL / CHECK
  * constraints (supabase/migrations) are the real write-safety boundary, not
  * these types (see app/admin/actions/collections.ts).

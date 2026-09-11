@@ -21,6 +21,7 @@ export default async function AdminCareerPage() {
       fields={fields}
       rows={rows}
       hasFeatured={false}
+      titleField="position"
       emptyRow={{ year: "", kind: "role", icon: "procedure", is_active: true }}
     />
   );

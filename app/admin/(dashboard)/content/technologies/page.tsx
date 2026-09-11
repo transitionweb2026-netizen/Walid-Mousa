@@ -21,6 +21,7 @@ export default async function AdminTechnologiesPage() {
       fields={fields}
       rows={rows}
       hasFeatured={false}
+      titleField="name"
       emptyRow={{ slug: "", icon: "microscope", is_active: true }}
     />
   );
