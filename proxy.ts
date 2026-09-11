@@ -1,9 +1,33 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 import { defaultLocale, locales, type Locale } from "@/lib/i18n";
 import { updateAdminSession } from "@/lib/supabase/proxy";
 
 const LOCALE_COOKIE = "NEXT_LOCALE";
+
+/**
+ * Looks up an active row in the `redirects` table for this exact,
+ * non-localized pathname (e.g. "/old-services" — see the column comment on
+ * supabase/migrations/0004_global_settings.sql). A plain anon client is
+ * enough since "read active redirects" is a public RLS policy; returns null
+ * (no redirect) when unconfigured, unreachable, or no row matches.
+ */
+async function findRedirect(pathname: string): Promise<{ to: string; status: number } | null> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return null;
+  try {
+    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    const { data } = await supabase
+      .from("redirects")
+      .select("to_path, status_code")
+      .eq("from_path", pathname)
+      .eq("is_active", true)
+      .maybeSingle();
+    return data ? { to: data.to_path, status: data.status_code } : null;
+  } catch {
+    return null;
+  }
+}
 
 function getPreferredLocale(request: NextRequest): Locale {
   const cookieLocale = request.cookies.get(LOCALE_COOKIE)?.value;
@@ -37,6 +61,13 @@ export async function proxy(request: NextRequest) {
   );
   if (pathnameHasLocale) {
     return NextResponse.next();
+  }
+
+  const redirect = await findRedirect(pathname);
+  if (redirect) {
+    const url = request.nextUrl.clone();
+    url.pathname = redirect.to;
+    return NextResponse.redirect(url, redirect.status);
   }
 
   const locale = getPreferredLocale(request);

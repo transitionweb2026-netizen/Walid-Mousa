@@ -16,8 +16,9 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { PageTransition } from "@/components/motion/PageTransition";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.drwalidmoussa.com";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildPhysicianJsonLd, buildMedicalOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/structuredData";
+import { SITE_URL } from "@/lib/seo";
 
 // The whole [locale] tree reads from Supabase (global settings here, page
 // content in each page.tsx) — CMS edits must appear without a rebuild, so it
@@ -90,6 +91,13 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       suppressHydrationWarning
     >
       <body className="antialiased">
+        <JsonLd
+          data={[
+            buildPhysicianJsonLd(branding, contact, locale),
+            buildMedicalOrganizationJsonLd(branding, contact, locale, social),
+            buildWebSiteJsonLd(branding, locale),
+          ]}
+        />
         <MotionProvider>
           <a
             href="#main-content"

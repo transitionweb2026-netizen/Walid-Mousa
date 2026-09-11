@@ -1,36 +1,47 @@
 # Dr. Walid Moussa — Andrology & Men's Health
 
 A premium, bilingual (English / Arabic) marketing website for **Dr. Walid
-Moussa**, consultant andrologist. Built with **Next.js 16** (App Router,
-React 19, TypeScript, Turbopack) and **Tailwind CSS v4**, with a
-liquid-glass design system in turquoise (`#2DC4B6`) and pink (`#FF3366`).
+Moussa**, consultant andrologist, with a full custom CMS. Built with
+**Next.js 16** (App Router, React 19, TypeScript, Turbopack), **Tailwind
+CSS v4** (liquid-glass design system in turquoise `#2DC4B6` and pink
+`#FF3366`), and **Supabase** (Postgres + Storage + Auth + RLS) as the CMS
+backend.
 
 ## Getting started
 
 ```bash
 npm install
 npm run dev      # http://localhost:3000 — redirects to /en or /ar
-npm run build    # production build (all pages are static)
+npm run build    # production build
 npm run start    # serve the production build
 npm run lint     # ESLint (flat config)
+npm run seed     # populate a connected Supabase project from /data/*.ts
 ```
 
-Optional env vars (`cp .env.local.example .env.local`):
+The site and the `/admin` CMS both run without any setup — every public page
+and every `lib/cms/public*.ts` getter falls back to the bundled content in
+`/data/*.ts` when Supabase isn't configured. To connect a real Supabase
+project (required for `/admin` to actually save anything), follow
+**[SETUP.md](./SETUP.md)**.
+
+Env vars (`cp .env.local.example .env.local`):
 
 | Variable | Effect |
 |---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Connects the public site + admin to Supabase (see SETUP.md) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only; used for the rare service-role admin operation |
 | `NEXT_PUBLIC_SITE_URL` | Canonical origin for sitemap / robots / OG URLs |
-| `NEXT_PUBLIC_WHATSAPP_NUMBER` | Overrides `data/contact.ts` for every WhatsApp link |
-
-The site runs fully without either.
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | Overrides `data/contact.ts` for every WhatsApp link (pre-CMS fallback only) |
 
 ## Pages
 
 `app/[locale]/` — `en` and `ar`, six routes: `/` (home), `/about`,
 `/services`, `/videos`, `/articles`, `/contact`. `proxy.ts` (Next 16's
-renamed `middleware.ts`) redirects bare paths to the visitor's locale.
-Every page opens with the same full-bleed `<Hero>` + floating contact panel;
-only the copy and cover image change (`data/hero.ts`).
+renamed `middleware.ts`) checks the CMS `redirects` table for the bare
+incoming path first (Admin → Redirects), then redirects bare paths to the
+visitor's locale. Every page opens with the same full-bleed `<Hero>` +
+floating contact panel; only the copy and cover image change (CMS Pages →
+each page's Hero section, `data/hero.ts` as fallback).
 
 Home CTAs deep-link into the Services page via anchors (`/services#surgeries`,
 `/services#treatments`); card modals open from `#surgery-<slug>` /
@@ -38,43 +49,54 @@ Home CTAs deep-link into the Services page via anchors (`/services#surgeries`,
 On `/services`, the **Choose Your Specialty** grid anchor-scrolls 1:1 to a
 matching `#specialty-<slug>` treatment section (4 cards + modals each).
 
-## Content model — everything lives in `/data/*.ts`
+## Content model — Supabase-backed CMS, `/data/*.ts` as seed + fallback
 
-No CMS, no database. Every string is `{ en, ar }` (`Localized<T>` in
-`lib/types.ts`) and components receive content by import/props. To change
-copy, images or numbers, edit the data file — never the components.
+Every editable string, image, video, and relationship on the site is a real
+Postgres row, managed from `/admin` (Supabase Auth-gated) and read by the
+public site through `lib/cms/public*.ts`. `/data/*.ts` is **not** the live
+content source anymore — it is:
 
-| File | Owns |
+1. the **seed data** `npm run seed` (`scripts/seed.ts`) loads into a freshly
+   migrated Supabase project, and
+2. the **offline fallback** every `lib/cms/public*.ts` getter returns to when
+   Supabase is unset/unreachable, so the site never hard-fails.
+
+To change live content, use the CMS at `/admin` (see below) — editing
+`/data/*.ts` after go-live only changes the fallback/reseed content, not what
+visitors see.
+
+| Layer | Where |
 |---|---|
-| `site.ts` | Brand name, SEO defaults, shared button labels, footer text |
-| `navigation.ts` | The 6 nav items |
-| `hero.ts` | Per-page hero copy + cover image + focal point |
-| `doctorIntro.ts`, `stats.ts`, `journey.ts`, `reviews.ts`, `faq.ts`, `cta.ts` | Home sections |
-| `surgeries.ts`, `treatments.ts`, `technologies.ts` | Home sections + Services surgeries/technologies anchors |
-| `specialties.ts` | Services page: 4 specialties × exactly 4 treatments each (+ modal detail), plus the Services FAQ intro |
-| `videos.ts` | All 9 videos (all phone-portrait); `featured` (3) surface on the home page |
-| `articles.ts` | All articles; `featured` (4) on home, `articles[0]` is the Articles-page lead |
-| `about.ts` | Bio + layered portrait, career (experience + education), certificates carousel, why-points, expertise (4), doctor's word, achievements, gallery |
-| `contact.ts` | **Placeholder** phone / WhatsApp / email / address / hours / socials / map |
-| `images.ts` | Central image registry (see below) |
+| Database schema | `supabase/migrations/0001…0012` (~30 tables, RLS everywhere) |
+| Supabase clients | `lib/supabase/{client,server,admin,proxy}.ts` |
+| Public data layer (Supabase-first, `/data` fallback) | `lib/cms/public{Client,Settings,Sections,Content,Seo}.ts`, `media.ts`, `jsonContent.ts`, `jsonPath.ts` |
+| Section field schemas | `lib/cms/sectionSchemas.ts` |
+| Admin UI | `app/admin/**` — Dashboard, Pages (section editors), Content (18 collections), Media Library, Global Settings (9 singletons), SEO (Global/Page/Condition/Treatment/Surgery/Article), Redirects |
+| Admin write path | `app/admin/actions/*.ts` — generic CRUD (`collections.ts`), page sections, settings, media upload, SEO, condition↔treatment links |
+| Structured data | `lib/structuredData.ts` + `components/seo/JsonLd.tsx` — Physician/MedicalOrganization/WebSite sitewide, WebPage/BreadcrumbList per page, Article per published article |
+| Seed script | `scripts/seed.ts` (`npm run seed`) |
+
+See **[SETUP.md](./SETUP.md)** to connect a Supabase project, run the
+migrations, seed, and create the first admin user.
 
 ### Going live — the checklist
 
-1. **`data/contact.ts`** — replace every placeholder (phone, WhatsApp
-   digits, email, address, `socialLinks` URLs, working hours). For the map:
-   set `mapEmbedSrc` to the Google Maps "Embed a map" iframe `src` (or `""`
-   to show the styled placeholder panel) and `mapQuery` / `mapLink` /
-   `mapDirectionsLink` to the real location.
-2. **`data/images.ts`** — every photo is royalty-free Unsplash stock
-   hotlinked via the Unsplash CDN. Replace each URL with a real photo of
-   Dr. Moussa / the clinic (drop files in `public/images/…` and point the
-   registry at them). Re-check the `position` focal points in the data
-   files after swapping. `next.config.ts` allow-lists the image hosts.
-3. **`data/*` — `youtubeId` fields** in `doctorIntro.ts` and `videos.ts`
-   are placeholder YouTube ids. Replace with the real clip ids.
-4. **Stats & credentials** — `data/stats.ts`, `data/about.ts` currently
-   hold representative numbers and a plausible CV; confirm with the doctor.
-5. **`NEXT_PUBLIC_SITE_URL`** — set to the production domain.
+Everything below is editable from `/admin` once Supabase is connected —
+no code changes needed:
+
+1. **Media Library** — replace every Unsplash placeholder with real photos
+   of Dr. Moussa / the clinic / equipment.
+2. **Content → Videos** — upload real video files (or set a YouTube id) and
+   real covers; cover and file are independent fields.
+3. **Global Settings → Contact Information** — real phone, WhatsApp digits,
+   email, address, working hours, Google Maps embed + links.
+4. **Global Settings → Social Media** — real profile URLs.
+5. **Content → Statistics / Certificates / Career / Expertise** — confirm
+   numbers and CV with the doctor.
+6. **SEO** — Global + per-page meta/canonical/OG/favicon, plus per-item SEO
+   for conditions/treatments/surgeries/articles.
+7. **`NEXT_PUBLIC_SITE_URL`** — set to the production domain (used by
+   `app/sitemap.ts`, `app/robots.ts`, and every JSON-LD/OG URL).
 
 ## Design system
 

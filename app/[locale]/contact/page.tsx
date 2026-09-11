@@ -14,6 +14,10 @@ import {
   getFooterContent,
   getFinalCta,
 } from "@/lib/cms/publicSettings";
+import { navigationItems } from "@/data/navigation";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildWebPageJsonLd, buildBreadcrumbJsonLd } from "@/lib/structuredData";
+import { SITE_URL } from "@/lib/seo";
 
 import { Hero } from "@/components/layout/Hero";
 import { Section } from "@/components/ui/Section";
@@ -56,9 +60,25 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
     getFinalCta(),
   ]);
   const cref = (c: { url: string }) => `/${locale}${c.url}`;
+  const h = heroes.contact;
+  const nav = navigationItems.find((n) => n.key === "contact");
 
   return (
     <>
+      <JsonLd
+        data={[
+          buildWebPageJsonLd({
+            locale,
+            path: "contact",
+            name: `${h.headline[locale]} ${h.headlineAccent[locale]}`,
+            description: h.description[locale],
+          }),
+          buildBreadcrumbJsonLd([
+            { name: navigationItems[0].label[locale], url: `${SITE_URL}/${locale}` },
+            { name: nav?.label[locale] ?? h.headline[locale], url: `${SITE_URL}/${locale}/contact` },
+          ]),
+        ]}
+      />
       <Hero
         locale={locale}
         content={sections.hero.content}

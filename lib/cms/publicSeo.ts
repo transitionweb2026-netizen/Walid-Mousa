@@ -113,3 +113,29 @@ export async function getItemSeo(
     return null;
   }
 }
+
+/** Batched per-article SEO overrides, keyed by article id — used for Article JSON-LD on the articles page. */
+export async function getArticleSeoMap(articleIds: string[]): Promise<Map<string, ItemSeo>> {
+  const map = new Map<string, ItemSeo>();
+  if (articleIds.length === 0) return map;
+  const supabase = await getPublicClient();
+  if (!supabase) return map;
+  try {
+    const { data } = await supabase.from("article_seo").select("*").in("article_id", articleIds);
+    if (!data) return map;
+    for (const row of data) {
+      const og = await ogImageUrl(supabase, row.og_image_id);
+      map.set(row.article_id, {
+        title: { en: row.seo_title_en ?? "", ar: row.seo_title_ar ?? "" },
+        description: { en: row.meta_description_en ?? "", ar: row.meta_description_ar ?? "" },
+        canonical: row.canonical_url ?? null,
+        ogImage: og ?? null,
+        isIndexed: row.is_indexed,
+        isFollowed: row.is_followed,
+      });
+    }
+  } catch (e) {
+    console.error("[cms] getArticleSeoMap failed:", e);
+  }
+  return map;
+}

@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { heroes } from "@/data/hero";
-import { buildPageMetadata } from "@/lib/cms/publicSeo";
+import { buildPageMetadata, getArticleSeoMap } from "@/lib/cms/publicSeo";
 import { getArticlesSections } from "@/lib/cms/publicSections";
 import { getArticles } from "@/lib/cms/publicContent";
-import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
+import { getFinalCta, getContactInfo, getSocialLinks, getSiteBranding } from "@/lib/cms/publicSettings";
+import { navigationItems } from "@/data/navigation";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildWebPageJsonLd, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/structuredData";
+import { SITE_URL } from "@/lib/seo";
 
 import { Hero } from "@/components/layout/Hero";
 import { Section } from "@/components/ui/Section";
@@ -35,20 +39,41 @@ export default async function ArticlesPage({ params }: PageProps<"/[locale]/arti
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
-  const [sections, articles, cta, contact, social] = await Promise.all([
+  const [sections, articles, cta, contact, social, branding] = await Promise.all([
     getArticlesSections(),
     getArticles(),
     getFinalCta(),
     getContactInfo(),
     getSocialLinks(),
+    getSiteBranding(),
   ]);
+  const articleSeo = await getArticleSeoMap(articles.map((a) => a.id));
   const cref = (c: { url: string }) => `/${locale}${c.url}`;
 
   const lead = articles[0];
   const rest = articles.slice(1);
+  const h = heroes.articles;
+  const nav = navigationItems.find((n) => n.key === "articles");
 
   return (
     <>
+      <JsonLd
+        data={[
+          buildWebPageJsonLd({
+            locale,
+            path: "articles",
+            name: `${h.headline[locale]} ${h.headlineAccent[locale]}`.replace(/،|,/g, ""),
+            description: h.description[locale],
+          }),
+          buildBreadcrumbJsonLd([
+            { name: navigationItems[0].label[locale], url: `${SITE_URL}/${locale}` },
+            { name: nav?.label[locale] ?? h.headline[locale], url: `${SITE_URL}/${locale}/articles` },
+          ]),
+          ...articles.map((article) =>
+            buildArticleJsonLd({ locale, article, seo: articleSeo.get(article.id) ?? null, authorName: branding.name[locale] })
+          ),
+        ]}
+      />
       <Hero
         locale={locale}
         content={sections.hero.content}

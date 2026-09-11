@@ -13,6 +13,10 @@ import {
   getGalleryImages,
 } from "@/lib/cms/publicContent";
 import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
+import { navigationItems } from "@/data/navigation";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildWebPageJsonLd, buildBreadcrumbJsonLd } from "@/lib/structuredData";
+import { SITE_URL } from "@/lib/seo";
 
 import { Hero } from "@/components/layout/Hero";
 import { AboutDoctorSection } from "@/components/about/AboutDoctorSection";
@@ -61,9 +65,25 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
 
   const localeRoot = `/${locale}`;
   const cref = (c: { url: string }) => `${localeRoot}${c.url}`;
+  const h = heroes.about;
+  const nav = navigationItems.find((n) => n.key === "about");
 
   return (
     <>
+      <JsonLd
+        data={[
+          buildWebPageJsonLd({
+            locale,
+            path: "about",
+            name: `${h.headline[locale]} ${h.headlineAccent[locale]}`,
+            description: h.description[locale],
+          }),
+          buildBreadcrumbJsonLd([
+            { name: navigationItems[0].label[locale], url: `${SITE_URL}/${locale}` },
+            { name: nav?.label[locale] ?? h.headline[locale], url: `${SITE_URL}/${locale}/about` },
+          ]),
+        ]}
+      />
       <Hero
         locale={locale}
         content={sections.hero.content}

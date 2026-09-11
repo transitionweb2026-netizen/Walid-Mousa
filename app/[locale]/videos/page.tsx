@@ -6,6 +6,10 @@ import { buildPageMetadata } from "@/lib/cms/publicSeo";
 import { getVideosSections } from "@/lib/cms/publicSections";
 import { getVideos } from "@/lib/cms/publicContent";
 import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
+import { navigationItems } from "@/data/navigation";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildWebPageJsonLd, buildBreadcrumbJsonLd } from "@/lib/structuredData";
+import { SITE_URL } from "@/lib/seo";
 
 import { Hero } from "@/components/layout/Hero";
 import { Section } from "@/components/ui/Section";
@@ -41,9 +45,25 @@ export default async function VideosPage({ params }: PageProps<"/[locale]/videos
     getSocialLinks(),
   ]);
   const cref = (c: { url: string }) => `/${locale}${c.url}`;
+  const h = heroes.videos;
+  const nav = navigationItems.find((n) => n.key === "videos");
 
   return (
     <>
+      <JsonLd
+        data={[
+          buildWebPageJsonLd({
+            locale,
+            path: "videos",
+            name: `${h.headline[locale]} ${h.headlineAccent[locale]}`.replace(/،|,/g, ""),
+            description: h.description[locale],
+          }),
+          buildBreadcrumbJsonLd([
+            { name: navigationItems[0].label[locale], url: `${SITE_URL}/${locale}` },
+            { name: nav?.label[locale] ?? h.headline[locale], url: `${SITE_URL}/${locale}/videos` },
+          ]),
+        ]}
+      />
       <Hero
         locale={locale}
         content={sections.hero.content}

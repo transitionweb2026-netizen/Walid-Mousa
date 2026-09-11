@@ -16,6 +16,8 @@ import {
   getFeaturedArticles,
 } from "@/lib/cms/publicContent";
 import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildWebPageJsonLd } from "@/lib/structuredData";
 
 import { Hero } from "@/components/layout/Hero";
 import { DoctorIntro } from "@/components/home/DoctorIntro";
@@ -84,6 +86,14 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 
   return (
     <>
+      <JsonLd
+        data={buildWebPageJsonLd({
+          locale,
+          path: "",
+          name: siteContent.seo.defaultTitle[locale],
+          description: siteContent.seo.defaultDescription[locale],
+        })}
+      />
       <Hero
         locale={locale}
         content={sections.hero.content}

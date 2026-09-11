@@ -7,6 +7,10 @@ import { getServicesSections } from "@/lib/cms/publicSections";
 import { getSpecialties, getSurgeries, getTechnologies, getOtherServices, getFaqs } from "@/lib/cms/publicContent";
 import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
 import { surgeryToCard, surgeryToDetail, technologyToCard, technologyToDetail } from "@/lib/careAdapters";
+import { navigationItems } from "@/data/navigation";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildWebPageJsonLd, buildBreadcrumbJsonLd } from "@/lib/structuredData";
+import { SITE_URL } from "@/lib/seo";
 
 import { Hero } from "@/components/layout/Hero";
 import { SpecialtySelector } from "@/components/services/SpecialtySelector";
@@ -52,9 +56,25 @@ export default async function ServicesPage({ params }: PageProps<"/[locale]/serv
   const cref = (c: { url: string }) => `/${locale}${c.url}`;
   const surgeryItems = surgeries.map((s) => ({ id: s.id, slug: s.slug, card: surgeryToCard(s), detail: surgeryToDetail(s) }));
   const techItems = technologies.map((t) => ({ id: t.id, slug: t.slug, card: technologyToCard(t), detail: technologyToDetail(t) }));
+  const h = heroes.services;
+  const nav = navigationItems.find((n) => n.key === "services");
 
   return (
     <>
+      <JsonLd
+        data={[
+          buildWebPageJsonLd({
+            locale,
+            path: "services",
+            name: `${h.headline[locale]} ${h.headlineAccent[locale]}`,
+            description: h.description[locale],
+          }),
+          buildBreadcrumbJsonLd([
+            { name: navigationItems[0].label[locale], url: `${SITE_URL}/${locale}` },
+            { name: nav?.label[locale] ?? h.headline[locale], url: `${SITE_URL}/${locale}/services` },
+          ]),
+        ]}
+      />
       <Hero
         locale={locale}
         content={sections.hero.content}
