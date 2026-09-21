@@ -72,4 +72,20 @@ export const faqItems: FaqItem[] = [
       ar: "أي نتائج فحوصات سابقة (تحليل سائل منوي، تحاليل هرمونات، تقارير أشعة)، وقائمة بأدويتك ومكمّلاتك الحالية، وإن كانت المشكلة تتعلق بالخصوبة فنتائج زوجتك الأساسية إن توفّرت. وإن لم يكن لديك أي من ذلك، فلا بأس؛ سنبدأ من البداية.",
     },
   },
+  {
+    id: "outside-cairo",
+    question: { en: "Do you see patients who live outside Cairo or abroad?", ar: "هل تستقبل مرضى من خارج القاهرة أو من الخارج؟" },
+    answer: {
+      en: "Yes. A significant number of patients travel from other governorates and from abroad, and where possible we condense consultation, tests and treatment into a single visit. Contact the clinic in advance and we'll help plan the trip around your case.",
+      ar: "نعم. يسافر عدد كبير من المرضى من محافظات أخرى ومن الخارج، وحيثما أمكن نُجمِّع الاستشارة والفحوصات والعلاج في زيارة واحدة. تواصل مع العيادة مسبقًا وسنساعدك على تنظيم الزيارة وفق حالتك.",
+    },
+  },
+  {
+    id: "how-to-book",
+    question: { en: "How do I book an appointment?", ar: "كيف أحجز موعدًا؟" },
+    answer: {
+      en: "The fastest way is WhatsApp — message the clinic directly and a coordinator will confirm a time that suits you. You can also call the clinic or use the contact form on this site.",
+      ar: "أسرع طريقة هي واتساب — راسل العيادة مباشرةً وسيؤكد أحد المنسّقين موعدًا يناسبك. يمكنك أيضًا الاتصال بالعيادة أو استخدام نموذج التواصل في هذا الموقع.",
+    },
+  },
 ];

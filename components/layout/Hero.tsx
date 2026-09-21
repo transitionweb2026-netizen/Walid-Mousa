@@ -49,7 +49,7 @@ export function Hero({
       <div
         className={cn(
           "relative isolate overflow-hidden rounded-[1.75rem] lg:rounded-[2.5rem]",
-          compact ? "min-h-[380px] sm:min-h-[440px]" : "min-h-[600px] sm:min-h-[680px] lg:min-h-[760px]"
+          compact ? "min-h-[380px] sm:min-h-[440px]" : "min-h-[540px] sm:min-h-[600px] lg:min-h-[640px]"
         )}
       >
         <Image
@@ -81,17 +81,10 @@ export function Hero({
             compact ? "py-12 lg:max-w-xl" : "py-16 lg:max-w-2xl lg:py-24"
           )}
         >
-          <Reveal>
-            <span className="chip-teal inline-flex w-fit items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] shadow-glass">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand-teal" />
-              {data.eyebrow[locale]}
-            </span>
-          </Reveal>
-
           <Reveal delay={0.1}>
             <h1
               className={cn(
-                "mt-5 text-balance font-extrabold leading-[1.12] text-brand-ink",
+                "text-balance font-extrabold leading-[1.12] text-brand-ink",
                 compact ? "text-3xl sm:text-4xl lg:text-5xl" : "text-4xl sm:text-5xl lg:text-6xl"
               )}
             >
@@ -125,7 +118,7 @@ export function Hero({
             contact={contact}
             social={social}
             contactTitle={contactTitle}
-            className="relative z-10 mx-6 mb-8 sm:mx-10 lg:absolute lg:bottom-10 lg:end-10 lg:mx-0 lg:mb-0"
+            className="relative z-10 mx-6 mb-8 sm:mx-10 lg:absolute lg:bottom-14 lg:end-10 lg:mx-0 lg:mb-0"
           />
         )}
       </div>

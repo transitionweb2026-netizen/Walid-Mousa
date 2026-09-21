@@ -32,13 +32,9 @@ export function AboutDoctorSection({ locale, content = fb }: { locale: Locale; c
       <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         {/* Text */}
         <Reveal>
-          <span className="chip-teal inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] shadow-glass">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-teal" />
-            {bio.eyebrow[locale]}
-          </span>
           <h2
             id="about-doctor-heading"
-            className="mt-5 text-3xl font-extrabold leading-tight text-brand-ink sm:text-4xl"
+            className="text-gradient-brand text-3xl font-extrabold leading-tight sm:text-4xl"
           >
             {bio.heading[locale]}
           </h2>
@@ -61,61 +57,67 @@ export function AboutDoctorSection({ locale, content = fb }: { locale: Locale; c
           </div>
         </Reveal>
 
-        {/* Layered portrait composition */}
+        {/* Portrait — one main photo, with two much smaller photo edges peeking
+            out behind it (tinted + blurred) purely to suggest depth, not to
+            compete with the main image. */}
         <Reveal delay={0.12} className="relative mx-auto w-full max-w-md lg:max-w-none">
           <span aria-hidden className="glow-pink absolute -end-10 -top-8 h-44 w-44 rounded-full opacity-40" />
           <span aria-hidden className="glow-teal absolute -bottom-12 -start-8 h-48 w-48 rounded-full opacity-40" />
 
           <div className="relative aspect-[4/5] w-full [perspective:1200px]">
-            {/* Back layer B */}
-            <div className="absolute end-0 top-4 h-[60%] w-[52%] -rotate-6 overflow-hidden rounded-[1.4rem] border border-white/60 shadow-glass rtl:rotate-6">
+            {/* Back hint B */}
+            <div className="absolute -end-3 -top-3 z-0 h-[34%] w-[30%] -rotate-6 overflow-hidden rounded-2xl shadow-glass blur-[0.5px] rtl:rotate-6">
               <Image
                 src={layerB.src}
-                alt={layerB.alt[locale]}
+                alt=""
+                aria-hidden
                 fill
-                sizes="(min-width:1024px) 16rem, 40vw"
+                sizes="(min-width:1024px) 9rem, 24vw"
                 className="object-cover"
               />
-              <span className="absolute inset-0 bg-brand-ink/10" />
+              <span className="absolute inset-0 bg-gradient-to-br from-brand-teal-deep/35 to-brand-pink-deep/35" />
             </div>
-            {/* Back layer A */}
-            <div className="absolute bottom-2 start-0 h-[56%] w-[48%] rotate-6 overflow-hidden rounded-[1.4rem] border border-white/60 shadow-glass rtl:-rotate-6">
+            {/* Back hint A */}
+            <div className="absolute -start-3 -bottom-3 z-0 h-[30%] w-[26%] rotate-6 overflow-hidden rounded-2xl shadow-glass blur-[0.5px] rtl:-rotate-6">
               <Image
                 src={layerA.src}
-                alt={layerA.alt[locale]}
+                alt=""
+                aria-hidden
                 fill
-                sizes="(min-width:1024px) 15rem, 38vw"
+                sizes="(min-width:1024px) 8rem, 22vw"
                 className="object-cover"
               />
-              <span className="absolute inset-0 bg-brand-ink/10" />
+              <span className="absolute inset-0 bg-gradient-to-br from-brand-teal-deep/35 to-brand-pink-deep/35" />
             </div>
 
-            {/* Front portrait card — tilts under the pointer */}
-            <TiltCard max={5} glare={0.2} className="absolute inset-x-7 inset-y-0 sm:inset-x-12">
-              <div className="glass-card glass-sheen h-full rounded-[1.9rem] p-2.5">
-                <div className="relative h-full w-full overflow-hidden rounded-[1.5rem]">
-                  <Image
-                    src={bio.portrait.src}
-                    alt={bio.portrait.alt[locale]}
-                    fill
-                    priority
-                    sizes="(min-width:1024px) 26rem, 80vw"
-                    style={{ objectPosition: bio.portrait.position }}
-                    className="object-cover"
-                  />
-                  <span className="absolute inset-0 bg-gradient-to-t from-brand-ink/45 via-transparent to-transparent" />
-                  <div className="absolute inset-x-3 bottom-3 flex items-center gap-3 rounded-2xl bg-white/80 p-3 backdrop-blur-md">
-                    <span className="h-9 w-9 shrink-0 rounded-xl bg-gradient-brand" />
-                    <div className="min-w-0">
-                      <p className="truncate font-heading text-sm font-extrabold text-brand-ink">
-                        {bio.signatureName[locale]}
-                      </p>
-                      <p className="truncate text-[0.7rem] text-brand-muted">{bio.signatureRole[locale]}</p>
+            {/* Main portrait — tilts under the pointer */}
+            <div className="absolute inset-x-3 inset-y-0 z-10 sm:inset-x-6">
+              <TiltCard max={5} glare={0.2} className="h-full">
+                <div className="glass-card glass-sheen h-full rounded-[1.9rem] p-2.5">
+                  <div className="relative h-full w-full overflow-hidden rounded-[1.5rem]">
+                    <Image
+                      src={bio.portrait.src}
+                      alt={bio.portrait.alt[locale]}
+                      fill
+                      priority
+                      sizes="(min-width:1024px) 30rem, 90vw"
+                      style={{ objectPosition: bio.portrait.position }}
+                      className="object-cover"
+                    />
+                    <span className="absolute inset-0 bg-gradient-to-t from-brand-ink/45 via-transparent to-transparent" />
+                    <div className="absolute inset-x-3 bottom-3 flex items-center gap-3 rounded-2xl bg-white/80 p-3 backdrop-blur-md">
+                      <span className="h-9 w-9 shrink-0 rounded-xl bg-gradient-brand" />
+                      <div className="min-w-0">
+                        <p className="truncate font-heading text-sm font-extrabold text-brand-ink">
+                          {bio.signatureName[locale]}
+                        </p>
+                        <p className="truncate text-[0.7rem] text-brand-muted">{bio.signatureRole[locale]}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </TiltCard>
+              </TiltCard>
+            </div>
           </div>
         </Reveal>
       </div>

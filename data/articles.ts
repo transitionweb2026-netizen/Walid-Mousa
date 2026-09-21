@@ -265,39 +265,6 @@ export const articles: ArticleItem[] = [
       ],
     },
   },
-  {
-    id: "a8",
-    slug: "vasectomy-reversal-or-ivf",
-    title: {
-      en: "Vasectomy Reversal or IVF: How to Choose",
-      ar: "عكس قطع الحبل المنوي أم أطفال الأنابيب: كيف تختار",
-    },
-    excerpt: {
-      en: "For a couple wanting a child after a vasectomy, the right route depends on time, cost, and the female partner's fertility.",
-      ar: "للزوجين الراغبين في طفل بعد قطع الحبل المنوي، يعتمد الطريق الصحيح على الوقت والتكلفة وخصوبة الزوجة.",
-    },
-    image: { src: IMG.microscope, alt: { en: "Microsurgery under an operating microscope", ar: "جراحة ميكروسكوبية تحت المجهر الجراحي" } },
-    category: { en: "Surgery", ar: "الجراحة" },
-    date: "2026-02-28",
-    readTimeMinutes: 6,
-    featured: false,
-    content: {
-      en: [
-        "When a man who has had a vasectomy wants more children, there are two established routes: microsurgical reversal of the vasectomy, or surgical sperm retrieval combined with IVF and ICSI. Both work; the choice is about matching the method to the couple.",
-        "Reversal reconnects the vas deferens under an operating microscope. Sperm return to the ejaculate in the majority of men — patency rates above 90% when the reversal is within about ten years of the vasectomy, lower but still worthwhile beyond that. Once the pathway is open, the couple can try naturally, month after month, and can conceive more than one child from a single procedure.",
-        "Sperm retrieval plus IVF bypasses the blockage entirely: sperm are taken directly from the testis or epididymis and injected into eggs in the laboratory. It sidesteps the question of how long ago the vasectomy was, and it produces a pregnancy faster in a single cycle — but each cycle carries its own cost and success rate, and it places the medical burden on the female partner.",
-        "The deciding factors are usually: the interval since vasectomy (long intervals favour retrieval); the female partner's age and fertility (if IVF is likely to be needed anyway, retrieval at the same time is efficient); how many children the couple hopes for (reversal is more economical for two or more); and personal preference about surgery versus assisted reproduction.",
-        "A consultation that includes both partners, a scrotal examination and a review of the female fertility assessment is usually enough to make the choice clear.",
-      ],
-      ar: [
-        "عندما يرغب رجل أجرى قطعًا للحبل المنوي في مزيد من الأطفال، هناك طريقان معروفان: عكس ميكروسكوبي للعملية، أو استخلاص جراحي للحيوانات المنوية مع أطفال أنابيب وحقن مجهري. كلاهما ينجح؛ والاختيار يتعلق بمطابقة الطريقة مع الزوجين.",
-        "العكس يعيد توصيل الحبل المنوي تحت المجهر الجراحي. وتعود الحيوانات المنوية للسائل لدى غالبية الرجال — معدلات فتح القناة أعلى من 90% عند العكس خلال نحو عشر سنوات من العملية، وأقل لكن ما زال مجديًا بعد ذلك. وبمجرد فتح المسار، يستطيع الزوجان المحاولة طبيعيًا شهرًا بعد شهر، وإنجاب أكثر من طفل من إجراء واحد.",
-        "استخلاص الحيوانات المنوية مع أطفال الأنابيب يتجاوز الانسداد تمامًا: تُؤخذ الحيوانات المنوية مباشرة من الخصية أو البربخ وتُحقن في البويضات في المختبر. ويتجنّب سؤال متى أُجريت العملية، ويعطي حملًا أسرع في دورة واحدة — لكن كل دورة لها تكلفتها ومعدل نجاحها، ويضع العبء الطبي على الزوجة.",
-        "العوامل الحاسمة عادةً: الفترة منذ العملية (الفترات الطويلة ترجّح الاستخلاص)؛ وعمر الزوجة وخصوبتها (إذا كان من المرجّح الحاجة لأطفال الأنابيب على أي حال، فالاستخلاص في الوقت نفسه فعّال)؛ وعدد الأطفال الذي يأمله الزوجان (العكس أوفر لطفلين أو أكثر)؛ والتفضيل الشخصي بين الجراحة والإنجاب المساعد.",
-        "استشارة تشمل الطرفين، وفحصًا لكيس الصفن، ومراجعة لتقييم خصوبة الزوجة، تكفي عادةً لجعل الاختيار واضحًا.",
-      ],
-    },
-  },
 ];
 
 export const featuredArticles = articles.filter((a) => a.featured).slice(0, 4);

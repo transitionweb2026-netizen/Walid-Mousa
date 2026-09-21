@@ -15,14 +15,12 @@ interface SectionHeaderProps {
   headingId?: string;
 }
 
-/** Consistent eyebrow + heading + description block for every section. */
+/** Consistent heading + description block for every section. */
 export function SectionHeader({
-  eyebrow,
   title,
   description,
   locale,
   align = "center",
-  tone = "teal",
   className,
   titleAs: TitleTag = "h2",
   headingId,
@@ -35,20 +33,9 @@ export function SectionHeader({
         className
       )}
     >
-      {eyebrow && (
-        <span
-          className={cn(
-            "inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] shadow-glass",
-            tone === "teal" ? "chip-teal" : "chip-pink"
-          )}
-        >
-          <span className={cn("h-1.5 w-1.5 rounded-full", tone === "teal" ? "bg-brand-teal" : "bg-brand-pink")} />
-          {eyebrow[locale]}
-        </span>
-      )}
       <TitleTag
         id={headingId}
-        className="mt-5 text-3xl font-extrabold text-balance text-brand-ink sm:text-4xl lg:text-[2.6rem] lg:leading-[1.15]"
+        className="text-3xl font-extrabold text-balance text-brand-ink sm:text-4xl lg:text-[2.6rem] lg:leading-[1.15]"
       >
         {title[locale]}
       </TitleTag>

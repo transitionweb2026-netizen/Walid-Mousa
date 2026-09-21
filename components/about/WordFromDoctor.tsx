@@ -40,12 +40,7 @@ export function WordFromDoctor({ locale, content = fb }: { locale: Locale; conte
 
         {/* Quote */}
         <Reveal delay={0.1}>
-          <span className="chip-pink inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] shadow-glass">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-pink" />
-            {word.eyebrow[locale]}
-          </span>
-
-          <figure className="glass-card-strong glass-sheen relative mt-5 overflow-hidden rounded-[2rem] p-7 sm:p-9">
+          <figure className="glass-card-strong glass-sheen relative overflow-hidden rounded-[2rem] p-7 sm:p-9">
             <span aria-hidden className="glow-teal absolute -start-12 -top-12 h-44 w-44 rounded-full opacity-45" />
             <span
               aria-hidden

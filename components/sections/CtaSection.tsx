@@ -48,13 +48,9 @@ export function CtaSection({ locale, cta = fbCta, contact }: Props) {
             <span aria-hidden className="glow-pink animate-float-slow absolute -bottom-20 -end-12 h-72 w-72 rounded-full opacity-45 [animation-delay:-4s]" />
 
             <div className="relative z-10 mx-auto max-w-2xl">
-              <span className="chip-pink inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] shadow-glass">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand-pink" />
-                {cta.eyebrow[locale]}
-              </span>
               <h2
                 id="cta-heading"
-                className="mt-5 text-balance text-3xl font-extrabold text-brand-ink sm:text-4xl lg:text-[2.6rem] lg:leading-tight"
+                className="text-balance text-3xl font-extrabold text-brand-ink sm:text-4xl lg:text-[2.6rem] lg:leading-tight"
               >
                 {cta.title[locale]}
               </h2>

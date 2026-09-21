@@ -23,11 +23,7 @@ export function DoctorIntro({ locale, content = fb }: { locale: Locale; content?
     <Section tint="neutral" aria-labelledby="intro-heading">
       <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <Reveal>
-          <span className="chip-teal inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] shadow-glass">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-teal" />
-            {content.eyebrow[locale]}
-          </span>
-          <h2 id="intro-heading" className="mt-5 text-3xl font-extrabold leading-tight text-brand-ink sm:text-4xl">
+          <h2 id="intro-heading" className="text-gradient-brand text-3xl font-extrabold leading-tight sm:text-4xl">
             {content.heading[locale]}
           </h2>
           <div className="mt-5 space-y-4 text-base leading-relaxed text-brand-ink-soft">
@@ -45,7 +41,7 @@ export function DoctorIntro({ locale, content = fb }: { locale: Locale; content?
             ))}
           </div>
 
-          <Button href={`${localeRoot}${content.cta.url}`} variant="ghost" withArrow className="mt-7 !px-0">
+          <Button href={`${localeRoot}${content.cta.url}`} variant="primary" withArrow className="mt-7">
             {content.cta.label[locale]}
           </Button>
         </Reveal>

@@ -34,11 +34,7 @@ export function FaqArticles({ locale, faqs = fbFaqs, articles = fbArticles, faqI
         {articlesIntro !== null && (
           <div>
             <Reveal>
-              <span className="chip-pink inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] shadow-glass">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand-pink" />
-                {ah.eyebrow[locale]}
-              </span>
-              <h3 className="mt-4 text-2xl font-extrabold text-brand-ink sm:text-3xl">{ah.title[locale]}</h3>
+              <h3 className="text-2xl font-extrabold text-brand-ink sm:text-3xl">{ah.title[locale]}</h3>
               <p className="mt-3 text-base leading-relaxed text-brand-muted">{ah.description[locale]}</p>
             </Reveal>
 
@@ -61,11 +57,7 @@ export function FaqArticles({ locale, faqs = fbFaqs, articles = fbArticles, faqI
         {faqIntro !== null && (
           <div>
             <Reveal>
-              <span className="chip-teal inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] shadow-glass">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand-teal" />
-                {fh.eyebrow[locale]}
-              </span>
-              <h3 className="mt-4 text-2xl font-extrabold text-brand-ink sm:text-3xl">{fh.title[locale]}</h3>
+              <h3 className="text-2xl font-extrabold text-brand-ink sm:text-3xl">{fh.title[locale]}</h3>
               <p className="mt-3 text-base leading-relaxed text-brand-muted">{fh.description[locale]}</p>
             </Reveal>
 

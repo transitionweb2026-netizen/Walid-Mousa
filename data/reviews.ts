@@ -68,4 +68,14 @@ export const reviews: ReviewItem[] = [
       ar: "جئت وأنا مقتنع أنني أحتاج حقن تستوستيرون. أراني أن انقطاع النفس النومي والوزن هما السبب، وبدأ خطة حافظت على خصوبتي. عادت طاقتي وما زلنا نحاول لإنجاب طفل ثانٍ.",
     },
   },
+  {
+    id: "r6",
+    name: { en: "Mostafa R.", ar: "مصطفى ر." },
+    context: { en: "Premature ejaculation", ar: "سرعة القذف" },
+    rating: 5,
+    quote: {
+      en: "I had lived with this since I was young and never told a doctor. Dr. Moussa treated it like any other medical issue — no awkwardness on his end, which made it easy on mine. The combined plan he suggested worked within a few weeks.",
+      ar: "عشت مع هذه المشكلة منذ الشباب ولم أخبر طبيبًا من قبل. تعامل د. موسى معها كأي مشكلة طبية أخرى — دون أي حرج من جانبه، ما جعل الأمر سهلًا بالنسبة لي. نجحت الخطة المركّبة التي اقترحها خلال أسابيع قليلة.",
+    },
+  },
 ];
