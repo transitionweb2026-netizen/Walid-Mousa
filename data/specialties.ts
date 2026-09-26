@@ -27,7 +27,10 @@ export interface Specialty {
   id: string;
   slug: string;
   icon: IconName;
+  /** Services page "Choose Your Specialty" card + detail view. */
   image: MediaImage;
+  /** Home page "Find Your Treatment" card. Falls back to `image` when unset. */
+  homeImage?: MediaImage;
   title: Localized;
   tagline: Localized;
   description: Localized;

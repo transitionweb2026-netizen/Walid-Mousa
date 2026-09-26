@@ -309,18 +309,24 @@ export async function getConditions(): Promise<ConditionCardItem[]> {
     try {
       const { data } = await supabase.from("conditions").select("*").order("display_order");
       if (data && data.length > 0) {
-        const m = await mediaMap(supabase, data.map((r) => r.image_id));
-        return data.map((r) => ({
-          id: r.id,
-          slug: r.slug,
-          icon: r.icon as IconName,
-          image: img(m, r.image_id, { en: r.title_en, ar: r.title_ar }, { en: r.image_alt_en, ar: r.image_alt_ar }),
-          title: { en: r.title_en, ar: r.title_ar },
-          tagline: { en: r.tagline_en, ar: r.tagline_ar },
-          description: { en: r.short_description_en, ar: r.short_description_ar },
-          details: { en: r.full_description_en, ar: r.full_description_ar },
-          signs: { en: r.signs_en, ar: r.signs_ar },
-        }));
+        const m = await mediaMap(supabase, data.flatMap((r) => [r.image_id, r.home_image_id]));
+        return data.map((r) => {
+          const homeImageId = r.home_image_id ?? r.image_id;
+          const homeAlt = r.home_image_id
+            ? { en: r.home_image_alt_en, ar: r.home_image_alt_ar }
+            : { en: r.image_alt_en, ar: r.image_alt_ar };
+          return {
+            id: r.id,
+            slug: r.slug,
+            icon: r.icon as IconName,
+            image: img(m, homeImageId, { en: r.title_en, ar: r.title_ar }, homeAlt),
+            title: { en: r.title_en, ar: r.title_ar },
+            tagline: { en: r.tagline_en, ar: r.tagline_ar },
+            description: { en: r.short_description_en, ar: r.short_description_ar },
+            details: { en: r.full_description_en, ar: r.full_description_ar },
+            signs: { en: r.signs_en, ar: r.signs_ar },
+          };
+        });
       }
     } catch (e) {
       console.error("[cms] getConditions failed:", e);
@@ -330,7 +336,7 @@ export async function getConditions(): Promise<ConditionCardItem[]> {
     id: s.id,
     slug: s.slug,
     icon: s.icon,
-    image: s.image,
+    image: s.homeImage ?? s.image,
     title: s.title,
     tagline: s.tagline,
     description: s.description,

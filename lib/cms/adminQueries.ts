@@ -30,7 +30,7 @@ async function withMedia(table: "conditions" | "treatments" | "surgeries" | "tec
   return (data ?? []).map((row) => attachMedia(row as Record<string, unknown>, mediaMap, ...fkKeys));
 }
 
-export const getAdminConditions = () => withMedia("conditions", "image_id");
+export const getAdminConditions = () => withMedia("conditions", "image_id", "home_image_id");
 export const getAdminTreatments = () => withMedia("treatments", "image_id");
 export const getAdminSurgeries = () => withMedia("surgeries", "image_id");
 export const getAdminTechnologies = () => withMedia("technologies", "image_id");

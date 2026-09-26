@@ -231,6 +231,8 @@ export interface Database {
         signs_en: string[]; signs_ar: string[];
         image_id: string | null;
         image_alt_en: string | null; image_alt_ar: string | null;
+        home_image_id: string | null;
+        home_image_alt_en: string | null; home_image_alt_ar: string | null;
         is_featured: boolean;
       } & Orderable & Stamps>;
 

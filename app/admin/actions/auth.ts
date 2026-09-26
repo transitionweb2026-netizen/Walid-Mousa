@@ -23,6 +23,12 @@ export async function signIn(_prevState: AuthActionState, formData: FormData): P
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
+    // supabase-js reports a network/DNS/timeout failure (never reached the
+    // Supabase project at all) as an AuthRetryableFetchError with status 0 —
+    // that is not the same thing as a wrong password, so don't call it one.
+    if (!error.status) {
+      return { error: "Can't reach Supabase right now — the project may be paused or unreachable. Try again shortly." };
+    }
     return { error: "Incorrect email or password." };
   }
 
