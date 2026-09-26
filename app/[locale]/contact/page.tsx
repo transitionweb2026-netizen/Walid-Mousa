@@ -90,7 +90,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
       />
 
       <Section tint="duo" glow="both" aria-labelledby="contact-heading">
-        <h1 id="contact-heading" className="sr-only">
+        <h1 id="contact-heading" className="sr-only scroll-mt-24">
           {sections.contactIntro.title[locale]}
         </h1>
 

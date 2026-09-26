@@ -43,6 +43,7 @@ export function Hero({
   contactTitle,
 }: HeroProps) {
   const isRtl = localeDirection[locale] === "rtl";
+  const mobileImage = data.imageMobile ?? data.image;
 
   return (
     <section className="mx-3 mt-3 sm:mx-6 sm:mt-4 lg:mx-8" aria-label="Hero">
@@ -52,6 +53,18 @@ export function Hero({
           compact ? "min-h-[380px] sm:min-h-[440px]" : "min-h-[540px] sm:min-h-[600px] lg:min-h-[640px]"
         )}
       >
+        {/* Art-directed per breakpoint — independent crops, not just a
+            resolution swap, so a portrait-friendly mobile photo can differ
+            from the wide desktop one. */}
+        <Image
+          src={mobileImage.src}
+          alt={mobileImage.alt[locale]}
+          fill
+          priority
+          sizes="100vw"
+          style={{ objectPosition: mobileImage.position }}
+          className="object-cover sm:hidden"
+        />
         <Image
           src={data.image.src}
           alt={data.image.alt[locale]}
@@ -59,7 +72,7 @@ export function Hero({
           priority
           sizes="100vw"
           style={{ objectPosition: data.image.position }}
-          className="object-cover"
+          className="hidden object-cover sm:block"
         />
 
         <div

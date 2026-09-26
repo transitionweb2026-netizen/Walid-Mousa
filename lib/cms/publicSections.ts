@@ -45,17 +45,27 @@ export interface PageHero {
 
 const BOOK: CtaRef = { label: siteContent.actions.bookAppointment, url: "/contact" };
 const EXPLORE: CtaRef = { label: siteContent.actions.exploreServices, url: "/services" };
+// Same actions, but pointed at an anchor on the CURRENT page instead of
+// navigating to it — used where the hero already lives on that page (a
+// hero button linking to its own page is a dead click).
+const VIEW_SPECIALTIES: CtaRef = { label: siteContent.actions.exploreServices, url: "/services#specialties" };
+const BOOK_HERE: CtaRef = { label: siteContent.actions.bookAppointment, url: "/contact#contact-heading" };
 
 // ── section-content mappers ───────────────────────────────────────────────
 function toHero(content: JsonRecord, fallback: HeroContent, media: Map<string, MediaRow>): HeroContent {
   const imageId = optionalStr(content, "image_id");
   const position = optionalStr(content, "image_position") ?? fallback.image.position;
+  const mobileImageId = optionalStr(content, "image_mobile_id");
+  const mobilePosition = optionalStr(content, "image_mobile_position") ?? fallback.imageMobile?.position;
   return {
     eyebrow: localized(content, "eyebrow", fallback.eyebrow),
     headline: localized(content, "headline", fallback.headline),
     headlineAccent: localized(content, "headlineAccent", fallback.headlineAccent),
     description: localized(content, "description", fallback.description),
     image: toMediaImage(imageId ? (media.get(imageId) ?? null) : null, fallback.image.alt, { position }),
+    imageMobile: mobileImageId
+      ? toMediaImage(media.get(mobileImageId) ?? null, fallback.imageMobile?.alt ?? fallback.image.alt, { position: mobilePosition })
+      : fallback.imageMobile,
   };
 }
 function toIntro(content: JsonRecord, fallback: IntroContent): IntroContent {
@@ -72,7 +82,7 @@ type PC = NonNullable<Awaited<ReturnType<typeof getPublicClient>>>;
 type Loaded = { supabase: PC; sections: Map<string, JsonRecord>; media: Map<string, MediaRow> } | "unavailable";
 
 const MEDIA_KEYS = [
-  "image_id", "video_cover_media_id", "video_media_id", "portrait_media_id",
+  "image_id", "image_mobile_id", "video_cover_media_id", "video_media_id", "portrait_media_id",
   "portrait_layer_1_media_id", "portrait_layer_2_media_id",
 ];
 
@@ -345,7 +355,7 @@ export async function getServicesSections(): Promise<ServicesSections> {
   const loaded = await loadPage("services");
   if (loaded === "unavailable") {
     return {
-      hero: { content: heroes.services, primaryCta: BOOK, secondaryCta: EXPLORE },
+      hero: { content: heroes.services, primaryCta: BOOK, secondaryCta: VIEW_SPECIALTIES },
       specialtiesIntro: introFrom(specialtiesIntro),
       surgeriesIntro: introFrom(surgeriesIntro),
       technologiesIntro: introFrom(technologiesIntro),
@@ -357,7 +367,7 @@ export async function getServicesSections(): Promise<ServicesSections> {
   const has = (t: string) => sections.has(t);
   const g = (t: string) => sections.get(t)!;
   return {
-    hero: buildHero(loaded, heroes.services, { primary: BOOK, secondary: EXPLORE }),
+    hero: buildHero(loaded, heroes.services, { primary: BOOK, secondary: VIEW_SPECIALTIES }),
     specialtiesIntro: has("specialties_intro") ? toIntro(g("specialties_intro"), introFrom(specialtiesIntro)) : introFrom(specialtiesIntro),
     surgeriesIntro: has("surgeries_intro") ? toIntro(g("surgeries_intro"), introFrom(surgeriesIntro)) : null,
     technologiesIntro: has("technologies_intro") ? toIntro(g("technologies_intro"), introFrom(technologiesIntro)) : null,
@@ -396,9 +406,9 @@ export async function getContactSections(): Promise<ContactSections> {
   const loaded = await loadPage("contact");
   const contactFb: IntroContent = { eyebrow: heroes.contact.eyebrow, title: contactIntro.formTitle, description: contactIntro.formNote };
   const mapFb: IntroContent = { eyebrow: { en: "Location", ar: "الموقع" }, title: contactIntro.locationTitle, description: { en: "", ar: "" } };
-  if (loaded === "unavailable") return { hero: { content: heroes.contact, primaryCta: BOOK, secondaryCta: EXPLORE }, contactIntro: contactFb, mapIntro: mapFb };
+  if (loaded === "unavailable") return { hero: { content: heroes.contact, primaryCta: BOOK_HERE, secondaryCta: EXPLORE }, contactIntro: contactFb, mapIntro: mapFb };
   return {
-    hero: buildHero(loaded, heroes.contact, { primary: BOOK, secondary: EXPLORE }),
+    hero: buildHero(loaded, heroes.contact, { primary: BOOK_HERE, secondary: EXPLORE }),
     contactIntro: loaded.sections.has("contact_intro") ? toIntro(loaded.sections.get("contact_intro")!, contactFb) : contactFb,
     mapIntro: loaded.sections.has("map_intro") ? toIntro(loaded.sections.get("map_intro")!, mapFb) : mapFb,
   };

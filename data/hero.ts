@@ -6,7 +6,10 @@ export interface HeroContent {
   headline: Localized;
   headlineAccent: Localized;
   description: Localized;
+  /** Shown at sm: and up. */
   image: MediaImage;
+  /** Shown below sm:. Falls back to `image` when not set. */
+  imageMobile?: MediaImage;
 }
 
 type HeroKey = "home" | "about" | "services" | "videos" | "articles" | "contact";

@@ -12,7 +12,7 @@ const URL_TO_SLUG: Record<string, string> = {
   contact: "contact",
 };
 
-const MEDIA_KEYS = ["image_id", "video_cover_media_id", "video_media_id", "portrait_media_id", "portrait_layer_1_media_id", "portrait_layer_2_media_id"];
+const MEDIA_KEYS = ["image_id", "image_mobile_id", "video_cover_media_id", "video_media_id", "portrait_media_id", "portrait_layer_1_media_id", "portrait_layer_2_media_id"];
 
 export default async function AdminPageEditorPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: urlSlug } = await params;
