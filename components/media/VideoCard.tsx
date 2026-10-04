@@ -73,6 +73,8 @@ export function VideoCard({ video, locale, frame = "glass", className }: VideoCa
         onClose={() => setOpen(false)}
         locale={locale}
         youtubeId={video.youtubeId}
+        fileUrl={video.fileUrl}
+        poster={video.thumbnail.src}
         title={video.title}
         aspect={video.aspect}
       />

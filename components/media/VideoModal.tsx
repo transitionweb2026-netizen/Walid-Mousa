@@ -10,12 +10,15 @@ interface VideoModalProps {
   onClose: () => void;
   locale: Locale;
   youtubeId: string;
+  /** Uploaded video file — plays natively when provided, instead of the YouTube embed. */
+  fileUrl?: string;
+  poster?: string;
   title: Localized;
   aspect?: "portrait" | "landscape";
 }
 
-/** A YouTube video playing inside the shared glass modal. */
-export function VideoModal({ open, onClose, locale, youtubeId, title, aspect = "landscape" }: VideoModalProps) {
+/** A video playing inside the shared glass modal — an uploaded file, or a YouTube embed. */
+export function VideoModal({ open, onClose, locale, youtubeId, fileUrl, poster, title, aspect = "landscape" }: VideoModalProps) {
   return (
     <Modal
       open={open}
@@ -30,7 +33,19 @@ export function VideoModal({ open, onClose, locale, youtubeId, title, aspect = "
             (aspect === "portrait" ? "aspect-[9/16]" : "aspect-video")
           }
         >
-          {open && (
+          {open && fileUrl && (
+            <video
+              className="absolute inset-0 h-full w-full bg-brand-ink object-contain"
+              src={fileUrl}
+              poster={poster}
+              controls
+              autoPlay
+              playsInline
+              preload="metadata"
+              aria-label={title[locale]}
+            />
+          )}
+          {open && !fileUrl && (
             <iframe
               className="absolute inset-0 h-full w-full"
               src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`}

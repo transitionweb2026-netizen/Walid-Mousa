@@ -3,12 +3,14 @@
 import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { resolveMediaUrl, type MediaRow } from "@/lib/cms/media";
-import { uploadMedia } from "@/app/admin/actions/media";
+import { uploadMediaFile } from "@/lib/cms/mediaUpload";
+import type { MediaBucket } from "@/lib/cms/mediaLimits";
+import { UploadProgress, type UploadState } from "@/components/admin/UploadProgress";
 import { cn } from "@/lib/utils";
 
 interface MediaPickerProps {
   label: string;
-  bucket: "media" | "video-covers" | "videos";
+  bucket: MediaBucket;
   category: MediaRow["category"];
   value: MediaRow | null;
   onChange: (media: MediaRow | null) => void;
@@ -23,7 +25,7 @@ export function MediaPicker({ label, bucket, category, value, onChange }: MediaP
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<MediaRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [upload, setUpload] = useState<UploadState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,24 +39,21 @@ export function MediaPicker({ label, bucket, category, value, onChange }: MediaP
   }
 
   async function handleUpload(file: File) {
-    setUploading(true);
     setError(null);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("bucket", bucket);
-    formData.append("category", category);
-    const result = await uploadMedia(formData);
-    setUploading(false);
-    if (!result.ok || !result.id) {
-      setError(result.error ?? "Upload failed.");
+    setUpload({ fileName: file.name, phase: "uploading", loaded: 0, total: file.size });
+    const result = await uploadMediaFile({
+      file,
+      bucket,
+      category,
+      onProgress: (e) => setUpload({ fileName: file.name, phase: e.phase, loaded: e.loaded, total: e.total }),
+    });
+    setUpload(null);
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
-    const supabase = createClient();
-    const { data } = await supabase.from("media").select("*").eq("id", result.id).single();
-    if (data) {
-      onChange(data);
-      setOpen(false);
-    }
+    onChange(result.media);
+    setOpen(false);
   }
 
   const previewUrl = resolveMediaUrl(value);
@@ -101,7 +100,7 @@ export function MediaPicker({ label, bucket, category, value, onChange }: MediaP
               </button>
             </div>
 
-            <div className="mt-4 flex items-center gap-3">
+            <div className="mt-4 flex flex-col gap-3">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -109,18 +108,22 @@ export function MediaPicker({ label, bucket, category, value, onChange }: MediaP
                 className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
+                  e.target.value = "";
                   if (file) void handleUpload(file);
                 }}
               />
-              <button
-                type="button"
-                disabled={uploading}
-                onClick={() => fileInputRef.current?.click()}
-                className="rounded-full bg-gradient-brand px-4 py-2 text-xs font-semibold text-white shadow-glass disabled:opacity-60"
-              >
-                {uploading ? "Uploading…" : "Upload New File"}
-              </button>
-              {error && <span className="text-xs font-medium text-brand-pink-deep">{error}</span>}
+              <div>
+                <button
+                  type="button"
+                  disabled={upload !== null}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="rounded-full bg-gradient-brand px-4 py-2 text-xs font-semibold text-white shadow-glass disabled:opacity-60"
+                >
+                  Upload New File
+                </button>
+              </div>
+              {upload && <UploadProgress {...upload} />}
+              {error && <p role="alert" className="text-xs font-medium text-brand-pink-deep">{error}</p>}
             </div>
 
             <div className="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-4">

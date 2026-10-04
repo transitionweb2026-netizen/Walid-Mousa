@@ -1,6 +1,6 @@
 import "server-only";
 import { getPublicClient } from "./publicClient";
-import { toMediaImage, type MediaRow } from "./media";
+import { resolveMediaUrl, toMediaImage, type MediaRow } from "./media";
 import type { IconName } from "@/components/icons/Icon";
 import type { Localized } from "@/lib/types";
 
@@ -196,6 +196,7 @@ export async function getVideos(): Promise<VideoItem[]> {
           description: { en: r.description_en ?? "", ar: r.description_ar ?? "" },
           thumbnail: img(m, r.cover_media_id, { en: r.title_en, ar: r.title_ar }, { en: r.cover_alt_en, ar: r.cover_alt_ar }),
           youtubeId: r.youtube_id ?? "",
+          fileUrl: (r.video_media_id && resolveMediaUrl(m.get(r.video_media_id))) || undefined,
           aspect: r.aspect,
           duration: r.duration_label ?? "",
           category: { en: r.category_en ?? "", ar: r.category_ar ?? "" },

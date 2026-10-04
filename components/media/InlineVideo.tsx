@@ -57,6 +57,8 @@ export function InlineVideo({ video, title, locale, className }: InlineVideoProp
         onClose={() => setOpen(false)}
         locale={locale}
         youtubeId={video.youtubeId}
+        fileUrl={video.fileUrl}
+        poster={video.poster.src}
         title={title}
         aspect={video.aspect}
       />

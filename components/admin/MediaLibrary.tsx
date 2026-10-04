@@ -2,7 +2,10 @@
 
 import { useMemo, useRef, useState } from "react";
 import { resolveMediaUrl, type MediaRow } from "@/lib/cms/media";
-import { uploadMedia, updateMediaAltText, deleteMedia } from "@/app/admin/actions/media";
+import { uploadMediaFile } from "@/lib/cms/mediaUpload";
+import type { MediaBucket } from "@/lib/cms/mediaLimits";
+import { updateMediaAltText, deleteMedia } from "@/app/admin/actions/media";
+import { UploadProgress, type UploadState } from "@/components/admin/UploadProgress";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES: MediaRow["category"][] = [
@@ -23,8 +26,8 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaRow[] }) {
   const [category, setCategory] = useState<string>("all");
   const [type, setType] = useState<"all" | "image" | "video">("all");
   const [selected, setSelected] = useState<MediaRow | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadBucket, setUploadBucket] = useState<"media" | "video-covers" | "videos">("media");
+  const [upload, setUpload] = useState<UploadState | null>(null);
+  const [uploadBucket, setUploadBucket] = useState<MediaBucket>("media");
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,19 +41,20 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaRow[] }) {
   }, [items, category, type, query]);
 
   async function handleUpload(file: File) {
-    setUploading(true);
     setError(null);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("bucket", uploadBucket);
-    formData.append("category", "general");
-    const result = await uploadMedia(formData);
-    setUploading(false);
+    setUpload({ fileName: file.name, phase: "uploading", loaded: 0, total: file.size });
+    const result = await uploadMediaFile({
+      file,
+      bucket: uploadBucket,
+      category: "general",
+      onProgress: (e) => setUpload({ fileName: file.name, phase: e.phase, loaded: e.loaded, total: e.total }),
+    });
+    setUpload(null);
     if (!result.ok) {
-      setError(result.error ?? "Upload failed.");
+      setError(result.error);
       return;
     }
-    window.location.reload();
+    setItems((prev) => [result.media, ...prev]);
   }
 
   async function handleDelete(item: MediaRow) {
@@ -81,20 +85,26 @@ export function MediaLibrary({ initialItems }: { initialItems: MediaRow[] }) {
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];
+              e.target.value = "";
               if (file) void handleUpload(file);
             }}
           />
           <button
             type="button"
-            disabled={uploading}
+            disabled={upload !== null}
             onClick={() => fileInputRef.current?.click()}
             className="rounded-full bg-gradient-brand px-4 py-2.5 text-sm font-semibold text-white shadow-glass disabled:opacity-60"
           >
-            {uploading ? "Uploading…" : "+ Upload File"}
+            + Upload File
           </button>
         </div>
       </div>
-      {error && <p className="mt-2 text-sm font-medium text-brand-pink-deep">{error}</p>}
+      {upload && (
+        <div className="mt-4 max-w-md">
+          <UploadProgress {...upload} />
+        </div>
+      )}
+      {error && <p role="alert" className="mt-2 text-sm font-medium text-brand-pink-deep">{error}</p>}
 
       <div className="mt-5 flex flex-wrap gap-2">
         <input

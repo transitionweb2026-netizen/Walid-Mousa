@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "img.youtube.com" },
       { protocol: "https", hostname: "i.ytimg.com" },
+      // Any Supabase project's public storage — independent of whichever
+      // NEXT_PUBLIC_SUPABASE_URL was set when this build ran.
+      { protocol: "https", hostname: "**.supabase.co", pathname: "/storage/v1/object/public/**" },
       ...(supabaseHostname
         ? [
             {

@@ -12,6 +12,8 @@ export interface VideoItem {
    * with Dr. Walid Moussa's real clip id; nothing else needs to change.
    */
   youtubeId: string;
+  /** Uploaded video file URL — plays natively when set, in preference to youtubeId. */
+  fileUrl?: string;
   aspect: "portrait" | "landscape";
   duration: string;
   category: Localized;

@@ -1,6 +1,6 @@
 import "server-only";
 import { getPublicClient } from "./publicClient";
-import { toMediaImage, type MediaRow } from "./media";
+import { resolveMediaUrl, toMediaImage, type MediaRow } from "./media";
 import { asRecord, localized, localizedArray, optionalStr, nestedCta, localizedPairArray, type JsonRecord } from "./jsonContent";
 import { siteContent } from "@/data/site";
 import { heroes, type HeroContent } from "@/data/hero";
@@ -152,6 +152,8 @@ function toDoctorIntro(content: JsonRecord, media: Map<string, MediaRow>): Docto
   const poster = toMediaImage(coverId ? (media.get(coverId) ?? null) : null, fbDoctorIntro.video.poster.alt, {
     alt: localized(content, "video_alt", fbDoctorIntro.video.poster.alt),
   });
+  const videoId = optionalStr(content, "video_media_id");
+  const fileUrl = videoId ? resolveMediaUrl(media.get(videoId)) : null;
   return {
     eyebrow: localized(content, "eyebrow", fbDoctorIntro.eyebrow),
     heading: localized(content, "heading", fbDoctorIntro.heading),
@@ -161,6 +163,7 @@ function toDoctorIntro(content: JsonRecord, media: Map<string, MediaRow>): Docto
     video: {
       poster,
       youtubeId: optionalStr(content, "youtube_id") ?? fbDoctorIntro.video.youtubeId,
+      fileUrl: fileUrl ?? undefined,
       aspect: fbDoctorIntro.video.aspect,
       duration: fbDoctorIntro.video.duration,
     } satisfies MediaVideo,

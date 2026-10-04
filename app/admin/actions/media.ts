@@ -2,86 +2,87 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { BUCKET_LIMITS, type MediaBucket } from "@/lib/cms/mediaLimits";
 import type { Database } from "@/lib/supabase/types";
 
 type MediaCategory = Database["public"]["Tables"]["media"]["Row"]["category"];
-type MediaBucket = NonNullable<Database["public"]["Tables"]["media"]["Row"]["bucket_id"]>;
+type MediaRowDb = Database["public"]["Tables"]["media"]["Row"];
 
 export interface ActionResult {
   ok: boolean;
   error?: string;
   id?: string;
+  media?: MediaRowDb;
 }
 
-const BUCKET_LIMITS: Record<MediaBucket, { maxBytes: number; mimeTypes: string[] }> = {
-  media: { maxBytes: 10 * 1024 * 1024, mimeTypes: ["image/png", "image/jpeg", "image/webp", "image/svg+xml", "image/gif", "image/avif"] },
-  "video-covers": { maxBytes: 5 * 1024 * 1024, mimeTypes: ["image/png", "image/jpeg", "image/webp", "image/avif"] },
-  videos: { maxBytes: 500 * 1024 * 1024, mimeTypes: ["video/mp4", "video/webm", "video/quicktime"] },
-};
+export interface MediaRecordInput {
+  bucket: MediaBucket;
+  /** Storage object path, e.g. "videos/3f2c…-uuid.mp4" — set by the browser after its direct upload. */
+  path: string;
+  fileName: string;
+  mimeType: string;
+  fileSize: number;
+  category: MediaCategory;
+  altEn: string;
+  altAr: string;
+}
+
+const PATH_PATTERN = /^[a-z-]+\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.[a-z0-9]+$/;
 
 /**
- * Uploads a file to the appropriate Supabase Storage bucket and creates its
- * `media` row in one step. MIME type and size are validated against the
- * bucket's own limits (supabase/migrations/0012_storage.sql) before anything
- * is sent to Storage.
+ * Creates the `media` row for a file the browser has ALREADY uploaded straight
+ * to Supabase Storage. The file bytes never pass through this action, so the
+ * request is a few hundred bytes regardless of how large the video is — which
+ * is what lets 500 MB videos work on Vercel at all (see MediaPicker/uploadMediaFile).
+ * Re-checks every limit server-side and confirms the object really exists before
+ * recording it, so a crafted request can't register a row for a file that isn't there.
  */
-export async function uploadMedia(formData: FormData): Promise<ActionResult> {
-  const file = formData.get("file");
-  const bucket = String(formData.get("bucket") ?? "") as MediaBucket;
-  const category = String(formData.get("category") ?? "general") as MediaCategory;
-  const altEn = String(formData.get("altEn") ?? "");
-  const altAr = String(formData.get("altAr") ?? "");
-
-  if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, error: "No file selected." };
-  }
-  const limits = BUCKET_LIMITS[bucket];
+export async function registerMediaRecord(input: MediaRecordInput): Promise<ActionResult> {
+  const limits = BUCKET_LIMITS[input.bucket];
   if (!limits) return { ok: false, error: "Unknown storage bucket." };
-  if (!limits.mimeTypes.includes(file.type)) {
-    return { ok: false, error: `${file.type || "This file type"} isn't allowed in the "${bucket}" bucket.` };
+  if (!limits.mimeTypes.includes(input.mimeType)) {
+    return { ok: false, error: "That file type isn't allowed in this bucket." };
   }
-  if (file.size > limits.maxBytes) {
-    return { ok: false, error: `File is too large (max ${(limits.maxBytes / 1024 / 1024).toFixed(0)}MB).` };
+  if (input.fileSize <= 0 || input.fileSize > limits.maxBytes) {
+    return { ok: false, error: "File size is outside this bucket's limit." };
+  }
+  if (!PATH_PATTERN.test(input.path) || !input.path.startsWith(`${input.category}/`)) {
+    return { ok: false, error: "Invalid storage path." };
   }
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Your session has expired — please sign in again." };
 
-  const ext = file.name.split(".").pop() ?? "bin";
-  const path = `${category}/${crypto.randomUUID()}.${ext}`;
+  const { data: exists } = await supabase.storage.from(input.bucket).exists(input.path);
+  if (!exists) return { ok: false, error: "The uploaded file wasn't found in storage." };
 
-  const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, {
-    contentType: file.type,
-    upsert: false,
-  });
-  if (uploadError) return { ok: false, error: uploadError.message };
-
-  const { data, error: insertError } = await supabase
+  const { data, error } = await supabase
     .from("media")
     .insert({
-      bucket_id: bucket,
-      storage_path: path,
-      file_name: file.name,
-      mime_type: file.type,
-      file_size: file.size,
-      kind: bucket === "videos" ? "video" : "image",
-      category,
-      alt_text_en: altEn || null,
-      alt_text_ar: altAr || null,
-      uploaded_by: user?.id ?? null,
+      bucket_id: input.bucket,
+      storage_path: input.path,
+      file_name: input.fileName,
+      mime_type: input.mimeType,
+      file_size: input.fileSize,
+      kind: input.mimeType.startsWith("video/") ? "video" : "image",
+      category: input.category,
+      alt_text_en: input.altEn || null,
+      alt_text_ar: input.altAr || null,
+      uploaded_by: user.id,
     } as never)
-    .select("id")
+    .select("*")
     .single();
 
-  if (insertError || !data) {
-    await supabase.storage.from(bucket).remove([path]);
-    return { ok: false, error: insertError?.message ?? "Could not save the file record." };
+  if (error || !data) {
+    return { ok: false, error: error?.message ?? "Could not save the file record." };
   }
 
   revalidatePath("/admin/media");
-  return { ok: true, id: (data as { id: string }).id };
+  const row = data as MediaRowDb;
+  return { ok: true, id: row.id, media: row };
 }
 
 export async function updateMediaAltText(id: string, altEn: string, altAr: string): Promise<ActionResult> {

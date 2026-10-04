@@ -31,6 +31,8 @@ export interface MediaVideo {
   poster: MediaImage;
   /** YouTube video id (the `v=` value). Empty while awaiting real footage. */
   youtubeId: string;
+  /** Uploaded video file URL. When set it plays natively and takes precedence over youtubeId. */
+  fileUrl?: string;
   /** Card framing — phone-style vertical vs. standard 16:9. */
   aspect: "portrait" | "landscape";
   /** mm:ss label shown on the card. */
