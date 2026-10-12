@@ -27,7 +27,7 @@ import { specialties, specialtiesIntro, servicesFaqIntro } from "../data/special
 import { videos, videosIntro } from "../data/videos.ts";
 import { articles, articlesIntro } from "../data/articles.ts";
 import { aboutContent } from "../data/about.ts";
-import { contactInfo, workingHours, socialLinks, contactIntro, contactFormCopy } from "../data/contact.ts";
+import { contactInfo, clinicLocations, socialLinks, contactIntro, contactFormCopy } from "../data/contact.ts";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -106,10 +106,6 @@ async function seedSettings() {
   await updateSingleton("contact_settings", {
     phone_display: contactInfo.phoneDisplay.en, phone_href: `tel:${contactInfo.phone}`,
     whatsapp_number: contactInfo.whatsapp, email: contactInfo.email,
-    address_en: contactInfo.address.en, address_ar: contactInfo.address.ar,
-    address_short_en: contactInfo.addressShort.en, address_short_ar: contactInfo.addressShort.ar,
-    working_hours: workingHours.map((r) => ({ day: r.day, hours: r.hours, closed: r.closed ?? false })),
-    map_embed_url: contactInfo.mapEmbedSrc, map_link_url: contactInfo.mapLink, map_directions_url: contactInfo.mapDirectionsLink,
   });
   await updateSingleton("contact_form_settings", {
     title_en: contactIntro.formTitle.en, title_ar: contactIntro.formTitle.ar,
@@ -157,6 +153,17 @@ async function seedGlobalCollections() {
   await upsertRows("social_links",
     socialLinks.map((s, i) => ({ platform: s.key, label_en: s.label, label_ar: s.label, value: s.href, icon: s.icon, display_order: i + 1, is_active: s.href !== "#" })),
     "platform");
+  await upsertRows("clinic_locations",
+    clinicLocations.map((loc, i) => ({
+      slug: loc.slug, name_en: loc.name.en, name_ar: loc.name.ar,
+      address_en: loc.address.en, address_ar: loc.address.ar,
+      address_short_en: loc.addressShort.en, address_short_ar: loc.addressShort.ar,
+      notes_en: loc.notes?.en ?? null, notes_ar: loc.notes?.ar ?? null,
+      working_hours: loc.workingHours.map((r) => ({ day: r.day, hours: r.hours, closed: r.closed ?? false })),
+      map_embed_url: loc.mapEmbedSrc, map_link_url: loc.mapLink, map_directions_url: loc.mapDirectionsLink,
+      display_order: i + 1,
+    })),
+    "slug");
 }
 
 async function seedCollections() {

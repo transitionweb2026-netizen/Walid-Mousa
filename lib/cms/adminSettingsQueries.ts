@@ -33,9 +33,7 @@ export async function getFooterSettingsAdmin() {
 export async function getContactSettingsAdmin() {
   const supabase = await createClient();
   const { data: contact } = await supabase.from("contact_settings").select("*").eq("id", true).single();
-  if (!contact) return null;
-  const location = await getMedia(supabase, contact.location_image_id);
-  return { ...contact, location_image_id: location };
+  return contact;
 }
 export async function getContactFormSettingsAdmin() {
   const supabase = await createClient();

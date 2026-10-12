@@ -42,6 +42,7 @@ const CONTENT: NavLeaf[] = [
   { label: "Other Services", href: "/admin/content/other-services" },
   { label: "Clinic Gallery", href: "/admin/content/gallery" },
   { label: "Contact Assurances", href: "/admin/content/assurances" },
+  { label: "Clinic Locations", href: "/admin/content/locations" },
 ];
 
 const SETTINGS: NavLeaf[] = [

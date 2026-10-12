@@ -5,7 +5,7 @@ import { heroes } from "@/data/hero";
 import { siteContent } from "@/data/site";
 import { buildPageMetadata } from "@/lib/cms/publicSeo";
 import { getContactSections } from "@/lib/cms/publicSections";
-import { getContactAssurances } from "@/lib/cms/publicContent";
+import { getContactAssurances, getClinicLocations } from "@/lib/cms/publicContent";
 import {
   getContactInfo,
   getContactFormSettings,
@@ -48,7 +48,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
-  const [sections, contact, form, intro, social, footer, assurances] = await Promise.all([
+  const [sections, contact, form, intro, social, footer, assurances, locations] = await Promise.all([
     getContactSections(),
     getContactInfo(),
     getContactFormSettings(),
@@ -56,6 +56,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
     getSocialLinks(),
     getFooterContent(),
     getContactAssurances(),
+    getClinicLocations(),
   ]);
   const cref = (c: { url: string }) => `/${locale}${c.url}`;
   const h = heroes.contact;
@@ -127,17 +128,25 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
         </div>
 
         <Reveal className="mt-8">
-          <ClinicMap
-            locale={locale}
-            contact={contact}
-            labels={{
-              locationTitle: intro.locationTitle,
-              openInMaps: intro.openInMaps,
-              getDirections: intro.getDirections,
-              mapHint: intro.mapHint,
-              mapPending: intro.mapPending,
-            }}
-          />
+          <h2 className="flex items-center gap-2 font-heading text-lg font-extrabold text-brand-ink">
+            <Icon name="map-pin" className="h-5 w-5 text-brand-teal-deep" />
+            {intro.locationTitle[locale]}
+          </h2>
+          <div className="mt-4 flex flex-col gap-5">
+            {locations.map((location) => (
+              <ClinicMap
+                key={location.id}
+                locale={locale}
+                location={location}
+                labels={{
+                  openInMaps: intro.openInMaps,
+                  getDirections: intro.getDirections,
+                  mapHint: intro.mapHint,
+                  mapPending: intro.mapPending,
+                }}
+              />
+            ))}
+          </div>
         </Reveal>
       </Section>
 

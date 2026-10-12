@@ -14,6 +14,7 @@ import { videos as fbVideos, type VideoItem } from "@/data/videos";
 import { articles as fbArticles, type ArticleItem } from "@/data/articles";
 import { specialties as fbSpecialties, type Specialty, type SpecialtyTreatment } from "@/data/specialties";
 import { aboutContent } from "@/data/about";
+import { clinicLocations as fbClinicLocations, type ClinicLocation, type WorkingHoursRow } from "@/data/contact";
 
 /**
  * Every content collection. Each getter returns the SAME shape as its
@@ -454,6 +455,33 @@ export async function getCareerItems(): Promise<CareerMilestone[]> {
     ...aboutContent.experience.items.map((e) => ({ id: e.role.en, period: e.period, title: e.role, place: e.place, detail: e.detail, icon: "procedure" as IconName, kind: "role" as const })),
     ...aboutContent.education.items.map((e) => ({ id: e.title.en, period: e.year, title: e.title, place: e.place, icon: "graduation" as IconName, kind: "education" as const })),
   ];
+}
+
+export type { ClinicLocation };
+export async function getClinicLocations(): Promise<ClinicLocation[]> {
+  const supabase = await getPublicClient();
+  if (supabase) {
+    try {
+      const { data } = await supabase.from("clinic_locations").select("*").order("display_order");
+      if (data && data.length > 0) {
+        return data.map((r) => ({
+          id: r.id,
+          slug: r.slug,
+          name: { en: r.name_en, ar: r.name_ar },
+          address: { en: r.address_en, ar: r.address_ar },
+          addressShort: { en: r.address_short_en, ar: r.address_short_ar },
+          notes: r.notes_en || r.notes_ar ? { en: r.notes_en ?? "", ar: r.notes_ar ?? "" } : undefined,
+          workingHours: Array.isArray(r.working_hours) ? (r.working_hours as unknown as WorkingHoursRow[]) : [],
+          mapEmbedSrc: r.map_embed_url,
+          mapLink: r.map_link_url,
+          mapDirectionsLink: r.map_directions_url,
+        }));
+      }
+    } catch (e) {
+      console.error("[cms] getClinicLocations failed:", e);
+    }
+  }
+  return fbClinicLocations;
 }
 
 export interface WhyPoint { id: string; icon: IconName; title: Localized; text: Localized }

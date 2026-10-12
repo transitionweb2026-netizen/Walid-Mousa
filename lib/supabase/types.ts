@@ -113,18 +113,29 @@ export interface Database {
         updated_at: string;
       }>;
 
-      contact_settings: Table<{
-        id: true;
-        phone_display: string; phone_href: string;
-        whatsapp_number: string;
-        email: string;
+      clinic_locations: Table<{
+        id: string;
+        slug: string;
+        name_en: string; name_ar: string;
         address_en: string; address_ar: string;
         address_short_en: string; address_short_ar: string;
+        notes_en: string | null; notes_ar: string | null;
         working_hours: Json;
         map_embed_url: string; map_link_url: string; map_directions_url: string;
         location_image_id: string | null;
         location_image_alt_en: string | null;
         location_image_alt_ar: string | null;
+        display_order: number;
+        is_active: boolean;
+        created_at: string;
+        updated_at: string;
+      }>;
+
+      contact_settings: Table<{
+        id: true;
+        phone_display: string; phone_href: string;
+        whatsapp_number: string;
+        email: string;
         updated_at: string;
       }>;
 

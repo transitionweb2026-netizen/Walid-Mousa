@@ -24,7 +24,7 @@ function attachMedia<T extends Record<string, unknown>>(row: T, mediaMap: Map<st
   return next;
 }
 
-async function withMedia(table: "conditions" | "treatments" | "surgeries" | "technologies" | "certificates" | "career_items" | "expertise_areas" | "gallery_images", ...fkKeys: string[]) {
+async function withMedia(table: "conditions" | "treatments" | "surgeries" | "technologies" | "certificates" | "career_items" | "expertise_areas" | "gallery_images" | "clinic_locations", ...fkKeys: string[]) {
   const supabase = await createClient();
   const [{ data }, mediaMap] = await Promise.all([supabase.from(table).select("*").order("display_order"), loadMediaMap(supabase)]);
   return (data ?? []).map((row) => attachMedia(row as Record<string, unknown>, mediaMap, ...fkKeys));
@@ -38,6 +38,7 @@ export const getAdminCertificates = () => withMedia("certificates", "image_id");
 export const getAdminCareerItems = () => withMedia("career_items", "image_id");
 export const getAdminExpertiseAreas = () => withMedia("expertise_areas", "image_id");
 export const getAdminGalleryImages = () => withMedia("gallery_images", "image_id");
+export const getAdminClinicLocations = () => withMedia("clinic_locations", "location_image_id");
 
 export async function getAdminStatistics() {
   const supabase = await createClient();

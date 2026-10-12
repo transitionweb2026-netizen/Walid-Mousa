@@ -6,11 +6,9 @@ import { navigationItems as fallbackNav, type NavItem } from "@/data/navigation"
 import {
   contactInfo as fallbackContact,
   socialLinks as fallbackSocial,
-  workingHours as fallbackHours,
   contactIntro as fallbackContactIntro,
   contactFormCopy as fallbackFormCopy,
   type SocialLink,
-  type WorkingHoursRow,
 } from "@/data/contact";
 import type { Localized, MediaImage } from "@/lib/types";
 
@@ -175,18 +173,14 @@ export async function getFooterContent(): Promise<FooterContent> {
 }
 
 // ── contact info ──────────────────────────────────────────────────────────
+// Only what's genuinely shared across every clinic location. Per-location
+// address, hours and map live in `clinic_locations` — see
+// lib/cms/publicContent.ts's getClinicLocations().
 export interface ContactInfo {
   phone: string;
   phoneDisplay: Localized;
   whatsapp: string;
   email: string;
-  address: Localized;
-  addressShort: Localized;
-  workingHours: WorkingHoursRow[];
-  mapEmbedSrc: string;
-  mapLink: string;
-  mapDirectionsLink: string;
-  locationImage: MediaImage | null;
 }
 
 export async function getContactInfo(): Promise<ContactInfo> {
@@ -195,35 +189,17 @@ export async function getContactInfo(): Promise<ContactInfo> {
     phoneDisplay: fallbackContact.phoneDisplay,
     whatsapp: fallbackContact.whatsapp,
     email: fallbackContact.email,
-    address: fallbackContact.address,
-    addressShort: fallbackContact.addressShort,
-    workingHours: fallbackHours,
-    mapEmbedSrc: fallbackContact.mapEmbedSrc,
-    mapLink: fallbackContact.mapLink,
-    mapDirectionsLink: fallbackContact.mapDirectionsLink,
-    locationImage: null,
   };
   const supabase = await getPublicClient();
   if (!supabase) return fallback;
   try {
     const { data } = await supabase.from("contact_settings").select("*").eq("id", true).maybeSingle();
     if (!data || !data.phone_display) return fallback;
-    const hours = Array.isArray(data.working_hours) ? (data.working_hours as unknown as WorkingHoursRow[]) : fallbackHours;
-    const locImg = data.location_image_id ? await loadOne(supabase, data.location_image_id) : null;
     return {
       phone: data.phone_href.replace(/^tel:/, ""),
       phoneDisplay: { en: data.phone_display, ar: data.phone_display },
       whatsapp: data.whatsapp_number,
       email: data.email,
-      address: { en: data.address_en, ar: data.address_ar },
-      addressShort: { en: data.address_short_en, ar: data.address_short_ar },
-      workingHours: hours,
-      mapEmbedSrc: data.map_embed_url,
-      mapLink: data.map_link_url,
-      mapDirectionsLink: data.map_directions_url,
-      locationImage: locImg
-        ? toMediaImage(locImg, { en: data.location_image_alt_en ?? "", ar: data.location_image_alt_ar ?? "" })
-        : null,
     };
   } catch (error) {
     console.error("[cms] getContactInfo failed:", error);
@@ -409,10 +385,6 @@ async function loadMedia(supabase: PC, ids: (string | null)[]): Promise<Map<stri
   if (unique.length === 0) return new Map();
   const { data } = await supabase.from("media").select("*").in("id", unique);
   return new Map((data ?? []).map((m) => [m.id, m] as const));
-}
-async function loadOne(supabase: PC, id: string): Promise<MediaRow | null> {
-  const { data } = await supabase.from("media").select("*").eq("id", id).maybeSingle();
-  return data ?? null;
 }
 function mediaStorageUrl(m: MediaRow | undefined): string | null {
   if (!m) return null;

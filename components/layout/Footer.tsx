@@ -8,6 +8,7 @@ import type {
   ContactInfo,
   SiteBranding,
 } from "@/lib/cms/publicSettings";
+import type { ClinicLocation } from "@/lib/cms/publicContent";
 import type { SocialLink } from "@/data/contact";
 
 interface FooterProps {
@@ -16,10 +17,11 @@ interface FooterProps {
   footer: FooterContent;
   social: SocialLink[];
   contact: ContactInfo;
+  primaryLocation: ClinicLocation | null;
   branding: SiteBranding;
 }
 
-export function Footer({ locale, nav, footer, social, contact, branding }: FooterProps) {
+export function Footer({ locale, nav, footer, social, contact, primaryLocation, branding }: FooterProps) {
   const localeRoot = `/${locale}`;
   const year = new Date().getFullYear();
   const initial = branding.orgName.en.replace(/^Dr\.\s*/, "").charAt(0) || "W";
@@ -105,10 +107,10 @@ export function Footer({ locale, nav, footer, social, contact, branding }: Foote
                   </a>
                 </li>
               )}
-              {contact.addressShort[locale] && (
+              {primaryLocation && (
                 <li className="flex items-start gap-2.5">
                   <Icon name="map-pin" className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
-                  {contact.addressShort[locale]}
+                  {primaryLocation.addressShort[locale]}
                 </li>
               )}
             </ul>
@@ -117,7 +119,7 @@ export function Footer({ locale, nav, footer, social, contact, branding }: Foote
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-brand-teal-deep">{footer.hoursTitle[locale]}</h3>
             <ul className="mt-4 space-y-2 text-sm text-brand-ink-soft">
-              {contact.workingHours.map((row, i) => (
+              {(primaryLocation?.workingHours ?? []).map((row, i) => (
                 <li key={i} className="flex items-center justify-between gap-3">
                   <span>{row.day[locale]}</span>
                   <span className={row.closed ? "text-brand-pink-deep" : "font-medium text-brand-ink"}>

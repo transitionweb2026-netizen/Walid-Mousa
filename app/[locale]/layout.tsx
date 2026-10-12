@@ -12,6 +12,7 @@ import {
   getSiteBranding,
   getUiStrings,
 } from "@/lib/cms/publicSettings";
+import { getClinicLocations } from "@/lib/cms/publicContent";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MotionProvider } from "@/components/motion/MotionProvider";
@@ -73,14 +74,16 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
-  const [nav, footer, social, contact, branding, ui] = await Promise.all([
+  const [nav, footer, social, contact, branding, ui, locations] = await Promise.all([
     getNavbarSettings(),
     getFooterContent(),
     getSocialLinks(),
     getContactInfo(),
     getSiteBranding(),
     getUiStrings(),
+    getClinicLocations(),
   ]);
+  const primaryLocation = locations[0] ?? null;
 
   return (
     <html
@@ -93,8 +96,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       <body className="antialiased">
         <JsonLd
           data={[
-            buildPhysicianJsonLd(branding, contact, locale),
-            buildMedicalOrganizationJsonLd(branding, contact, locale, social),
+            buildPhysicianJsonLd(branding, contact, locale, primaryLocation?.address),
+            buildMedicalOrganizationJsonLd(branding, contact, locale, social, primaryLocation?.address),
             buildWebSiteJsonLd(branding, locale),
           ]}
         />
@@ -115,6 +118,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
             footer={footer}
             social={social}
             contact={contact}
+            primaryLocation={primaryLocation}
             branding={branding}
           />
         </MotionProvider>

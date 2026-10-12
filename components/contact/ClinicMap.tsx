@@ -1,13 +1,12 @@
 import { Icon } from "@/components/icons/Icon";
-import type { ContactInfo } from "@/lib/cms/publicSettings";
+import type { ClinicLocation } from "@/lib/cms/publicContent";
 import type { Locale } from "@/lib/i18n";
 import type { Localized } from "@/lib/types";
 
 interface Props {
   locale: Locale;
-  contact: ContactInfo;
+  location: ClinicLocation;
   labels: {
-    locationTitle: Localized;
     openInMaps: Localized;
     getDirections: Localized;
     mapHint: Localized;
@@ -16,31 +15,47 @@ interface Props {
 }
 
 /**
- * Clinic location. The whole map area is a link to Google Maps directions.
- * Everything comes from the CMS (Global Settings → Contact Information):
+ * One clinic location card. The whole map area is a link to Google Maps
+ * directions. Everything comes from the CMS (Content → Clinic Locations):
  * `map_embed_url` (leave blank for the placeholder panel), `map_link_url`,
- * `map_directions_url`, `address`.
+ * `map_directions_url`, `address`, `working_hours`.
  */
-export function ClinicMap({ locale, contact, labels }: Props) {
-  const hasEmbed = Boolean(contact.mapEmbedSrc);
-  const directions = contact.mapDirectionsLink || contact.mapLink;
+export function ClinicMap({ locale, location, labels }: Props) {
+  const hasEmbed = Boolean(location.mapEmbedSrc);
+  const directions = location.mapDirectionsLink || location.mapLink;
 
   return (
     <div className="glass-card glass-sheen overflow-hidden rounded-3xl">
-      <div className="flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+      <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:justify-between sm:p-7">
         <div>
-          <h2 className="flex items-center gap-2 font-heading text-lg font-extrabold text-brand-ink">
+          <h3 className="flex items-center gap-2 font-heading text-lg font-extrabold text-brand-ink">
             <Icon name="map-pin" className="h-5 w-5 text-brand-teal-deep" />
-            {labels.locationTitle[locale]}
-          </h2>
-          {contact.address[locale] && (
-            <p className="mt-1.5 text-sm leading-relaxed text-brand-ink-soft">{contact.address[locale]}</p>
+            {location.name[locale]}
+          </h3>
+          {location.address[locale] && (
+            <p className="mt-1.5 text-sm leading-relaxed text-brand-ink-soft">{location.address[locale]}</p>
+          )}
+          {location.notes?.[locale] && (
+            <p className="mt-1 text-xs font-semibold text-brand-teal-deep">{location.notes[locale]}</p>
+          )}
+          {location.workingHours.length > 0 && (
+            <ul className="mt-3 flex flex-col gap-1">
+              {location.workingHours.map((row, i) => (
+                <li key={i} className="flex items-center gap-2 text-xs">
+                  <Icon name="clock" className="h-3.5 w-3.5 shrink-0 text-brand-teal" />
+                  <span className="text-brand-ink-soft">{row.day[locale]}:</span>
+                  <span className={row.closed ? "font-semibold text-brand-pink-deep" : "font-semibold text-brand-ink"}>
+                    {row.hours[locale]}
+                  </span>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
         <div className="flex shrink-0 flex-wrap gap-2">
-          {contact.mapLink && (
+          {location.mapLink && (
             <a
-              href={contact.mapLink}
+              href={location.mapLink}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-4 py-2 text-sm font-semibold text-brand-teal-deep transition-colors hover:bg-brand-teal-tint"
@@ -72,8 +87,8 @@ export function ClinicMap({ locale, contact, labels }: Props) {
       >
         {hasEmbed ? (
           <iframe
-            title={labels.locationTitle[locale]}
-            src={contact.mapEmbedSrc}
+            title={location.name[locale]}
+            src={location.mapEmbedSrc}
             className="pointer-events-none absolute inset-0 h-full w-full opacity-90"
             referrerPolicy="no-referrer-when-downgrade"
             loading="lazy"

@@ -4,6 +4,7 @@ import type { SiteBranding, ContactInfo } from "@/lib/cms/publicSettings";
 import type { SocialLink } from "@/data/contact";
 import type { ArticleItem } from "@/data/articles";
 import type { ItemSeo } from "@/lib/cms/publicSeo";
+import type { Localized } from "@/lib/types";
 
 /**
  * Pure builders for the schema.org nodes the spec asks for — Physician,
@@ -21,7 +22,7 @@ function absoluteUrl(base: string, path: string): string {
   return `${root}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
-export function buildPhysicianJsonLd(branding: SiteBranding, contact: ContactInfo, locale: Locale) {
+export function buildPhysicianJsonLd(branding: SiteBranding, contact: ContactInfo, locale: Locale, address?: Localized) {
   const site = origin(branding.websiteUrl);
   return {
     "@type": "Physician",
@@ -33,7 +34,7 @@ export function buildPhysicianJsonLd(branding: SiteBranding, contact: ContactInf
     image: branding.logo?.src || undefined,
     telephone: contact.phone || undefined,
     email: contact.email || undefined,
-    address: contact.address[locale] ? { "@type": "PostalAddress", streetAddress: contact.address[locale] } : undefined,
+    address: address?.[locale] ? { "@type": "PostalAddress", streetAddress: address[locale] } : undefined,
   };
 }
 
@@ -41,7 +42,8 @@ export function buildMedicalOrganizationJsonLd(
   branding: SiteBranding,
   contact: ContactInfo,
   locale: Locale,
-  socialLinks: SocialLink[] = []
+  socialLinks: SocialLink[] = [],
+  address?: Localized
 ) {
   const site = origin(branding.websiteUrl);
   return {
@@ -53,7 +55,7 @@ export function buildMedicalOrganizationJsonLd(
     image: branding.logo?.src || undefined,
     telephone: contact.phone || undefined,
     email: contact.email || undefined,
-    address: contact.address[locale] ? { "@type": "PostalAddress", streetAddress: contact.address[locale] } : undefined,
+    address: address?.[locale] ? { "@type": "PostalAddress", streetAddress: address[locale] } : undefined,
     sameAs: socialLinks.length > 0 ? socialLinks.map((s) => s.href) : undefined,
   };
 }

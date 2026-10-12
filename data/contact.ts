@@ -3,39 +3,20 @@ import type { IconName } from "@/components/icons/Icon";
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════
- *  PLACEHOLDER CONTACT DETAILS — replace every value below with the clinic's
- *  real information before going live. This one file feeds the Navbar CTA,
- *  the Footer, the Home hero panel, the Final CTA and the whole Contact page.
+ *  CONTACT DETAILS — feeds the Navbar CTA, the Footer, the Home hero panel,
+ *  the Final CTA and the whole Contact page. Per-location details (address,
+ *  hours, map) live in `clinicLocations` below, not here — this is only the
+ *  contact info shared across every location.
  * ═══════════════════════════════════════════════════════════════════════════
  */
 
 export const contactInfo = {
   /** International format for links; `phoneDisplay` is what users see. */
-  phone: "+201000000000",
-  phoneDisplay: { en: "+20 100 000 0000", ar: "+20 100 000 0000" } satisfies Localized,
+  phone: "+201109742792",
+  phoneDisplay: { en: "+20 110 974 2792", ar: "+20 110 974 2792" } satisfies Localized,
   /** Digits only, no + — used for wa.me. Env var overrides this at runtime. */
-  whatsapp: "201000000000",
+  whatsapp: "201011764200",
   email: "reception@drwalidmoussa.com",
-  address: {
-    en: "Nile Medical Tower, 5th Floor, 12 El-Batal Ahmed Abdel Aziz St., Mohandessin, Giza, Egypt",
-    ar: "برج النيل الطبي، الدور الخامس، ١٢ شارع البطل أحمد عبد العزيز، المهندسين، الجيزة، مصر",
-  } satisfies Localized,
-  addressShort: { en: "Mohandessin, Giza", ar: "المهندسين، الجيزة" } satisfies Localized,
-
-  /* ─────────────────────────────────────────────────────────────────────────
-   *  CLINIC LOCATION — all placeholder. To drop in the real location later:
-   *   1. `mapEmbedSrc`  — paste the Google Maps → Share → "Embed a map"
-   *      iframe `src`. Leave it as "" to show the styled placeholder panel
-   *      instead of a live map (nothing else needs to change).
-   *   2. `mapQuery`     — the exact place name / "lat,lng" used to build the
-   *      "open in Google Maps" and "directions" links.
-   *  The <ClinicMap> component reads only these three values.
-   * ───────────────────────────────────────────────────────────────────────── */
-  mapEmbedSrc:
-    "https://www.openstreetmap.org/export/embed.html?bbox=31.1930%2C30.0470%2C31.2160%2C30.0700&layer=mapnik&marker=30.0585%2C31.2016",
-  mapQuery: "Mohandessin, Giza, Egypt",
-  mapLink: "https://www.google.com/maps/search/?api=1&query=Mohandessin%2C+Giza%2C+Egypt",
-  mapDirectionsLink: "https://www.google.com/maps/dir/?api=1&destination=Mohandessin%2C+Giza%2C+Egypt",
 };
 
 export interface WorkingHoursRow {
@@ -44,10 +25,55 @@ export interface WorkingHoursRow {
   closed?: boolean;
 }
 
-export const workingHours: WorkingHoursRow[] = [
-  { day: { en: "Saturday – Wednesday", ar: "السبت – الأربعاء" }, hours: { en: "4:00 PM – 9:00 PM", ar: "٤:٠٠ م – ٩:٠٠ م" } },
-  { day: { en: "Thursday", ar: "الخميس" }, hours: { en: "12:00 PM – 4:00 PM", ar: "١٢:٠٠ ظ – ٤:٠٠ م" } },
-  { day: { en: "Friday", ar: "الجمعة" }, hours: { en: "Closed", ar: "مغلق" }, closed: true },
+export interface ClinicLocation {
+  id: string;
+  slug: string;
+  name: Localized;
+  address: Localized;
+  addressShort: Localized;
+  notes?: Localized;
+  workingHours: WorkingHoursRow[];
+  mapEmbedSrc: string;
+  mapLink: string;
+  mapDirectionsLink: string;
+}
+
+export const clinicLocations: ClinicLocation[] = [
+  {
+    id: "nasr-city",
+    slug: "nasr-city",
+    name: { en: "Nasr City Clinic", ar: "عيادة مدينة نصر" },
+    address: {
+      en: "7 Abbas El-Akkad St., Zone 1, Nasr City, Cairo",
+      ar: "٧ شارع عباس العقاد، الحي الأول، مدينة نصر، القاهرة",
+    },
+    addressShort: { en: "Nasr City, Cairo", ar: "مدينة نصر، القاهرة" },
+    workingHours: [
+      { day: { en: "Saturday – Wednesday", ar: "السبت – الأربعاء" }, hours: { en: "4:00 PM – 9:00 PM", ar: "٤:٠٠ م – ٩:٠٠ م" } },
+      { day: { en: "Thursday", ar: "الخميس" }, hours: { en: "12:00 PM – 4:00 PM", ar: "١٢:٠٠ ظ – ٤:٠٠ م" } },
+      { day: { en: "Friday", ar: "الجمعة" }, hours: { en: "Closed", ar: "مغلق" }, closed: true },
+    ],
+    mapEmbedSrc: "",
+    mapLink: "https://www.google.com/maps/search/?api=1&query=7+Abbas+El-Akkad+St.%2C+Zone+1%2C+Nasr+City%2C+Cairo",
+    mapDirectionsLink: "https://www.google.com/maps/dir/?api=1&destination=7+Abbas+El-Akkad+St.%2C+Zone+1%2C+Nasr+City%2C+Cairo",
+  },
+  {
+    id: "fifth-settlement",
+    slug: "fifth-settlement",
+    name: { en: "Fifth Settlement Clinic", ar: "عيادة التجمع الخامس" },
+    address: {
+      en: "164 North 90th St. (next to Shifa Hospital), 2nd Floor, Fifth Settlement, Cairo",
+      ar: "١٦٤ الشارع التسعين الشمالي (بجوار مستشفى الشفاء)، الدور الثاني، التجمع الخامس، القاهرة",
+    },
+    addressShort: { en: "Fifth Settlement, Cairo", ar: "التجمع الخامس، القاهرة" },
+    notes: { en: "Entrance via MEWS Cafe", ar: "المدخل من خلال مقهى MEWS" },
+    workingHours: [
+      { day: { en: "Wednesday", ar: "الأربعاء" }, hours: { en: "8:00 PM – 10:00 PM", ar: "٨:٠٠ م – ١٠:٠٠ م" } },
+    ],
+    mapEmbedSrc: "",
+    mapLink: "https://maps.app.goo.gl/znGs7NjgvcWzYnmAA?g_st=i",
+    mapDirectionsLink: "https://maps.app.goo.gl/znGs7NjgvcWzYnmAA?g_st=i",
+  },
 ];
 
 export interface SocialLink {
