@@ -103,14 +103,6 @@ async function seedSettings() {
     credit_label_en: siteContent.footer.credit.en, credit_label_ar: siteContent.footer.credit.ar,
     privacy_note_en: siteContent.footer.privacyNote.en, privacy_note_ar: siteContent.footer.privacyNote.ar,
   });
-  await updateSingleton("cta_settings", {
-    eyebrow_en: ctaContent.eyebrow.en, eyebrow_ar: ctaContent.eyebrow.ar,
-    heading_en: ctaContent.title.en, heading_ar: ctaContent.title.ar,
-    description_en: ctaContent.description.en, description_ar: ctaContent.description.ar,
-    primary_label_en: ctaContent.whatsappLabel.en, primary_label_ar: ctaContent.whatsappLabel.ar,
-    whatsapp_message_en: ctaContent.whatsappMessage.en, whatsapp_message_ar: ctaContent.whatsappMessage.ar,
-    secondary_label_en: ctaContent.contactLabel.en, secondary_label_ar: ctaContent.contactLabel.ar,
-  });
   await updateSingleton("contact_settings", {
     phone_display: contactInfo.phoneDisplay.en, phone_href: `tel:${contactInfo.phone}`,
     whatsapp_number: contactInfo.whatsapp, email: contactInfo.email,
@@ -343,6 +335,14 @@ function heroContent(h: typeof heroes.home, primary: { label: L; url: string }, 
 const BOOK = { label: siteContent.actions.bookAppointment, url: "/contact" };
 const EXPLORE = { label: siteContent.actions.exploreServices, url: "/services" };
 
+// Each page gets its own copy of the Final CTA card, seeded from the same
+// source copy — admins can then diverge them per page from /admin.
+const finalCta = () => ({
+  eyebrow: ctaContent.eyebrow, title: ctaContent.title, description: ctaContent.description,
+  primaryLabel: ctaContent.whatsappLabel, primaryIsWhatsapp: true, primaryUrl: "",
+  whatsappMessage: ctaContent.whatsappMessage, secondaryLabel: ctaContent.contactLabel, secondaryUrl: "/contact",
+});
+
 const SECTIONS: Record<string, { type: string; content: Record<string, unknown> }[]> = {
   "": [
     { type: "hero", content: heroContent(heroes.home, BOOK, EXPLORE) },
@@ -361,6 +361,7 @@ const SECTIONS: Record<string, { type: string; content: Record<string, unknown> 
     { type: "featured_videos_intro", content: intro(videosIntro) },
     { type: "faq_intro", content: intro(faqIntro) },
     { type: "featured_articles_intro", content: intro(articlesIntro) },
+    { type: "final_cta", content: finalCta() },
   ],
   about: [
     { type: "hero", content: heroContent(heroes.about, BOOK, EXPLORE) },
@@ -383,6 +384,7 @@ const SECTIONS: Record<string, { type: string; content: Record<string, unknown> 
     } },
     { type: "stats_intro", content: intro(statsIntro) },
     { type: "achievements_intro", content: { eyebrow: aboutContent.achievements.eyebrow, title: aboutContent.achievements.heading, description: { en: "", ar: "" } } },
+    { type: "final_cta", content: finalCta() },
   ],
   services: [
     { type: "hero", content: heroContent(heroes.services, BOOK, EXPLORE) },
@@ -391,20 +393,24 @@ const SECTIONS: Record<string, { type: string; content: Record<string, unknown> 
     { type: "technologies_intro", content: intro(technologiesIntro) },
     { type: "other_services_intro", content: { eyebrow: { en: "Also Available", ar: "متاح أيضًا" }, title: { en: "Beyond procedures and prescriptions", ar: "أبعد من الإجراءات والوصفات" }, description: { en: "Supporting services that make the whole experience easier and more thorough.", ar: "خدمات مساندة تجعل التجربة بأكملها أسهل وأكثر شمولًا." } } },
     { type: "faq_intro", content: intro(servicesFaqIntro) },
+    { type: "final_cta", content: finalCta() },
   ],
   videos: [
     { type: "hero", content: heroContent(heroes.videos, BOOK, EXPLORE) },
     { type: "video_gallery_intro", content: intro(videosIntro) },
+    { type: "final_cta", content: finalCta() },
   ],
   articles: [
     { type: "hero", content: heroContent(heroes.articles, BOOK, EXPLORE) },
     { type: "featured_article_intro", content: { eyebrow: articlesIntro.eyebrow, title: articlesIntro.title, description: articlesIntro.description } },
     { type: "articles_intro", content: { eyebrow: { en: "Reading Room", ar: "غرفة القراءة" }, title: { en: "More from the reading room", ar: "المزيد من غرفة القراءة" }, description: articlesIntro.description } },
+    { type: "final_cta", content: finalCta() },
   ],
   contact: [
     { type: "hero", content: heroContent(heroes.contact, BOOK, EXPLORE) },
     { type: "contact_intro", content: { eyebrow: heroes.contact.eyebrow, title: contactIntro.formTitle, description: contactIntro.formNote } },
     { type: "map_intro", content: { eyebrow: { en: "Location", ar: "الموقع" }, title: contactIntro.locationTitle, description: { en: "", ar: "" } } },
+    { type: "final_cta", content: finalCta() },
   ],
 };
 

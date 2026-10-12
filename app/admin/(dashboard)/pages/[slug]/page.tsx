@@ -12,7 +12,7 @@ const URL_TO_SLUG: Record<string, string> = {
   contact: "contact",
 };
 
-const MEDIA_KEYS = ["image_id", "image_mobile_id", "video_cover_media_id", "video_media_id", "portrait_media_id", "portrait_layer_1_media_id", "portrait_layer_2_media_id"];
+const MEDIA_KEYS = ["image_id", "image_mobile_id", "video_cover_media_id", "video_media_id", "portrait_media_id", "portrait_layer_1_media_id", "portrait_layer_2_media_id", "background_image_id"];
 
 export default async function AdminPageEditorPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug: urlSlug } = await params;
@@ -43,8 +43,8 @@ export default async function AdminPageEditorPage({ params }: { params: Promise<
     <div>
       <h1 className="text-xl font-bold uppercase tracking-wide text-brand-ink">{page.name_en}</h1>
       <p className="mt-1 text-sm text-brand-muted">
-        Sections below appear in the exact order they render on the live page. The Final CTA at the bottom of every page
-        is edited once, globally, under Global Settings → Final CTA.
+        Sections below appear in the exact order they render on the live page. Each page has its own Final CTA
+        section at the bottom — editing it here only affects this page.
       </p>
 
       <div className="mt-6 flex flex-col gap-3">

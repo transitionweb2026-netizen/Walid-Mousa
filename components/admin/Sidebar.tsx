@@ -47,7 +47,6 @@ const CONTENT: NavLeaf[] = [
 const SETTINGS: NavLeaf[] = [
   { label: "Navbar", href: "/admin/settings/navbar" },
   { label: "Footer", href: "/admin/settings/footer" },
-  { label: "Final CTA", href: "/admin/settings/cta" },
   { label: "Contact Information", href: "/admin/settings/contact" },
   { label: "Contact Form", href: "/admin/settings/contact-form" },
   { label: "Social Media", href: "/admin/settings/social" },

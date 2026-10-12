@@ -1,7 +1,7 @@
 export interface SectionFieldDef {
   path: string; // dot-path into content, e.g. "primaryCta.url" or "eyebrow" (bilingual root)
   label: string;
-  type: "text" | "textarea" | "media" | "url" | "stringArray";
+  type: "text" | "textarea" | "media" | "url" | "stringArray" | "boolean";
   bilingual?: boolean; // true => actual paths are `${path}.en` / `${path}.ar`
   mediaCategory?: string;
   help?: string;
@@ -77,6 +77,19 @@ const CONTACT_INTRO_FIELDS: SectionFieldDef[] = [
   { path: "description", label: "Description", type: "textarea", bilingual: true },
 ];
 
+const FINAL_CTA_FIELDS: SectionFieldDef[] = [
+  { path: "background_image_id", label: "Optional Background Image", type: "media", mediaCategory: "general", help: "Rarely needed — the card already has its own glass background." },
+  { path: "primaryIsWhatsapp", label: "Primary Button Opens WhatsApp", type: "boolean", help: "On: opens WhatsApp with the message below. Off: links to the Primary Button URL instead." },
+  { path: "primaryUrl", label: "Primary Button URL (used only when WhatsApp is off)", type: "url" },
+  { path: "secondaryUrl", label: "Secondary Button URL", type: "url" },
+  { path: "eyebrow", label: "Eyebrow", type: "text", bilingual: true },
+  { path: "title", label: "Heading", type: "text", bilingual: true },
+  { path: "description", label: "Description", type: "textarea", bilingual: true },
+  { path: "primaryLabel", label: "Primary Button Label", type: "text", bilingual: true },
+  { path: "whatsappMessage", label: "Pre-filled WhatsApp Message", type: "textarea", bilingual: true },
+  { path: "secondaryLabel", label: "Secondary Button Label", type: "text", bilingual: true },
+];
+
 export const SECTION_SCHEMAS: Record<string, SectionFieldDef[]> = {
   hero: HERO_FIELDS,
   doctor_intro: DOCTOR_INTRO_FIELDS,
@@ -103,6 +116,7 @@ export const SECTION_SCHEMAS: Record<string, SectionFieldDef[]> = {
   articles_intro: INTRO_FIELDS,
   contact_intro: CONTACT_INTRO_FIELDS,
   map_intro: INTRO_FIELDS,
+  final_cta: FINAL_CTA_FIELDS,
 };
 
 export const SECTION_LABELS: Record<string, string> = {
@@ -131,6 +145,7 @@ export const SECTION_LABELS: Record<string, string> = {
   articles_intro: "Articles Grid",
   contact_intro: "Contact Form Intro",
   map_intro: "Location / Map Intro",
+  final_cta: "Final CTA",
 };
 
 export const SECTION_NOTES: Record<string, string> = {
@@ -151,4 +166,5 @@ export const SECTION_NOTES: Record<string, string> = {
   other_services_intro: "The cards themselves come from Content → Other Services.",
   video_gallery_intro: "The videos themselves come from Content → Videos.",
   articles_intro: "The article cards come from Content → Articles.",
+  final_cta: "This page's own call-to-action card, shown at the bottom. Each page has its own — editing this one doesn't affect any other page.",
 };

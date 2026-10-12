@@ -25,6 +25,11 @@ export function optionalStr(obj: JsonRecord | undefined, key: string): string | 
   return typeof v === "string" && v.length > 0 ? v : undefined;
 }
 
+export function bool(obj: JsonRecord | undefined, key: string, fallback: boolean): boolean {
+  const v = obj?.[key];
+  return typeof v === "boolean" ? v : fallback;
+}
+
 export function localized(obj: JsonRecord | undefined, key: string, fallback: Localized): Localized {
   const v = asRecord(obj?.[key]);
   if (v && typeof v.en === "string" && typeof v.ar === "string") return { en: v.en, ar: v.ar };

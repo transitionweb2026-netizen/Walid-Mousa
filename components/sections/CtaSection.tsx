@@ -3,36 +3,21 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { Icon } from "@/components/icons/Icon";
-import { ctaContent } from "@/data/cta";
 import { contactInfo } from "@/data/contact";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import type { FinalCta } from "@/lib/cms/publicSettings";
 import type { ContactInfo } from "@/lib/cms/publicSettings";
 import type { Locale } from "@/lib/i18n";
 
-const fbCta: FinalCta = {
-  eyebrow: ctaContent.eyebrow,
-  title: ctaContent.title,
-  description: ctaContent.description,
-  primaryLabel: ctaContent.whatsappLabel,
-  primaryIsWhatsapp: true,
-  primaryUrl: "",
-  whatsappMessage: ctaContent.whatsappMessage,
-  secondaryLabel: ctaContent.contactLabel,
-  secondaryUrl: "/contact",
-  backgroundImage: null,
-  isVisible: true,
-};
-
 interface Props {
   locale: Locale;
-  cta?: FinalCta;
+  cta: FinalCta;
   contact?: Pick<ContactInfo, "whatsapp">;
 }
 
-/** The site's single Final CTA — a large horizontal glass object at the foot
- *  of every page. Interactive tilt + reflection on hover. */
-export function CtaSection({ locale, cta = fbCta, contact }: Props) {
+/** A page's own Final CTA — a large horizontal glass object at the foot
+ *  of the page. Interactive tilt + reflection on hover. */
+export function CtaSection({ locale, cta, contact }: Props) {
   const localeRoot = `/${locale}`;
   const whatsapp = contact?.whatsapp ?? contactInfo.whatsapp;
   const primaryHref = cta.primaryIsWhatsapp

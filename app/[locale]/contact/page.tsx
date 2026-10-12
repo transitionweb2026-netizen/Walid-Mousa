@@ -12,7 +12,6 @@ import {
   getContactIntro,
   getSocialLinks,
   getFooterContent,
-  getFinalCta,
 } from "@/lib/cms/publicSettings";
 import { navigationItems } from "@/data/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -49,7 +48,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
-  const [sections, contact, form, intro, social, footer, assurances, cta] = await Promise.all([
+  const [sections, contact, form, intro, social, footer, assurances] = await Promise.all([
     getContactSections(),
     getContactInfo(),
     getContactFormSettings(),
@@ -57,7 +56,6 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
     getSocialLinks(),
     getFooterContent(),
     getContactAssurances(),
-    getFinalCta(),
   ]);
   const cref = (c: { url: string }) => `/${locale}${c.url}`;
   const h = heroes.contact;
@@ -143,7 +141,7 @@ export default async function ContactPage({ params }: PageProps<"/[locale]/conta
         </Reveal>
       </Section>
 
-      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
+      {sections.finalCta && <CtaSection locale={locale} cta={sections.finalCta} contact={contact} />}
     </>
   );
 }

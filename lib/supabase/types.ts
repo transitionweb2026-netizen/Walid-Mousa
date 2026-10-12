@@ -113,22 +113,6 @@ export interface Database {
         updated_at: string;
       }>;
 
-      cta_settings: Table<{
-        id: true;
-        eyebrow_en: string; eyebrow_ar: string;
-        heading_en: string; heading_ar: string;
-        description_en: string | null; description_ar: string | null;
-        primary_label_en: string; primary_label_ar: string;
-        primary_is_whatsapp: boolean;
-        primary_url: string;
-        whatsapp_message_en: string; whatsapp_message_ar: string;
-        secondary_label_en: string; secondary_label_ar: string;
-        secondary_url: string;
-        background_image_id: string | null;
-        is_visible: boolean;
-        updated_at: string;
-      }>;
-
       contact_settings: Table<{
         id: true;
         phone_display: string; phone_href: string;

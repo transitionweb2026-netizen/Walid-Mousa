@@ -1,10 +1,12 @@
 import "server-only";
 import { getPublicClient } from "./publicClient";
 import { resolveMediaUrl, toMediaImage, type MediaRow } from "./media";
-import { asRecord, localized, localizedArray, optionalStr, nestedCta, localizedPairArray, type JsonRecord } from "./jsonContent";
+import { asRecord, localized, localizedArray, optionalStr, str, bool, nestedCta, localizedPairArray, type JsonRecord } from "./jsonContent";
+import type { FinalCta } from "./publicSettings";
 import { siteContent } from "@/data/site";
 import { heroes, type HeroContent } from "@/data/hero";
 import { doctorIntro as fbDoctorIntro } from "@/data/doctorIntro";
+import { ctaContent } from "@/data/cta";
 import { statsIntro } from "@/data/stats";
 import { surgeriesIntro } from "@/data/surgeries";
 import { treatmentsIntro } from "@/data/treatments";
@@ -77,13 +79,44 @@ function toIntro(content: JsonRecord, fallback: IntroContent): IntroContent {
 }
 const introFrom = (o: { eyebrow: Localized; title: Localized; description: Localized }): IntroContent => o;
 
+// Every page's own Final CTA falls back to the same bundled copy when
+// Supabase is unreachable or a page hasn't been given its own card yet —
+// once set, each page's `final_cta` section is fully independent.
+const fbFinalCta: FinalCta = {
+  eyebrow: ctaContent.eyebrow,
+  title: ctaContent.title,
+  description: ctaContent.description,
+  primaryLabel: ctaContent.whatsappLabel,
+  primaryIsWhatsapp: true,
+  primaryUrl: "",
+  whatsappMessage: ctaContent.whatsappMessage,
+  secondaryLabel: ctaContent.contactLabel,
+  secondaryUrl: "/contact",
+  backgroundImage: null,
+};
+function toFinalCta(content: JsonRecord, fallback: FinalCta, media: Map<string, MediaRow>): FinalCta {
+  const bgId = optionalStr(content, "background_image_id");
+  return {
+    eyebrow: localized(content, "eyebrow", fallback.eyebrow),
+    title: localized(content, "title", fallback.title),
+    description: localized(content, "description", fallback.description),
+    primaryLabel: localized(content, "primaryLabel", fallback.primaryLabel),
+    primaryIsWhatsapp: bool(content, "primaryIsWhatsapp", fallback.primaryIsWhatsapp),
+    primaryUrl: str(content, "primaryUrl", fallback.primaryUrl),
+    whatsappMessage: localized(content, "whatsappMessage", fallback.whatsappMessage),
+    secondaryLabel: localized(content, "secondaryLabel", fallback.secondaryLabel),
+    secondaryUrl: str(content, "secondaryUrl", fallback.secondaryUrl),
+    backgroundImage: bgId ? toMediaImage(media.get(bgId) ?? null, { en: "", ar: "" }) : null,
+  };
+}
+
 // ── shared loader ─────────────────────────────────────────────────────────
 type PC = NonNullable<Awaited<ReturnType<typeof getPublicClient>>>;
 type Loaded = { supabase: PC; sections: Map<string, JsonRecord>; media: Map<string, MediaRow> } | "unavailable";
 
 const MEDIA_KEYS = [
   "image_id", "image_mobile_id", "video_cover_media_id", "video_media_id", "portrait_media_id",
-  "portrait_layer_1_media_id", "portrait_layer_2_media_id",
+  "portrait_layer_1_media_id", "portrait_layer_2_media_id", "background_image_id",
 ];
 
 async function loadPage(slug: string): Promise<Loaded> {
@@ -136,6 +169,7 @@ export interface HomeSections {
   featuredVideosIntro: IntroContent | null;
   faqIntro: IntroContent | null;
   featuredArticlesIntro: IntroContent | null;
+  finalCta: FinalCta | null;
 }
 
 const fbDoctorIntroContent: DoctorIntroContent = {
@@ -185,6 +219,7 @@ export async function getHomeSections(): Promise<HomeSections> {
       featuredVideosIntro: introFrom(videosIntro),
       faqIntro: introFrom(faqIntro),
       featuredArticlesIntro: introFrom(articlesIntro),
+      finalCta: fbFinalCta,
     };
   }
   const { sections, media } = loaded;
@@ -202,6 +237,7 @@ export async function getHomeSections(): Promise<HomeSections> {
     featuredVideosIntro: has("featured_videos_intro") ? toIntro(g("featured_videos_intro"), introFrom(videosIntro)) : null,
     faqIntro: has("faq_intro") ? toIntro(g("faq_intro"), introFrom(faqIntro)) : null,
     featuredArticlesIntro: has("featured_articles_intro") ? toIntro(g("featured_articles_intro"), introFrom(articlesIntro)) : null,
+    finalCta: has("final_cta") ? toFinalCta(g("final_cta"), fbFinalCta, media) : null,
   };
 }
 
@@ -240,6 +276,7 @@ export interface AboutSections {
   wordFromDoctor: WordFromDoctorContent | null;
   statsIntro: IntroContent | null;
   achievementsIntro: IntroContent | null;
+  finalCta: FinalCta | null;
 }
 
 const careerIntroFb: IntroContent = {
@@ -282,6 +319,7 @@ export async function getAboutSections(): Promise<AboutSections> {
       wordFromDoctor: fbWord,
       statsIntro: introFrom(statsIntro),
       achievementsIntro: achievementsIntroFb,
+      finalCta: fbFinalCta,
     };
   }
   const { sections, media } = loaded;
@@ -337,6 +375,7 @@ export async function getAboutSections(): Promise<AboutSections> {
       : null,
     statsIntro: has("stats_intro") ? toIntro(g("stats_intro"), introFrom(statsIntro)) : null,
     achievementsIntro: has("achievements_intro") ? toIntro(g("achievements_intro"), achievementsIntroFb) : null,
+    finalCta: has("final_cta") ? toFinalCta(g("final_cta"), fbFinalCta, media) : null,
   };
 }
 
@@ -348,6 +387,7 @@ export interface ServicesSections {
   technologiesIntro: IntroContent | null;
   otherServicesIntro: IntroContent | null;
   faqIntro: IntroContent;
+  finalCta: FinalCta | null;
 }
 const otherIntroFb: IntroContent = {
   eyebrow: { en: "Also Available", ar: "متاح أيضًا" },
@@ -364,9 +404,10 @@ export async function getServicesSections(): Promise<ServicesSections> {
       technologiesIntro: introFrom(technologiesIntro),
       otherServicesIntro: otherIntroFb,
       faqIntro: introFrom(servicesFaqIntro),
+      finalCta: fbFinalCta,
     };
   }
-  const { sections } = loaded;
+  const { sections, media } = loaded;
   const has = (t: string) => sections.has(t);
   const g = (t: string) => sections.get(t)!;
   return {
@@ -376,43 +417,47 @@ export async function getServicesSections(): Promise<ServicesSections> {
     technologiesIntro: has("technologies_intro") ? toIntro(g("technologies_intro"), introFrom(technologiesIntro)) : null,
     otherServicesIntro: has("other_services_intro") ? toIntro(g("other_services_intro"), otherIntroFb) : null,
     faqIntro: has("faq_intro") ? toIntro(g("faq_intro"), introFrom(servicesFaqIntro)) : introFrom(servicesFaqIntro),
+    finalCta: has("final_cta") ? toFinalCta(g("final_cta"), fbFinalCta, media) : null,
   };
 }
 
 // ── VIDEOS / ARTICLES / CONTACT ───────────────────────────────────────────
-export interface VideosSections { hero: PageHero; galleryIntro: IntroContent }
+export interface VideosSections { hero: PageHero; galleryIntro: IntroContent; finalCta: FinalCta | null }
 export async function getVideosSections(): Promise<VideosSections> {
   const loaded = await loadPage("videos");
   const galleryFb = introFrom(videosIntro);
-  if (loaded === "unavailable") return { hero: { content: heroes.videos, primaryCta: BOOK, secondaryCta: EXPLORE }, galleryIntro: galleryFb };
+  if (loaded === "unavailable") return { hero: { content: heroes.videos, primaryCta: BOOK, secondaryCta: EXPLORE }, galleryIntro: galleryFb, finalCta: fbFinalCta };
   return {
     hero: buildHero(loaded, heroes.videos, { primary: BOOK, secondary: EXPLORE }),
     galleryIntro: loaded.sections.has("video_gallery_intro") ? toIntro(loaded.sections.get("video_gallery_intro")!, galleryFb) : galleryFb,
+    finalCta: loaded.sections.has("final_cta") ? toFinalCta(loaded.sections.get("final_cta")!, fbFinalCta, loaded.media) : null,
   };
 }
 
-export interface ArticlesSections { hero: PageHero; featuredIntro: IntroContent; gridIntro: IntroContent }
+export interface ArticlesSections { hero: PageHero; featuredIntro: IntroContent; gridIntro: IntroContent; finalCta: FinalCta | null }
 export async function getArticlesSections(): Promise<ArticlesSections> {
   const loaded = await loadPage("articles");
   const featuredFb: IntroContent = { eyebrow: articlesIntro.eyebrow, title: articlesIntro.title, description: articlesIntro.description };
   const gridFb: IntroContent = { eyebrow: { en: "Reading Room", ar: "غرفة القراءة" }, title: { en: "More from the reading room", ar: "المزيد من غرفة القراءة" }, description: articlesIntro.description };
-  if (loaded === "unavailable") return { hero: { content: heroes.articles, primaryCta: BOOK, secondaryCta: EXPLORE }, featuredIntro: featuredFb, gridIntro: gridFb };
+  if (loaded === "unavailable") return { hero: { content: heroes.articles, primaryCta: BOOK, secondaryCta: EXPLORE }, featuredIntro: featuredFb, gridIntro: gridFb, finalCta: fbFinalCta };
   return {
     hero: buildHero(loaded, heroes.articles, { primary: BOOK, secondary: EXPLORE }),
     featuredIntro: loaded.sections.has("featured_article_intro") ? toIntro(loaded.sections.get("featured_article_intro")!, featuredFb) : featuredFb,
     gridIntro: loaded.sections.has("articles_intro") ? toIntro(loaded.sections.get("articles_intro")!, gridFb) : gridFb,
+    finalCta: loaded.sections.has("final_cta") ? toFinalCta(loaded.sections.get("final_cta")!, fbFinalCta, loaded.media) : null,
   };
 }
 
-export interface ContactSections { hero: PageHero; contactIntro: IntroContent; mapIntro: IntroContent }
+export interface ContactSections { hero: PageHero; contactIntro: IntroContent; mapIntro: IntroContent; finalCta: FinalCta | null }
 export async function getContactSections(): Promise<ContactSections> {
   const loaded = await loadPage("contact");
   const contactFb: IntroContent = { eyebrow: heroes.contact.eyebrow, title: contactIntro.formTitle, description: contactIntro.formNote };
   const mapFb: IntroContent = { eyebrow: { en: "Location", ar: "الموقع" }, title: contactIntro.locationTitle, description: { en: "", ar: "" } };
-  if (loaded === "unavailable") return { hero: { content: heroes.contact, primaryCta: BOOK_HERE, secondaryCta: EXPLORE }, contactIntro: contactFb, mapIntro: mapFb };
+  if (loaded === "unavailable") return { hero: { content: heroes.contact, primaryCta: BOOK_HERE, secondaryCta: EXPLORE }, contactIntro: contactFb, mapIntro: mapFb, finalCta: fbFinalCta };
   return {
     hero: buildHero(loaded, heroes.contact, { primary: BOOK_HERE, secondary: EXPLORE }),
     contactIntro: loaded.sections.has("contact_intro") ? toIntro(loaded.sections.get("contact_intro")!, contactFb) : contactFb,
     mapIntro: loaded.sections.has("map_intro") ? toIntro(loaded.sections.get("map_intro")!, mapFb) : mapFb,
+    finalCta: loaded.sections.has("final_cta") ? toFinalCta(loaded.sections.get("final_cta")!, fbFinalCta, loaded.media) : null,
   };
 }

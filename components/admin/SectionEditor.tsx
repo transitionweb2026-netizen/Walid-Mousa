@@ -191,7 +191,12 @@ function SectionFieldInput({
   return (
     <div>
       <label className="mb-1.5 block text-sm font-semibold text-brand-ink">{field.label}</label>
-      {field.type === "textarea" ? (
+      {field.type === "boolean" ? (
+        <label className="flex items-center gap-2 text-sm text-brand-ink">
+          <input type="checkbox" checked={value === true} onChange={(e) => onChange(e.target.checked)} />
+          {field.help ?? "Enabled"}
+        </label>
+      ) : field.type === "textarea" ? (
         <textarea rows={3} value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)} className={cn(baseClasses, "resize-y")} />
       ) : field.type === "stringArray" ? (
         <textarea
@@ -210,7 +215,7 @@ function SectionFieldInput({
           className={baseClasses}
         />
       )}
-      {field.help && <p className="mt-1 text-xs text-brand-muted">{field.help}</p>}
+      {field.type !== "boolean" && field.help && <p className="mt-1 text-xs text-brand-muted">{field.help}</p>}
     </div>
   );
 }

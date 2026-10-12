@@ -15,7 +15,7 @@ import {
   getFaqs,
   getFeaturedArticles,
 } from "@/lib/cms/publicContent";
-import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
+import { getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildWebPageJsonLd } from "@/lib/structuredData";
 
@@ -62,7 +62,6 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
     videos,
     faqs,
     articles,
-    cta,
     contact,
     social,
   ] = await Promise.all([
@@ -76,7 +75,6 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
     getFeaturedVideos(),
     getFaqs("home"),
     getFeaturedArticles(),
-    getFinalCta(),
     getContactInfo(),
     getSocialLinks(),
   ]);
@@ -120,7 +118,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
           articlesIntro={sections.featuredArticlesIntro}
         />
       )}
-      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
+      {sections.finalCta && <CtaSection locale={locale} cta={sections.finalCta} contact={contact} />}
     </>
   );
 }

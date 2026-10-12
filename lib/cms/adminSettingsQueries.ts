@@ -30,13 +30,6 @@ export async function getFooterSettingsAdmin() {
   const { data } = await supabase.from("footer_settings").select("*").eq("id", true).single();
   return data;
 }
-export async function getCtaSettingsAdmin() {
-  const supabase = await createClient();
-  const { data: cta } = await supabase.from("cta_settings").select("*").eq("id", true).single();
-  if (!cta) return null;
-  const background = await getMedia(supabase, cta.background_image_id);
-  return { ...cta, background_image_id: background };
-}
 export async function getContactSettingsAdmin() {
   const supabase = await createClient();
   const { data: contact } = await supabase.from("contact_settings").select("*").eq("id", true).single();

@@ -5,7 +5,7 @@ import { heroes } from "@/data/hero";
 import { buildPageMetadata, getArticleSeoMap } from "@/lib/cms/publicSeo";
 import { getArticlesSections } from "@/lib/cms/publicSections";
 import { getArticles } from "@/lib/cms/publicContent";
-import { getFinalCta, getContactInfo, getSocialLinks, getSiteBranding } from "@/lib/cms/publicSettings";
+import { getContactInfo, getSocialLinks, getSiteBranding } from "@/lib/cms/publicSettings";
 import { navigationItems } from "@/data/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildWebPageJsonLd, buildBreadcrumbJsonLd, buildArticleJsonLd } from "@/lib/structuredData";
@@ -39,10 +39,9 @@ export default async function ArticlesPage({ params }: PageProps<"/[locale]/arti
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
-  const [sections, articles, cta, contact, social, branding] = await Promise.all([
+  const [sections, articles, contact, social, branding] = await Promise.all([
     getArticlesSections(),
     getArticles(),
-    getFinalCta(),
     getContactInfo(),
     getSocialLinks(),
     getSiteBranding(),
@@ -109,7 +108,7 @@ export default async function ArticlesPage({ params }: PageProps<"/[locale]/arti
         </div>
       </Section>
 
-      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
+      {sections.finalCta && <CtaSection locale={locale} cta={sections.finalCta} contact={contact} />}
     </>
   );
 }

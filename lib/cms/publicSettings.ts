@@ -12,7 +12,6 @@ import {
   type SocialLink,
   type WorkingHoursRow,
 } from "@/data/contact";
-import { ctaContent } from "@/data/cta";
 import type { Localized, MediaImage } from "@/lib/types";
 
 /**
@@ -233,6 +232,9 @@ export async function getContactInfo(): Promise<ContactInfo> {
 }
 
 // ── final CTA ─────────────────────────────────────────────────────────────
+// Each page owns its own Final CTA now (a `final_cta` page_sections row, see
+// lib/cms/publicSections.ts's toFinalCta()) rather than one shared setting —
+// the type stays here since every other "global settings" shape lives here too.
 export interface FinalCta {
   eyebrow: Localized;
   title: Localized;
@@ -244,46 +246,6 @@ export interface FinalCta {
   secondaryLabel: Localized;
   secondaryUrl: string;
   backgroundImage: MediaImage | null;
-  isVisible: boolean;
-}
-
-export async function getFinalCta(): Promise<FinalCta> {
-  const fallback: FinalCta = {
-    eyebrow: ctaContent.eyebrow,
-    title: ctaContent.title,
-    description: ctaContent.description,
-    primaryLabel: ctaContent.whatsappLabel,
-    primaryIsWhatsapp: true,
-    primaryUrl: "",
-    whatsappMessage: ctaContent.whatsappMessage,
-    secondaryLabel: ctaContent.contactLabel,
-    secondaryUrl: "/contact",
-    backgroundImage: null,
-    isVisible: true,
-  };
-  const supabase = await getPublicClient();
-  if (!supabase) return fallback;
-  try {
-    const { data } = await supabase.from("cta_settings").select("*").eq("id", true).maybeSingle();
-    if (!data) return fallback;
-    const bg = data.background_image_id ? await loadOne(supabase, data.background_image_id) : null;
-    return {
-      eyebrow: { en: data.eyebrow_en, ar: data.eyebrow_ar },
-      title: { en: data.heading_en, ar: data.heading_ar },
-      description: { en: data.description_en || fallback.description.en, ar: data.description_ar || fallback.description.ar },
-      primaryLabel: { en: data.primary_label_en, ar: data.primary_label_ar },
-      primaryIsWhatsapp: data.primary_is_whatsapp,
-      primaryUrl: data.primary_url,
-      whatsappMessage: { en: data.whatsapp_message_en, ar: data.whatsapp_message_ar },
-      secondaryLabel: { en: data.secondary_label_en, ar: data.secondary_label_ar },
-      secondaryUrl: data.secondary_url,
-      backgroundImage: bg ? toMediaImage(bg, { en: "", ar: "" }) : null,
-      isVisible: data.is_visible,
-    };
-  } catch (error) {
-    console.error("[cms] getFinalCta failed:", error);
-    return fallback;
-  }
 }
 
 // ── contact form ──────────────────────────────────────────────────────────

@@ -7,7 +7,6 @@ const SINGLETON_TABLES = [
   "site_settings",
   "navbar_settings",
   "footer_settings",
-  "cta_settings",
   "contact_settings",
   "contact_form_settings",
   "not_found_settings",

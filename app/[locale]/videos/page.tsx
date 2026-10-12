@@ -5,7 +5,7 @@ import { heroes } from "@/data/hero";
 import { buildPageMetadata } from "@/lib/cms/publicSeo";
 import { getVideosSections } from "@/lib/cms/publicSections";
 import { getVideos } from "@/lib/cms/publicContent";
-import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
+import { getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
 import { navigationItems } from "@/data/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildWebPageJsonLd, buildBreadcrumbJsonLd } from "@/lib/structuredData";
@@ -37,10 +37,9 @@ export default async function VideosPage({ params }: PageProps<"/[locale]/videos
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
-  const [sections, videos, cta, contact, social] = await Promise.all([
+  const [sections, videos, contact, social] = await Promise.all([
     getVideosSections(),
     getVideos(),
-    getFinalCta(),
     getContactInfo(),
     getSocialLinks(),
   ]);
@@ -81,7 +80,7 @@ export default async function VideosPage({ params }: PageProps<"/[locale]/videos
         <VideoLibrary locale={locale} videos={videos} />
       </Section>
 
-      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
+      {sections.finalCta && <CtaSection locale={locale} cta={sections.finalCta} contact={contact} />}
     </>
   );
 }

@@ -5,7 +5,7 @@ import { heroes } from "@/data/hero";
 import { buildPageMetadata } from "@/lib/cms/publicSeo";
 import { getServicesSections } from "@/lib/cms/publicSections";
 import { getSpecialties, getSurgeries, getTechnologies, getOtherServices, getFaqs } from "@/lib/cms/publicContent";
-import { getFinalCta, getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
+import { getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
 import { surgeryToCard, surgeryToDetail, technologyToCard, technologyToDetail } from "@/lib/careAdapters";
 import { navigationItems } from "@/data/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -41,14 +41,13 @@ export default async function ServicesPage({ params }: PageProps<"/[locale]/serv
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
-  const [sections, specialties, surgeries, technologies, otherServices, faqs, cta, contact, social] = await Promise.all([
+  const [sections, specialties, surgeries, technologies, otherServices, faqs, contact, social] = await Promise.all([
     getServicesSections(),
     getSpecialties(),
     getSurgeries(),
     getTechnologies(),
     getOtherServices(),
     getFaqs("services"),
-    getFinalCta(),
     getContactInfo(),
     getSocialLinks(),
   ]);
@@ -127,7 +126,7 @@ export default async function ServicesPage({ params }: PageProps<"/[locale]/serv
         <OtherServices locale={locale} items={otherServices} intro={sections.otherServicesIntro} />
       )}
       <ServicesFaq locale={locale} faqs={faqs} intro={sections.faqIntro} />
-      {cta.isVisible && <CtaSection locale={locale} cta={cta} contact={contact} />}
+      {sections.finalCta && <CtaSection locale={locale} cta={sections.finalCta} contact={contact} />}
     </>
   );
 }
