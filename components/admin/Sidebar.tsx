@@ -33,6 +33,7 @@ const CONTENT: NavLeaf[] = [
   { label: "Career Journey", href: "/admin/content/career" },
   { label: "Areas of Expertise", href: "/admin/content/expertise" },
   { label: "Why Dr. Walid Moussa Points", href: "/admin/content/why" },
+  { label: "Recognition / Achievements", href: "/admin/content/achievements" },
   { label: "Patient Journey Steps", href: "/admin/content/journey" },
   { label: "Statistics", href: "/admin/content/statistics" },
   { label: "Patient Reviews", href: "/admin/content/reviews" },

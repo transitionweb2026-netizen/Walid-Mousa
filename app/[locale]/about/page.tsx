@@ -11,6 +11,7 @@ import {
   getWhyItems,
   getExpertiseAreas,
   getGalleryImages,
+  getAchievementItems,
 } from "@/lib/cms/publicContent";
 import { getContactInfo, getSocialLinks } from "@/lib/cms/publicSettings";
 import { navigationItems } from "@/data/navigation";
@@ -50,7 +51,7 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
   if (!isLocale(raw)) notFound();
   const locale = raw;
 
-  const [sections, stats, certificates, career, whyPoints, expertise, gallery, contact, social] = await Promise.all([
+  const [sections, stats, certificates, career, whyPoints, expertise, gallery, achievements, contact, social] = await Promise.all([
     getAboutSections(),
     getStatistics(),
     getCertificates(),
@@ -58,6 +59,7 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
     getWhyItems(),
     getExpertiseAreas(),
     getGalleryImages(),
+    getAchievementItems(),
     getContactInfo(),
     getSocialLinks(),
   ]);
@@ -98,7 +100,7 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
       {sections.why && <WhyDoctor locale={locale} section={sections.why} points={whyPoints} />}
       {sections.expertiseIntro && <AreasOfExpertise locale={locale} items={expertise} intro={sections.expertiseIntro} />}
       {sections.wordFromDoctor && <WordFromDoctor locale={locale} content={sections.wordFromDoctor} />}
-      {sections.achievementsIntro && <AchievementsGallery locale={locale} images={gallery} intro={sections.achievementsIntro} />}
+      {sections.achievementsIntro && <AchievementsGallery locale={locale} images={gallery} intro={sections.achievementsIntro} items={achievements} />}
       {sections.statsIntro && <StatsSection locale={locale} stats={stats} intro={sections.statsIntro} />}
       {sections.finalCta && <CtaSection locale={locale} cta={sections.finalCta} contact={contact} />}
     </>

@@ -331,6 +331,13 @@ export interface Database {
         text_en: string; text_ar: string;
       } & Orderable & Stamps>;
 
+      achievement_items: Table<{
+        id: string;
+        icon: string;
+        title_en: string; title_ar: string;
+        text_en: string; text_ar: string;
+      } & Orderable & Stamps>;
+
       journey_steps: Table<{
         id: string;
         step_number: number;

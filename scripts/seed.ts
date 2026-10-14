@@ -201,6 +201,9 @@ async function seedCollections() {
   await upsertRows("why_items",
     aboutContent.why.points.map((p, i) => ({ icon: p.icon, title_en: p.title.en, title_ar: p.title.ar, text_en: p.text.en, text_ar: p.text.ar, display_order: i + 1 })));
 
+  await upsertRows("achievement_items",
+    aboutContent.achievements.items.map((a, i) => ({ icon: a.icon, title_en: a.title.en, title_ar: a.title.ar, text_en: a.text.en, text_ar: a.text.ar, display_order: i + 1 })));
+
 
   await upsertRows("journey_steps",
     journeySteps.map((s, i) => ({ step_number: s.step, icon: s.icon, title_en: s.title.en, title_ar: s.title.ar, description_en: s.description.en, description_ar: s.description.ar, display_order: i + 1 })));

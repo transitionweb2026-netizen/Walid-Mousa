@@ -5,7 +5,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import { Icon } from "@/components/icons/Icon";
 import { aboutContent } from "@/data/about";
-import type { GalleryImage } from "@/lib/cms/publicContent";
+import type { GalleryImage, AchievementItem } from "@/lib/cms/publicContent";
 import type { IntroContent } from "@/lib/cms/publicSections";
 import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -14,13 +14,14 @@ interface Props {
   locale: Locale;
   images?: GalleryImage[];
   intro?: IntroContent | null;
+  items?: AchievementItem[];
 }
 
-export function AchievementsGallery({ locale, images, intro }: Props) {
+export function AchievementsGallery({ locale, images, intro, items }: Props) {
   const achievements = {
     eyebrow: intro?.eyebrow ?? aboutContent.achievements.eyebrow,
     heading: intro?.title ?? aboutContent.achievements.heading,
-    items: aboutContent.achievements.items,
+    items: items ?? aboutContent.achievements.items,
   };
   const gallery = {
     eyebrow: aboutContent.gallery.eyebrow,

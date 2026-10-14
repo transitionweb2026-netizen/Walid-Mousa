@@ -500,6 +500,22 @@ export async function getWhyItems(): Promise<WhyPoint[]> {
   return aboutContent.why.points.map((p, i) => ({ id: String(i), ...p }));
 }
 
+export interface AchievementItem { id: string; icon: IconName; title: Localized; text: Localized }
+export async function getAchievementItems(): Promise<AchievementItem[]> {
+  const supabase = await getPublicClient();
+  if (supabase) {
+    try {
+      const { data } = await supabase.from("achievement_items").select("*").order("display_order");
+      if (data && data.length > 0) {
+        return data.map((r) => ({ id: r.id, icon: r.icon as IconName, title: { en: r.title_en, ar: r.title_ar }, text: { en: r.text_en, ar: r.text_ar } }));
+      }
+    } catch (e) {
+      console.error("[cms] getAchievementItems failed:", e);
+    }
+  }
+  return aboutContent.achievements.items.map((p, i) => ({ id: String(i), ...p }));
+}
+
 export interface ExpertiseItem { id: string; icon: IconName; image: { src: string; alt: Localized }; title: Localized; description: Localized }
 export async function getExpertiseAreas(): Promise<ExpertiseItem[]> {
   const supabase = await getPublicClient();

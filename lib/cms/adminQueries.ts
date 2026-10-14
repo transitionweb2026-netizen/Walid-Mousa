@@ -50,6 +50,11 @@ export async function getAdminWhyItems() {
   const { data } = await supabase.from("why_items").select("*").order("display_order");
   return data ?? [];
 }
+export async function getAdminAchievementItems() {
+  const supabase = await createClient();
+  const { data } = await supabase.from("achievement_items").select("*").order("display_order");
+  return data ?? [];
+}
 export async function getAdminJourneySteps() {
   const supabase = await createClient();
   const { data } = await supabase.from("journey_steps").select("*").order("display_order");
