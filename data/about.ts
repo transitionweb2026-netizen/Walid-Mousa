@@ -204,8 +204,6 @@ export const aboutContent: {
       { title: { en: "Fellowship, Reproductive Microsurgery", ar: "زمالة الجراحة الميكروسكوبية للخصوبة" }, issuer: { en: "European Centre for Reproductive Medicine", ar: "المركز الأوروبي لطب الخصوبة" }, year: { en: "2012", ar: "2012" }, image: { src: IMG.surgeryTeam, alt: { en: "Microsurgery fellowship certificate", ar: "شهادة زمالة الجراحة الميكروسكوبية" } } },
       { title: { en: "Member", ar: "عضو" }, issuer: { en: "European Association of Urology (EAU)", ar: "الرابطة الأوروبية للمسالك البولية" }, year: { en: "2013", ar: "2013" }, image: { src: IMG.meeting, alt: { en: "EAU membership certificate", ar: "شهادة عضوية الرابطة الأوروبية" } } },
       { title: { en: "Member", ar: "عضو" }, issuer: { en: "International Society for Sexual Medicine (ISSM)", ar: "الجمعية الدولية للطب الجنسي" }, year: { en: "2015", ar: "2015" }, image: { src: IMG.labResearch, alt: { en: "ISSM membership certificate", ar: "شهادة عضوية الجمعية الدولية للطب الجنسي" } } },
-      { title: { en: "Member", ar: "عضو" }, issuer: { en: "American Society for Reproductive Medicine (ASRM)", ar: "الجمعية الأمريكية لطب الخصوبة" }, year: { en: "2016", ar: "2016" }, image: { src: IMG.labCorridor, alt: { en: "ASRM membership certificate", ar: "شهادة عضوية الجمعية الأمريكية لطب الخصوبة" } } },
-      { title: { en: "Fellow", ar: "زميل" }, issuer: { en: "Middle East Society for Male Health", ar: "جمعية الشرق الأوسط لصحة الرجل" }, year: { en: "2018", ar: "2018" }, image: { src: IMG.doctorCorridor, alt: { en: "Society fellowship certificate", ar: "شهادة زمالة الجمعية" } } },
     ],
   },
 

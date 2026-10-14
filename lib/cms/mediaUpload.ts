@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import { validateMediaFile, type MediaBucket } from "@/lib/cms/mediaLimits";
+import { projectLimitMessage, validateMediaFile, type MediaBucket } from "@/lib/cms/mediaLimits";
 import { registerMediaRecord } from "@/app/admin/actions/media";
 import type { MediaRow } from "@/lib/cms/media";
 
@@ -54,7 +54,13 @@ export async function uploadMediaFile(opts: UploadOptions): Promise<UploadResult
     contentType: opts.file.type,
     onProgress: (loaded, total) => opts.onProgress?.({ phase: "uploading", loaded, total }),
   });
-  if (!uploaded.ok) return { ok: false, error: uploaded.error };
+  if (!uploaded.ok) {
+    // Storage's own wording ("The object exceeded the maximum allowed size") doesn't say what to do.
+    if (/exceeded the maximum allowed size|payload too large|HTTP 413/i.test(uploaded.error)) {
+      return { ok: false, error: projectLimitMessage(opts.file.size) };
+    }
+    return { ok: false, error: uploaded.error };
+  }
 
   opts.onProgress?.({ phase: "saving", loaded: opts.file.size, total: opts.file.size });
   const record = await registerMediaRecord({

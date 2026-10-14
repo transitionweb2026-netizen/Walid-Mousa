@@ -47,8 +47,6 @@ const ABOUT_DOCTOR_FIELDS: SectionFieldDef[] = [
   { path: "highlight.value", label: "Highlight Stat (e.g. \"18+ years\")", type: "text", bilingual: true },
   { path: "highlight.label", label: "Highlight Caption", type: "textarea", bilingual: true },
   { path: "portrait_media_id", label: "Main Portrait", type: "media", mediaCategory: "doctor" },
-  { path: "portrait_layer_1_media_id", label: "Layered Photo (behind, top)", type: "media", mediaCategory: "doctor" },
-  { path: "portrait_layer_2_media_id", label: "Layered Photo (behind, bottom)", type: "media", mediaCategory: "doctor" },
   { path: "signature_name", label: "Signature Name", type: "text", bilingual: true },
   { path: "signature_role", label: "Signature Role", type: "text", bilingual: true },
 ];

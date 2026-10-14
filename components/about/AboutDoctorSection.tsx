@@ -20,12 +20,10 @@ const fb: AboutDoctorContent = {
 
 /**
  * "About the Doctor" — LEFT: editorial bio column. RIGHT: the portrait as a
- * premium paper/glass card, with two more photos layered behind it at slight
- * offsets for depth. The front card tilts gently under the pointer (TiltCard).
+ * premium paper/glass card that tilts gently under the pointer (TiltCard).
  */
 export function AboutDoctorSection({ locale, content = fb }: { locale: Locale; content?: AboutDoctorContent }) {
   const bio = content;
-  const [layerA, layerB] = bio.portraitLayers;
 
   return (
     <Section tint="neutral" glow="teal" aria-labelledby="about-doctor-heading">
@@ -57,39 +55,12 @@ export function AboutDoctorSection({ locale, content = fb }: { locale: Locale; c
           </div>
         </Reveal>
 
-        {/* Portrait — one main photo, with two much smaller photo edges peeking
-            out behind it (tinted + blurred) purely to suggest depth, not to
-            compete with the main image. */}
+        {/* Portrait */}
         <Reveal delay={0.12} className="relative mx-auto w-full max-w-md lg:max-w-none">
           <span aria-hidden className="glow-pink absolute -end-10 -top-8 h-44 w-44 rounded-full opacity-40" />
           <span aria-hidden className="glow-teal absolute -bottom-12 -start-8 h-48 w-48 rounded-full opacity-40" />
 
           <div className="relative aspect-[4/5] w-full [perspective:1200px]">
-            {/* Back hint B */}
-            <div className="absolute -end-3 -top-3 z-0 h-[34%] w-[30%] -rotate-6 overflow-hidden rounded-2xl shadow-glass blur-[0.5px] rtl:rotate-6">
-              <Image
-                src={layerB.src}
-                alt=""
-                aria-hidden
-                fill
-                sizes="(min-width:1024px) 9rem, 24vw"
-                className="object-cover"
-              />
-              <span className="absolute inset-0 bg-gradient-to-br from-brand-teal-deep/35 to-brand-pink-deep/35" />
-            </div>
-            {/* Back hint A */}
-            <div className="absolute -start-3 -bottom-3 z-0 h-[30%] w-[26%] rotate-6 overflow-hidden rounded-2xl shadow-glass blur-[0.5px] rtl:-rotate-6">
-              <Image
-                src={layerA.src}
-                alt=""
-                aria-hidden
-                fill
-                sizes="(min-width:1024px) 8rem, 22vw"
-                className="object-cover"
-              />
-              <span className="absolute inset-0 bg-gradient-to-br from-brand-teal-deep/35 to-brand-pink-deep/35" />
-            </div>
-
             {/* Main portrait — tilts under the pointer */}
             <div className="absolute inset-x-3 inset-y-0 z-10 sm:inset-x-6">
               <TiltCard max={5} glare={0.2} className="h-full">
