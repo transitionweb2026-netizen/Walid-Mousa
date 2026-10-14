@@ -29,13 +29,17 @@ export function maxUploadBytes(bucket: MediaBucket): number {
 }
 
 /** What to tell the editor when a file is over the project-wide upload limit. */
-export function projectLimitMessage(sizeBytes?: number): string {
+export function projectLimitMessage(sizeBytes?: number, bucket?: MediaBucket): string {
   const size = sizeBytes ? `This file is ${(sizeBytes / MB).toFixed(1)} MB, but the` : "The";
-  return (
-    `${size} Supabase project accepts uploads of up to ${PROJECT_MAX_UPLOAD_MB} MB. ` +
-    `Compress the video below ${PROJECT_MAX_UPLOAD_MB} MB (for example 1080p or 720p H.264 MP4), ` +
-    `or raise the upload limit in Supabase → Storage → Settings (above 50 MB needs a paid plan).`
-  );
+  const base = `${size} Supabase project accepts uploads of up to ${PROJECT_MAX_UPLOAD_MB} MB.`;
+  if (bucket === "videos") {
+    return (
+      `${base} For a video this size, the easiest fix is to upload it to YouTube instead (even as "Unlisted") ` +
+      `and paste its video ID in the "YouTube Video ID" field — no size limit, and it plays the same way on the site. ` +
+      `Direct file upload only works for videos under ${PROJECT_MAX_UPLOAD_MB} MB; raising that needs a paid Supabase plan.`
+    );
+  }
+  return `${base} Compress the file below ${PROJECT_MAX_UPLOAD_MB} MB, or raise the upload limit in Supabase → Storage → Settings (above 50 MB needs a paid plan).`;
 }
 
 export function validateMediaFile(bucket: MediaBucket, file: { size: number; type: string }): string | null {
@@ -48,6 +52,6 @@ export function validateMediaFile(bucket: MediaBucket, file: { size: number; typ
   if (file.size > limits.maxBytes) {
     return `File is ${(file.size / MB).toFixed(1)} MB — the maximum for this bucket is ${(limits.maxBytes / MB).toFixed(0)} MB.`;
   }
-  if (file.size > maxUploadBytes(bucket)) return projectLimitMessage(file.size);
+  if (file.size > maxUploadBytes(bucket)) return projectLimitMessage(file.size, bucket);
   return null;
 }

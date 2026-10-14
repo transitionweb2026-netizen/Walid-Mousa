@@ -177,7 +177,7 @@ function SectionFieldInput({
     return (
       <MediaPicker
         label={field.label}
-        bucket="media"
+        bucket={field.mediaBucket ?? "media"}
         category={(field.mediaCategory as MediaRow["category"]) ?? "general"}
         value={id ? (media[id] ?? null) : null}
         onChange={(m) => {

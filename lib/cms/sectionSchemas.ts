@@ -4,6 +4,8 @@ export interface SectionFieldDef {
   type: "text" | "textarea" | "media" | "url" | "stringArray" | "boolean";
   bilingual?: boolean; // true => actual paths are `${path}.en` / `${path}.ar`
   mediaCategory?: string;
+  /** Which storage bucket this media field uploads into. Defaults to "media" (images) — set to "videos" for an actual video-file field. */
+  mediaBucket?: "media" | "video-covers" | "videos";
   help?: string;
 }
 
@@ -35,7 +37,7 @@ const DOCTOR_INTRO_FIELDS: SectionFieldDef[] = [
   { path: "cta.url", label: "\"More About the Doctor\" URL", type: "url" },
   { path: "cta.label", label: "\"More About the Doctor\" Label", type: "text", bilingual: true },
   { path: "video_cover_media_id", label: "Video Cover", type: "media", mediaCategory: "doctor", help: "The poster image shown before playback." },
-  { path: "video_media_id", label: "Actual Video File (leave empty to use the YouTube ID below)", type: "media", mediaCategory: "doctor" },
+  { path: "video_media_id", label: "Actual Video File (leave empty to use the YouTube ID below)", type: "media", mediaCategory: "doctor", mediaBucket: "videos" },
   { path: "youtube_id", label: "YouTube Video ID (the part after v= in the URL)", type: "text" },
   { path: "video_alt", label: "Video Cover Alt Text", type: "text", bilingual: true },
 ];

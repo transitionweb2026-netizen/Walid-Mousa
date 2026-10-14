@@ -31,6 +31,7 @@ export function MediaPicker({ label, bucket, category, value, onChange }: MediaP
 
   async function openPicker() {
     setOpen(true);
+    setError(null);
     setLoading(true);
     const supabase = createClient();
     const { data } = await supabase.from("media").select("*").eq("bucket_id", bucket).order("created_at", { ascending: false });

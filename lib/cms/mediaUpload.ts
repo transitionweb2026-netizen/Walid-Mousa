@@ -57,7 +57,7 @@ export async function uploadMediaFile(opts: UploadOptions): Promise<UploadResult
   if (!uploaded.ok) {
     // Storage's own wording ("The object exceeded the maximum allowed size") doesn't say what to do.
     if (/exceeded the maximum allowed size|payload too large|HTTP 413/i.test(uploaded.error)) {
-      return { ok: false, error: projectLimitMessage(opts.file.size) };
+      return { ok: false, error: projectLimitMessage(opts.file.size, opts.bucket) };
     }
     return { ok: false, error: uploaded.error };
   }
