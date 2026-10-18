@@ -47,7 +47,13 @@ export function Hero({
 
   return (
     <section className="mx-3 mt-3 sm:mx-6 sm:mt-4 lg:mx-8" aria-label="Hero">
+      {/* Always laid out left-to-right, even in Arabic: the photo keeps the
+          same crop in both locales, so the text column (and everything else
+          positioned relative to it) can't flip sides with `dir` without
+          landing on top of the subject. Arabic still reads correctly where
+          it appears — h1/p below set their own `dir` for that. */}
       <div
+        dir="ltr"
         className={cn(
           "relative isolate overflow-hidden rounded-[1.75rem] lg:rounded-[2.5rem]",
           compact ? "min-h-[380px] sm:min-h-[440px]" : "min-h-[540px] sm:min-h-[600px] lg:min-h-[640px]"
@@ -77,11 +83,7 @@ export function Hero({
 
         <div
           aria-hidden
-          className={cn(
-            "absolute inset-0",
-            isRtl ? "bg-gradient-to-l" : "bg-gradient-to-r",
-            "from-[var(--color-hero-scrim)] from-[8%] via-[var(--color-hero-scrim)]/72 via-[42%] to-transparent"
-          )}
+          className="absolute inset-0 bg-gradient-to-r from-[var(--color-hero-scrim)] from-[8%] via-[var(--color-hero-scrim)]/72 via-[42%] to-transparent"
         />
         <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-brand-ink/45 via-transparent to-transparent" />
 
@@ -96,8 +98,10 @@ export function Hero({
         >
           <Reveal delay={0.1}>
             <h1
+              dir={isRtl ? "rtl" : "ltr"}
               className={cn(
                 "text-balance font-extrabold leading-[1.12] text-brand-ink",
+                isRtl && "text-right",
                 compact ? "text-3xl sm:text-4xl lg:text-5xl" : "text-4xl sm:text-5xl lg:text-6xl"
               )}
             >
@@ -106,7 +110,13 @@ export function Hero({
           </Reveal>
 
           <Reveal delay={0.2}>
-            <p className="mt-5 max-w-lg text-pretty text-base leading-relaxed text-brand-ink-soft sm:text-lg">
+            <p
+              dir={isRtl ? "rtl" : "ltr"}
+              className={cn(
+                "mt-5 max-w-lg text-pretty text-base leading-relaxed text-brand-ink-soft sm:text-lg",
+                isRtl && "text-right"
+              )}
+            >
               {data.description[locale]}
             </p>
           </Reveal>

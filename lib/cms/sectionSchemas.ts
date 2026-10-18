@@ -36,10 +36,9 @@ const DOCTOR_INTRO_FIELDS: SectionFieldDef[] = [
   { path: "paragraphs", label: "Paragraphs (one per line)", type: "stringArray", bilingual: true },
   { path: "cta.url", label: "\"More About the Doctor\" URL", type: "url" },
   { path: "cta.label", label: "\"More About the Doctor\" Label", type: "text", bilingual: true },
-  { path: "video_cover_media_id", label: "Video Cover", type: "media", mediaCategory: "doctor", help: "The poster image shown before playback." },
-  { path: "video_media_id", label: "Actual Video File (leave empty to use the YouTube ID below)", type: "media", mediaCategory: "doctor", mediaBucket: "videos" },
-  { path: "youtube_id", label: "YouTube Video ID (the part after v= in the URL)", type: "text" },
-  { path: "video_alt", label: "Video Cover Alt Text", type: "text", bilingual: true },
+  { path: "video_cover_media_id", label: "Photo", type: "media", mediaCategory: "doctor", help: "Shown as a static image — this section no longer plays a video." },
+  { path: "video_cover_position", label: "Photo Position (e.g. \"center 15%\")", type: "text", help: "CSS object-position — raise the percentage to show more headroom if the photo is cropped awkwardly." },
+  { path: "video_alt", label: "Photo Alt Text", type: "text", bilingual: true },
 ];
 
 const ABOUT_DOCTOR_FIELDS: SectionFieldDef[] = [

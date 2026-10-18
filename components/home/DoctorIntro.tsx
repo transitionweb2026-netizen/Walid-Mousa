@@ -1,7 +1,7 @@
+import Image from "next/image";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
-import { InlineVideo } from "@/components/media/InlineVideo";
 import { doctorIntro as fallback } from "@/data/doctorIntro";
 import { siteContent } from "@/data/site";
 import type { DoctorIntroContent } from "@/lib/cms/publicSections";
@@ -13,7 +13,7 @@ const fb: DoctorIntroContent = {
   paragraphs: fallback.paragraphs,
   highlights: fallback.highlights,
   cta: { label: siteContent.actions.learnMoreAboutDoctor, url: "/about" },
-  video: fallback.video,
+  image: fallback.image,
 };
 
 export function DoctorIntro({ locale, content = fb }: { locale: Locale; content?: DoctorIntroContent }) {
@@ -49,7 +49,18 @@ export function DoctorIntro({ locale, content = fb }: { locale: Locale; content?
         <Reveal delay={0.15} className="relative">
           <span aria-hidden className="glow-teal absolute -end-8 -top-8 h-40 w-40 rounded-full opacity-50" />
           <span aria-hidden className="glow-pink absolute -bottom-10 -start-6 h-36 w-36 rounded-full opacity-40" />
-          <InlineVideo video={content.video} title={content.heading} locale={locale} className="relative" />
+          <div className="glass-card glass-sheen relative block w-full overflow-hidden rounded-[1.75rem] p-2.5">
+            <span className="relative block aspect-video w-full overflow-hidden rounded-[1.35rem]">
+              <Image
+                src={content.image.src}
+                alt={content.image.alt[locale]}
+                fill
+                sizes="(min-width:1024px) 32rem, 92vw"
+                style={{ objectPosition: content.image.position }}
+                className="object-cover"
+              />
+            </span>
+          </div>
         </Reveal>
       </div>
     </Section>

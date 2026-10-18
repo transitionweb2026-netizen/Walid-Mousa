@@ -1,6 +1,6 @@
 import "server-only";
 import { getPublicClient } from "./publicClient";
-import { resolveMediaUrl, toMediaImage, type MediaRow } from "./media";
+import { toMediaImage, type MediaRow } from "./media";
 import { asRecord, localized, localizedArray, optionalStr, str, bool, nestedCta, localizedPairArray, type JsonRecord } from "./jsonContent";
 import type { FinalCta } from "./publicSettings";
 import { siteContent } from "@/data/site";
@@ -19,7 +19,7 @@ import { articlesIntro } from "@/data/articles";
 import { specialtiesIntro, servicesFaqIntro } from "@/data/specialties";
 import { aboutContent } from "@/data/about";
 import { contactIntro } from "@/data/contact";
-import type { Localized, MediaImage, MediaVideo } from "@/lib/types";
+import type { Localized, MediaImage } from "@/lib/types";
 
 /**
  * The `pages` / `page_sections` layer — one function per real page, each
@@ -155,7 +155,7 @@ export interface DoctorIntroContent {
   paragraphs: Localized<string[]>;
   highlights: { value: Localized; label: Localized }[];
   cta: CtaRef;
-  video: MediaVideo;
+  image: MediaImage;
 }
 export interface HomeSections {
   hero: PageHero;
@@ -178,29 +178,22 @@ const fbDoctorIntroContent: DoctorIntroContent = {
   paragraphs: fbDoctorIntro.paragraphs,
   highlights: fbDoctorIntro.highlights,
   cta: { label: siteContent.actions.learnMoreAboutDoctor, url: "/about" },
-  video: fbDoctorIntro.video,
+  image: fbDoctorIntro.image,
 };
 
 function toDoctorIntro(content: JsonRecord, media: Map<string, MediaRow>): DoctorIntroContent {
   const coverId = optionalStr(content, "video_cover_media_id");
-  const poster = toMediaImage(coverId ? (media.get(coverId) ?? null) : null, fbDoctorIntro.video.poster.alt, {
-    alt: localized(content, "video_alt", fbDoctorIntro.video.poster.alt),
+  const image = toMediaImage(coverId ? (media.get(coverId) ?? null) : null, fbDoctorIntro.image.alt, {
+    alt: localized(content, "video_alt", fbDoctorIntro.image.alt),
+    position: optionalStr(content, "video_cover_position") ?? fbDoctorIntro.image.position,
   });
-  const videoId = optionalStr(content, "video_media_id");
-  const fileUrl = videoId ? resolveMediaUrl(media.get(videoId)) : null;
   return {
     eyebrow: localized(content, "eyebrow", fbDoctorIntro.eyebrow),
     heading: localized(content, "heading", fbDoctorIntro.heading),
     paragraphs: localizedArray(content, "paragraphs", fbDoctorIntro.paragraphs),
     highlights: localizedPairArray(content, "highlights", fbDoctorIntro.highlights),
     cta: nestedCta(content, "cta", { label: siteContent.actions.learnMoreAboutDoctor, url: "/about" }),
-    video: {
-      poster,
-      youtubeId: optionalStr(content, "youtube_id") ?? fbDoctorIntro.video.youtubeId,
-      fileUrl: fileUrl ?? undefined,
-      aspect: fbDoctorIntro.video.aspect,
-      duration: fbDoctorIntro.video.duration,
-    } satisfies MediaVideo,
+    image,
   };
 }
 

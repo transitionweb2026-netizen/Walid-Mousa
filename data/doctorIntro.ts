@@ -1,4 +1,4 @@
-import type { Localized, MediaVideo } from "@/lib/types";
+import type { Localized, MediaImage } from "@/lib/types";
 import { IMG } from "./images";
 
 export const doctorIntro: {
@@ -6,7 +6,7 @@ export const doctorIntro: {
   heading: Localized;
   paragraphs: Localized<string[]>;
   highlights: { value: Localized; label: Localized }[];
-  video: MediaVideo;
+  image: MediaImage;
 } = {
   eyebrow: { en: "Meet Your Doctor", ar: "تعرّف على طبيبك" },
   heading: {
@@ -26,20 +26,13 @@ export const doctorIntro: {
   highlights: [
     { value: { en: "18+", ar: "+18" }, label: { en: "Years in andrology", ar: "عامًا في أمراض الذكورة" } },
     { value: { en: "100%", ar: "100%" }, label: { en: "Confidential", ar: "سرية تامة" } },
-    { value: { en: "Micro", ar: "ميكرو" }, label: { en: "Surgery trained", ar: "تدريب على الجراحة الدقيقة" } },
   ],
-  video: {
-    poster: {
-      src: IMG.doctorScrubs,
-      alt: {
-        en: "Dr. Walid Moussa introduction video",
-        ar: "فيديو تعريفي عن د. وليد موسى",
-      },
+  image: {
+    src: IMG.doctorScrubs,
+    alt: {
+      en: "Dr. Walid Moussa",
+      ar: "د. وليد موسى",
     },
-    // TODO: replace with Dr. Walid Moussa's real introduction video id
-    // (the value after `v=` in the YouTube URL). Placeholder shown for now.
-    youtubeId: "aqz-KE-bpKQ",
-    aspect: "landscape",
-    duration: "2:14",
+    position: "center 15%",
   },
 };

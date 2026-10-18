@@ -359,8 +359,8 @@ const SECTIONS: Record<string, { type: string; content: Record<string, unknown> 
     { type: "doctor_intro", content: {
       eyebrow: doctorIntro.eyebrow, heading: doctorIntro.heading, paragraphs: doctorIntro.paragraphs,
       highlights: doctorIntro.highlights, cta: { label: siteContent.actions.learnMoreAboutDoctor, url: "/about" },
-      video_cover_media_id: mid(doctorIntro.video.poster.src), video_media_id: null,
-      youtube_id: doctorIntro.video.youtubeId, video_alt: doctorIntro.video.poster.alt,
+      video_cover_media_id: mid(doctorIntro.image.src), video_cover_position: doctorIntro.image.position,
+      video_alt: doctorIntro.image.alt,
     } },
     { type: "stats_intro", content: intro(statsIntro) },
     { type: "surgeries_intro", content: intro(surgeriesIntro) },
