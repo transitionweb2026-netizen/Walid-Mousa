@@ -91,7 +91,7 @@ export const siteContent = {
     hoursTitle: { en: "Clinic Hours", ar: "مواعيد العيادة" } satisfies Localized,
     followTitle: { en: "Follow", ar: "تابعنا" } satisfies Localized,
     rights: { en: "All rights reserved.", ar: "جميع الحقوق محفوظة." } satisfies Localized,
-    credit: { en: "Crafted by Transition", ar: "تصميم وتطوير Transition" } satisfies Localized,
+    credit: { en: "Crafted by", ar: "تصميم وتطوير" } satisfies Localized,
     privacyNote: {
       en: "Every consultation and enquiry is handled in strict medical confidence.",
       ar: "تُعامل كل استشارة واستفسار بسرية طبية تامة.",

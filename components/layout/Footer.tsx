@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Icon } from "@/components/icons/Icon";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import type { Locale } from "@/lib/i18n";
@@ -10,6 +11,10 @@ import type {
 } from "@/lib/cms/publicSettings";
 import type { ClinicLocation } from "@/lib/cms/publicContent";
 import type { SocialLink } from "@/data/contact";
+
+// The site builder's own mark — fixed brand asset, not CMS content.
+const TRANSITION_LOGO_URL =
+  "https://loiedofvstlhnfsqcrvo.supabase.co/storage/v1/object/public/media/general/transition-logo-mark.png";
 
 interface FooterProps {
   locale: Locale;
@@ -25,6 +30,16 @@ export function Footer({ locale, nav, footer, social, contact, primaryLocation, 
   const localeRoot = `/${locale}`;
   const year = new Date().getFullYear();
   const initial = branding.orgName.en.replace(/^Dr\.\s*/, "").charAt(0) || "W";
+
+  const creditBadgeContent = (
+    <>
+      <span>{footer.credit[locale]}</span>
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/25">
+        <Image src={TRANSITION_LOGO_URL} alt="Transition" width={24} height={14} className="h-auto w-3.5" />
+      </span>
+      <span>Transition</span>
+    </>
+  );
 
   return (
     <footer className="relative mt-8 overflow-hidden px-3 pb-4 sm:px-6">
@@ -142,11 +157,18 @@ export function Footer({ locale, nav, footer, social, contact, primaryLocation, 
             © {year} {branding.orgName[locale]}. {footer.copyright[locale]}
           </p>
           {footer.creditUrl ? (
-            <a href={footer.creditUrl} target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal-deep">
-              {footer.credit[locale]}
+            <a
+              href={footer.creditUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-brand px-3.5 py-1.5 text-xs font-semibold text-white shadow-glass transition-transform hover:-translate-y-0.5"
+            >
+              {creditBadgeContent}
             </a>
           ) : (
-            <p>{footer.credit[locale]}</p>
+            <div className="inline-flex items-center gap-2 rounded-full bg-gradient-brand px-3.5 py-1.5 text-xs font-semibold text-white shadow-glass">
+              {creditBadgeContent}
+            </div>
           )}
         </div>
       </div>
