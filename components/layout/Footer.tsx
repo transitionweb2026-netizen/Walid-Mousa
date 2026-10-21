@@ -34,8 +34,8 @@ export function Footer({ locale, nav, footer, social, contact, primaryLocation, 
   const creditBadgeContent = (
     <>
       <span>{footer.credit[locale]}</span>
-      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/25">
-        <Image src={TRANSITION_LOGO_URL} alt="Transition" width={24} height={14} className="h-auto w-3.5" />
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/25">
+        <Image src={TRANSITION_LOGO_URL} alt="Transition" width={32} height={19} className="h-auto w-5" />
       </span>
       <span>Transition</span>
     </>
@@ -152,7 +152,7 @@ export function Footer({ locale, nav, footer, social, contact, primaryLocation, 
           </div>
         </div>
 
-        <div className="relative mt-10 flex flex-col items-center justify-between gap-3 border-t border-brand-line/70 pt-6 text-xs text-brand-muted sm:flex-row">
+        <div className="relative mt-10 flex flex-col items-center gap-5 border-t border-brand-line/70 pt-6 text-xs text-brand-muted">
           <p>
             © {year} {branding.orgName[locale]}. {footer.copyright[locale]}
           </p>
@@ -161,12 +161,12 @@ export function Footer({ locale, nav, footer, social, contact, primaryLocation, 
               href={footer.creditUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-brand px-3.5 py-1.5 text-xs font-semibold text-white shadow-glass transition-transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-3 rounded-full bg-gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-glass transition-transform hover:-translate-y-0.5"
             >
               {creditBadgeContent}
             </a>
           ) : (
-            <div className="inline-flex items-center gap-2 rounded-full bg-gradient-brand px-3.5 py-1.5 text-xs font-semibold text-white shadow-glass">
+            <div className="inline-flex items-center gap-3 rounded-full bg-gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-glass">
               {creditBadgeContent}
             </div>
           )}
