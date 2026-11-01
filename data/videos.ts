@@ -9,7 +9,7 @@ export interface VideoItem {
   thumbnail: MediaImage;
   /**
    * YouTube video id (value after `v=`). PLACEHOLDERS for now — replace each
-   * with Dr. Walid Moussa's real clip id; nothing else needs to change.
+   * with Dr. Waleed Moussa's real clip id; nothing else needs to change.
    */
   youtubeId: string;
   /** Uploaded video file URL — plays natively when set, in preference to youtubeId. */

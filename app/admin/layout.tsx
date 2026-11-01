@@ -11,7 +11,7 @@ import { fontVariables } from "@/lib/fonts";
  * bilingual, the chrome is English.
  */
 export const metadata: Metadata = {
-  title: { template: "%s | Dr. Walid Moussa CMS", default: "Dr. Walid Moussa CMS" },
+  title: { template: "%s | Dr. Waleed Moussa CMS", default: "Dr. Waleed Moussa CMS" },
   robots: { index: false, follow: false },
 };
 

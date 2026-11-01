@@ -19,7 +19,7 @@ export default async function AdminLoginPage({
           <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-brand text-white shadow-glass">
             <Icon name="lock" className="h-6 w-6" />
           </span>
-          <h1 className="mt-4 text-xl font-bold text-brand-ink">Dr. Walid Moussa CMS</h1>
+          <h1 className="mt-4 text-xl font-bold text-brand-ink">Dr. Waleed Moussa CMS</h1>
           <p className="mt-1 text-sm text-brand-muted">Sign in to manage the website.</p>
         </div>
 

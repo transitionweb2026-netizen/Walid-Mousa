@@ -1,6 +1,6 @@
-# Dr. Walid Moussa — Andrology & Men's Health
+# Dr. Waleed Moussa — Andrology & Men's Health
 
-A premium, bilingual (English / Arabic) marketing website for **Dr. Walid
+A premium, bilingual (English / Arabic) marketing website for **Dr. Waleed
 Moussa**, consultant andrologist, with a full custom CMS. Built with
 **Next.js 16** (App Router, React 19, TypeScript, Turbopack), **Tailwind
 CSS v4** (liquid-glass design system in turquoise `#2DC4B6` and pink

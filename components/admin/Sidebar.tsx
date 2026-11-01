@@ -16,7 +16,7 @@ interface NavGroup {
 
 const PAGES: NavLeaf[] = [
   { label: "Home", href: "/admin/pages/home" },
-  { label: "About Dr. Walid Moussa", href: "/admin/pages/about" },
+  { label: "About Dr. Waleed Moussa", href: "/admin/pages/about" },
   { label: "Services", href: "/admin/pages/services" },
   { label: "Videos", href: "/admin/pages/videos" },
   { label: "Articles", href: "/admin/pages/articles" },
@@ -32,7 +32,7 @@ const CONTENT: NavLeaf[] = [
   { label: "Certificates", href: "/admin/content/certificates" },
   { label: "Career Journey", href: "/admin/content/career" },
   { label: "Areas of Expertise", href: "/admin/content/expertise" },
-  { label: "Why Dr. Walid Moussa Points", href: "/admin/content/why" },
+  { label: "Why Dr. Waleed Moussa Points", href: "/admin/content/why" },
   { label: "Recognition / Achievements", href: "/admin/content/achievements" },
   { label: "Patient Journey Steps", href: "/admin/content/journey" },
   { label: "Statistics", href: "/admin/content/statistics" },
@@ -116,7 +116,7 @@ function Nav({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <>
       <Link href="/admin" onClick={onNavigate} className="mb-4 block px-3 py-2">
-        <span className="text-sm font-extrabold text-brand-ink">Dr. Walid Moussa</span>
+        <span className="text-sm font-extrabold text-brand-ink">Dr. Waleed Moussa</span>
         <span className="block text-xs text-brand-muted">CMS Dashboard</span>
       </Link>
       <NavLink item={{ label: "Dashboard", href: "/admin" }} onNavigate={onNavigate} />

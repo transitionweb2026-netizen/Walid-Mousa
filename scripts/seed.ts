@@ -325,7 +325,7 @@ async function seedConditionsAndTreatments() {
 // ─── pages + sections ─────────────────────────────────────────────────────
 const PAGES: { slug: string; name: L }[] = [
   { slug: "", name: { en: "Home", ar: "الرئيسية" } },
-  { slug: "about", name: { en: "About Dr. Walid Moussa", ar: "عن د. وليد موسى" } },
+  { slug: "about", name: { en: "About Dr. Waleed Moussa", ar: "عن د. وليد موسى" } },
   { slug: "services", name: { en: "Services", ar: "الخدمات" } },
   { slug: "videos", name: { en: "Videos", ar: "الفيديوهات" } },
   { slug: "articles", name: { en: "Articles", ar: "المقالات" } },

@@ -15,7 +15,7 @@ export const doctorIntro: {
   },
   paragraphs: {
     en: [
-      "Dr. Walid Moussa has spent his career focused entirely on andrology — the branch of medicine concerned with male reproductive and sexual health. That focus means faster answers, fewer unnecessary tests, and treatment plans shaped by thousands of similar cases.",
+      "Dr. Waleed Moussa has spent his career focused entirely on andrology — the branch of medicine concerned with male reproductive and sexual health. That focus means faster answers, fewer unnecessary tests, and treatment plans shaped by thousands of similar cases.",
       "His approach is deliberately unhurried: a private conversation first, a clear explanation of what is happening and why, and only then a plan you choose together. Microsurgery, when it is needed, is performed with the same precision he would want for his own family.",
     ],
     ar: [
@@ -30,7 +30,7 @@ export const doctorIntro: {
   image: {
     src: IMG.doctorScrubs,
     alt: {
-      en: "Dr. Walid Moussa",
+      en: "Dr. Waleed Moussa",
       ar: "د. وليد موسى",
     },
     position: "center 15%",

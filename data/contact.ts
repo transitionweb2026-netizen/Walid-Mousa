@@ -49,9 +49,9 @@ export const clinicLocations: ClinicLocation[] = [
     },
     addressShort: { en: "Nasr City, Cairo", ar: "مدينة نصر، القاهرة" },
     workingHours: [
-      { day: { en: "Saturday – Wednesday", ar: "السبت – الأربعاء" }, hours: { en: "4:00 PM – 9:00 PM", ar: "٤:٠٠ م – ٩:٠٠ م" } },
-      { day: { en: "Thursday", ar: "الخميس" }, hours: { en: "12:00 PM – 4:00 PM", ar: "١٢:٠٠ ظ – ٤:٠٠ م" } },
-      { day: { en: "Friday", ar: "الجمعة" }, hours: { en: "Closed", ar: "مغلق" }, closed: true },
+      { day: { en: "Sunday", ar: "الأحد" }, hours: { en: "6:00 PM – 8:30 PM", ar: "٦:٠٠ م – ٨:٣٠ م" } },
+      { day: { en: "Tuesday", ar: "الثلاثاء" }, hours: { en: "6:00 PM – 8:30 PM", ar: "٦:٠٠ م – ٨:٣٠ م" } },
+      { day: { en: "Thursday", ar: "الخميس" }, hours: { en: "6:00 PM – 8:30 PM", ar: "٦:٠٠ م – ٨:٣٠ م" } },
     ],
     mapEmbedSrc: "",
     mapLink: "https://www.google.com/maps/search/?api=1&query=7+Abbas+El-Akkad+St.%2C+Zone+1%2C+Nasr+City%2C+Cairo",
@@ -170,7 +170,7 @@ export const contactFormCopy: ContactFormCopy = {
     ar: "من المفترض أن واتساب فُتح في تبويب جديد ورسالتك جاهزة — فقط اضغط إرسال.",
   },
   whatsappTemplate: {
-    en: "New enquiry for Dr. Walid Moussa\nName: {name}\nPhone: {phone}\nTopic: {contact}\nBest time: {date}\nMessage: {message}",
+    en: "New enquiry for Dr. Waleed Moussa\nName: {name}\nPhone: {phone}\nTopic: {contact}\nBest time: {date}\nMessage: {message}",
     ar: "استفسار جديد لعيادة د. وليد موسى\nالاسم: {name}\nالهاتف: {phone}\nالموضوع: {contact}\nأفضل وقت: {date}\nالرسالة: {message}",
   },
 };

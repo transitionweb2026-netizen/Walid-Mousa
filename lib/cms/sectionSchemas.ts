@@ -133,7 +133,7 @@ export const SECTION_LABELS: Record<string, string> = {
   about_doctor: "About the Doctor",
   certificates_intro: "Certificates",
   career_intro: "Career / Professional Journey",
-  why: "Why Dr. Walid Moussa?",
+  why: "Why Dr. Waleed Moussa?",
   expertise_intro: "Areas of Expertise",
   word_from_doctor: "A Word from the Doctor",
   achievements_intro: "Achievements & Gallery",

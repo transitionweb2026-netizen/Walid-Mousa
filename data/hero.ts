@@ -33,13 +33,13 @@ export const heroes: Record<HeroKey, HeroContent> = {
       ar: "بسرية تامة واحترافية",
     },
     description: {
-      en: "Dr. Walid Moussa is a consultant andrologist treating erectile dysfunction, male infertility, varicocele and hormonal health — precise microsurgery and evidence-based therapy, from a first private consultation to full recovery.",
+      en: "Dr. Waleed Moussa is a consultant andrologist treating erectile dysfunction, male infertility, varicocele and hormonal health — precise microsurgery and evidence-based therapy, from a first private consultation to full recovery.",
       ar: "د. وليد موسى استشاري أمراض الذكورة، يعالج ضعف الانتصاب والعقم عند الرجال ودوالي الخصية والصحة الهرمونية — جراحة دقيقة وعلاج قائم على الدليل العلمي، من أول استشارة خاصة وحتى التعافي الكامل.",
     },
     image: {
       src: IMG.doctorHero,
       alt: {
-        en: "Dr. Walid Moussa, consultant andrologist",
+        en: "Dr. Waleed Moussa, consultant andrologist",
         ar: "د. وليد موسى، استشاري أمراض الذكورة",
       },
       position: "center 20%",
@@ -47,7 +47,7 @@ export const heroes: Record<HeroKey, HeroContent> = {
   },
 
   about: {
-    eyebrow: { en: "About Dr. Walid Moussa", ar: "عن د. وليد موسى" },
+    eyebrow: { en: "About Dr. Waleed Moussa", ar: "عن د. وليد موسى" },
     headline: { en: "Two Decades Devoted to", ar: "عقدان من العمل المتخصص في" },
     headlineAccent: { en: "Men's Health", ar: "صحة الرجل" },
     description: {
@@ -57,7 +57,7 @@ export const heroes: Record<HeroKey, HeroContent> = {
     image: {
       src: IMG.doctorConsult,
       alt: {
-        en: "Dr. Walid Moussa in consultation",
+        en: "Dr. Waleed Moussa in consultation",
         ar: "د. وليد موسى أثناء الاستشارة",
       },
       position: "center 25%",
@@ -87,7 +87,7 @@ export const heroes: Record<HeroKey, HeroContent> = {
     headline: { en: "Men's Health,", ar: "صحة الرجل،" },
     headlineAccent: { en: "Explained on Screen", ar: "مشروحة على الشاشة" },
     description: {
-      en: "Short, direct videos from Dr. Walid Moussa on erectile health, fertility, hormones and surgery — the questions that come up most in clinic, answered plainly.",
+      en: "Short, direct videos from Dr. Waleed Moussa on erectile health, fertility, hormones and surgery — the questions that come up most in clinic, answered plainly.",
       ar: "فيديوهات قصيرة ومباشرة من د. وليد موسى عن صحة الانتصاب والخصوبة والهرمونات والجراحة — الأسئلة الأكثر تكرارًا في العيادة، مشروحة ببساطة.",
     },
     image: {
@@ -105,7 +105,7 @@ export const heroes: Record<HeroKey, HeroContent> = {
     headline: { en: "In-Depth Reading,", ar: "قراءة متعمّقة،" },
     headlineAccent: { en: "Written for Patients", ar: "مكتوبة للمرضى" },
     description: {
-      en: "Longer, unhurried explanations of the conditions Dr. Walid Moussa treats — clear, evidence-based and free of jargon.",
+      en: "Longer, unhurried explanations of the conditions Dr. Waleed Moussa treats — clear, evidence-based and free of jargon.",
       ar: "شروحات أطول وغير متعجّلة للحالات التي يعالجها د. وليد موسى — واضحة وقائمة على الدليل وخالية من المصطلحات المعقّدة.",
     },
     image: {

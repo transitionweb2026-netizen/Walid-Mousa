@@ -12,8 +12,8 @@ export default async function AdminWhyPage() {
   return (
     <CollectionManager
       table="why_items"
-      title="Why Dr. Walid Moussa Points"
-      description="The icon/title/text points on the About page's 'Why Dr. Walid Moussa?' section. The section's own heading/description/image is edited under Pages → About Dr. Walid Moussa."
+      title="Why Dr. Waleed Moussa Points"
+      description="The icon/title/text points on the About page's 'Why Dr. Waleed Moussa?' section. The section's own heading/description/image is edited under Pages → About Dr. Waleed Moussa."
       fields={fields}
       rows={rows}
       hasFeatured={false}

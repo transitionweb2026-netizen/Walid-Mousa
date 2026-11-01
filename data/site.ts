@@ -6,9 +6,9 @@ import type { Localized } from "@/lib/types";
  */
 export const siteContent = {
   brand: {
-    name: "Dr. Walid Moussa",
+    name: "Dr. Waleed Moussa",
     nameLocalized: {
-      en: "Dr. Walid Moussa",
+      en: "Dr. Waleed Moussa",
       ar: "د. وليد موسى",
     } satisfies Localized,
     credentials: {
@@ -19,15 +19,15 @@ export const siteContent = {
 
   seo: {
     titleTemplate: {
-      en: "%s | Dr. Walid Moussa — Andrology Specialist",
+      en: "%s | Dr. Waleed Moussa — Andrology Specialist",
       ar: "%s | د. وليد موسى - استشاري أمراض الذكورة",
     } satisfies Localized,
     defaultTitle: {
-      en: "Dr. Walid Moussa | Andrology, Men's Health & Male Infertility",
+      en: "Dr. Waleed Moussa | Andrology, Men's Health & Male Infertility",
       ar: "د. وليد موسى | أمراض الذكورة وصحة الرجل والعقم",
     } satisfies Localized,
     defaultDescription: {
-      en: "Dr. Walid Moussa is a consultant andrologist specializing in erectile dysfunction, male infertility, varicocele microsurgery and hormonal health — discreet, evidence-based care from diagnosis to recovery.",
+      en: "Dr. Waleed Moussa is a consultant andrologist specializing in erectile dysfunction, male infertility, varicocele microsurgery and hormonal health — discreet, evidence-based care from diagnosis to recovery.",
       ar: "د. وليد موسى استشاري أمراض الذكورة، متخصص في علاج ضعف الانتصاب والعقم عند الرجال وجراحة دوالي الخصية الدقيقة والصحة الهرمونية — رعاية سرية قائمة على الدليل العلمي من التشخيص حتى التعافي.",
     } satisfies Localized,
     keywords: {
@@ -68,7 +68,7 @@ export const siteContent = {
     exploreTreatments: { en: "Explore Treatments", ar: "استكشف طرق العلاج" } satisfies Localized,
     viewAllVideos: { en: "Watch All Videos", ar: "شاهد كل الفيديوهات" } satisfies Localized,
     viewAllArticles: { en: "Read All Articles", ar: "اقرأ كل المقالات" } satisfies Localized,
-    learnMoreAboutDoctor: { en: "More About Dr. Walid Moussa", ar: "المزيد عن د. وليد موسى" } satisfies Localized,
+    learnMoreAboutDoctor: { en: "More About Dr. Waleed Moussa", ar: "المزيد عن د. وليد موسى" } satisfies Localized,
     close: { en: "Close", ar: "إغلاق" } satisfies Localized,
     play: { en: "Play video", ar: "تشغيل الفيديو" } satisfies Localized,
     menu: { en: "Open menu", ar: "افتح القائمة" } satisfies Localized,

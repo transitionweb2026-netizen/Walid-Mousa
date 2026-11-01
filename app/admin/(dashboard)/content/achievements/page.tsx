@@ -13,7 +13,7 @@ export default async function AdminAchievementsPage() {
     <CollectionManager
       table="achievement_items"
       title="Recognition / Achievements"
-      description="The icon/title/text cards on the About page's 'Recognition' section. The section's own heading/description is edited under Pages → About Dr. Walid Moussa."
+      description="The icon/title/text cards on the About page's 'Recognition' section. The section's own heading/description is edited under Pages → About Dr. Waleed Moussa."
       fields={fields}
       rows={rows}
       hasFeatured={false}

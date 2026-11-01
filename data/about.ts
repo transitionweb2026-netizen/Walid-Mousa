@@ -68,14 +68,14 @@ export const aboutContent: {
   };
 } = {
   bio: {
-    eyebrow: { en: "About Dr. Walid Moussa", ar: "عن د. وليد موسى" },
+    eyebrow: { en: "About Dr. Waleed Moussa", ar: "عن د. وليد موسى" },
     heading: {
       en: "A career built entirely around men's health",
       ar: "مسيرة مهنية بُنيت بالكامل حول صحة الرجل",
     },
     portraitLayers: [
-      { src: IMG.scrubsTeal, alt: { en: "Dr. Walid Moussa in the clinic", ar: "د. وليد موسى في العيادة" } },
-      { src: IMG.doctorConsult, alt: { en: "Dr. Walid Moussa reviewing a scan", ar: "د. وليد موسى يراجع أشعة" } },
+      { src: IMG.scrubsTeal, alt: { en: "Dr. Waleed Moussa in the clinic", ar: "د. وليد موسى في العيادة" } },
+      { src: IMG.doctorConsult, alt: { en: "Dr. Waleed Moussa reviewing a scan", ar: "د. وليد موسى يراجع أشعة" } },
     ],
     highlight: {
       value: { en: "18+ years", ar: "+18 عامًا" },
@@ -86,7 +86,7 @@ export const aboutContent: {
     },
     paragraphs: {
       en: [
-        "Dr. Walid Moussa is a consultant andrologist and reproductive microsurgeon based in Giza, Egypt. He completed his medical degree and urology residency at Cairo University, then chose to sub-specialise entirely in andrology — the medicine of male reproductive, sexual and hormonal health — at a time when it was still a small field.",
+        "Dr. Waleed Moussa is a consultant andrologist and reproductive microsurgeon based in Giza, Egypt. He completed his medical degree and urology residency at Cairo University, then chose to sub-specialise entirely in andrology — the medicine of male reproductive, sexual and hormonal health — at a time when it was still a small field.",
         "That decision shaped everything since. Fellowship training in reproductive microsurgery in Europe gave him the operating-microscope skills that define his surgical practice today: varicocele repair, vasectomy reversal, and micro-TESE for men previously told fatherhood was impossible.",
         "Alongside the surgery, most of his week is spent in consultation — with men managing erectile dysfunction, couples working through infertility, and patients navigating the hormonal changes of midlife. He is known for explaining things plainly, for not rushing, and for treating subjects many find difficult to discuss as simply part of medicine.",
         "He teaches andrology to urology trainees, contributes to regional practice guidelines, and lectures regularly at fertility and men's-health meetings. His clinic is built around one principle: the same standard of care he would want for his own family, delivered with complete discretion.",
@@ -100,10 +100,10 @@ export const aboutContent: {
     },
     portrait: {
       src: IMG.doctorPortrait,
-      alt: { en: "Portrait of Dr. Walid Moussa", ar: "صورة د. وليد موسى" },
+      alt: { en: "Portrait of Dr. Waleed Moussa", ar: "صورة د. وليد موسى" },
       position: "center 20%",
     },
-    signatureName: { en: "Dr. Walid Moussa", ar: "د. وليد موسى" },
+    signatureName: { en: "Dr. Waleed Moussa", ar: "د. وليد موسى" },
     signatureRole: { en: "Consultant Andrologist & Reproductive Microsurgeon", ar: "استشاري أمراض الذكورة وجرّاح الخصوبة الميكروسكوبي" },
   },
 
@@ -208,7 +208,7 @@ export const aboutContent: {
   },
 
   why: {
-    eyebrow: { en: "Why Dr. Walid Moussa?", ar: "لماذا د. وليد موسى؟" },
+    eyebrow: { en: "Why Dr. Waleed Moussa?", ar: "لماذا د. وليد موسى؟" },
     heading: { en: "What patients say makes the difference", ar: "ما يقول المرضى إنه يصنع الفارق" },
     description: {
       en: "The reasons men choose this clinic — and travel to it — are consistent, and none of them are about marketing.",
@@ -216,7 +216,7 @@ export const aboutContent: {
     },
     image: {
       src: IMG.doctorScrubs,
-      alt: { en: "Dr. Walid Moussa", ar: "د. وليد موسى" },
+      alt: { en: "Dr. Waleed Moussa", ar: "د. وليد موسى" },
       position: "center 20%",
     },
     points: [
@@ -323,7 +323,7 @@ export const aboutContent: {
     heading: { en: "In his own words", ar: "بكلماته الخاصة" },
     image: {
       src: IMG.patientCare,
-      alt: { en: "Dr. Walid Moussa with a patient", ar: "د. وليد موسى مع أحد المرضى" },
+      alt: { en: "Dr. Waleed Moussa with a patient", ar: "د. وليد موسى مع أحد المرضى" },
       position: "center 30%",
     },
     quote: {
@@ -338,7 +338,7 @@ export const aboutContent: {
         "أعامل كل مريض كما أتمنى أن يُعامَل به أحد أفراد عائلتي: بالوقت، وبالصدق، وبسرية تامة.",
       ],
     },
-    name: { en: "Dr. Walid Moussa", ar: "د. وليد موسى" },
+    name: { en: "Dr. Waleed Moussa", ar: "د. وليد موسى" },
     role: { en: "Consultant Andrologist & Reproductive Microsurgeon", ar: "استشاري أمراض الذكورة وجرّاح الخصوبة الميكروسكوبي" },
   },
 
@@ -378,7 +378,7 @@ export const aboutContent: {
       { src: IMG.labCorridor, alt: { en: "Andrology laboratory", ar: "مختبر أمراض الذكورة" } },
       { src: IMG.doctorCorridor, alt: { en: "Clinic corridor", ar: "ممر العيادة" } },
       { src: IMG.corridor, alt: { en: "Diagnostic equipment", ar: "أجهزة التشخيص" } },
-      { src: IMG.doctorScrubs, alt: { en: "Dr. Walid Moussa", ar: "د. وليد موسى" } },
+      { src: IMG.doctorScrubs, alt: { en: "Dr. Waleed Moussa", ar: "د. وليد موسى" } },
     ],
   },
 };

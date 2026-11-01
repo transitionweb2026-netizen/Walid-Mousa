@@ -7,7 +7,7 @@
  * in `next.config.ts`.
  *
  * ─────────────────────────────────────────────────────────────────────────
- *  TO GO LIVE: replace each URL below with a real photograph of Dr. Walid
+ *  TO GO LIVE: replace each URL below with a real photograph of Dr. Waleed
  *  Moussa, his clinic and his equipment. Drop the files in `public/images/…`
  *  and change the string here — no component or layout edits needed. Re-check
  *  the matching `position` (focal point) in the data files after swapping.
