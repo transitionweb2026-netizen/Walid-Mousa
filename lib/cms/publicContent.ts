@@ -41,7 +41,7 @@ export async function getStatistics(): Promise<StatItem[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("statistics").select("*").order("display_order");
+      const { data } = await supabase.from("statistics").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         return data.map((r) => ({
           id: r.id,
@@ -63,7 +63,7 @@ export async function getJourneySteps(): Promise<JourneyStep[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("journey_steps").select("*").order("display_order");
+      const { data } = await supabase.from("journey_steps").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         return data.map((r) => ({
           id: r.id,
@@ -85,7 +85,7 @@ export async function getReviews(): Promise<ReviewItem[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("reviews").select("*").order("display_order");
+      const { data } = await supabase.from("reviews").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         return data.map((r) => ({
           id: r.id,
@@ -111,6 +111,7 @@ export async function getFaqs(scope: "home" | "services"): Promise<FaqItem[]> {
         .from("faqs")
         .select("*")
         .in("scope", ["all", scope])
+        .eq("is_active", true)
         .order("display_order");
       if (data && data.length > 0) {
         return data.map((r) => ({
@@ -131,7 +132,7 @@ export async function getTechnologies(): Promise<TechnologyItem[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("technologies").select("*").order("display_order");
+      const { data } = await supabase.from("technologies").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         const m = await mediaMap(supabase, data.map((r) => r.image_id));
         return data.map((r) => ({
@@ -156,7 +157,7 @@ export async function getSurgeries(): Promise<SurgeryItem[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("surgeries").select("*").order("display_order");
+      const { data } = await supabase.from("surgeries").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         const m = await mediaMap(supabase, data.map((r) => r.image_id));
         return data.map((r) => ({
@@ -309,7 +310,7 @@ export async function getConditions(): Promise<ConditionCardItem[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("conditions").select("*").order("display_order");
+      const { data } = await supabase.from("conditions").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         const m = await mediaMap(supabase, data.flatMap((r) => [r.image_id, r.home_image_id]));
         return data.map((r) => {
@@ -355,9 +356,9 @@ export async function getSpecialties(): Promise<Specialty[]> {
   if (supabase) {
     try {
       const [{ data: conditions }, { data: links }, { data: treatments }] = await Promise.all([
-        supabase.from("conditions").select("*").order("display_order"),
+        supabase.from("conditions").select("*").eq("is_active", true).order("display_order"),
         supabase.from("condition_treatments").select("*").order("display_order"),
-        supabase.from("treatments").select("*"),
+        supabase.from("treatments").select("*").eq("is_active", true),
       ]);
       if (conditions && conditions.length > 0 && treatments) {
         const m = await mediaMap(supabase, [
@@ -404,7 +405,7 @@ export async function getCertificates(): Promise<CertificateItem[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("certificates").select("*").order("display_order");
+      const { data } = await supabase.from("certificates").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         const m = await mediaMap(supabase, data.map((r) => r.image_id));
         return data.map((r) => ({
@@ -435,7 +436,7 @@ export async function getCareerItems(): Promise<CareerMilestone[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("career_items").select("*").order("display_order");
+      const { data } = await supabase.from("career_items").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         return data.map((r) => ({
           id: r.id,
@@ -462,7 +463,7 @@ export async function getClinicLocations(): Promise<ClinicLocation[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("clinic_locations").select("*").order("display_order");
+      const { data } = await supabase.from("clinic_locations").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         return data.map((r) => ({
           id: r.id,
@@ -489,7 +490,7 @@ export async function getWhyItems(): Promise<WhyPoint[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("why_items").select("*").order("display_order");
+      const { data } = await supabase.from("why_items").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         return data.map((r) => ({ id: r.id, icon: r.icon as IconName, title: { en: r.title_en, ar: r.title_ar }, text: { en: r.text_en, ar: r.text_ar } }));
       }
@@ -505,7 +506,7 @@ export async function getAchievementItems(): Promise<AchievementItem[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("achievement_items").select("*").order("display_order");
+      const { data } = await supabase.from("achievement_items").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         return data.map((r) => ({ id: r.id, icon: r.icon as IconName, title: { en: r.title_en, ar: r.title_ar }, text: { en: r.text_en, ar: r.text_ar } }));
       }
@@ -521,7 +522,7 @@ export async function getExpertiseAreas(): Promise<ExpertiseItem[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("expertise_areas").select("*").order("display_order");
+      const { data } = await supabase.from("expertise_areas").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         const m = await mediaMap(supabase, data.map((r) => r.image_id));
         return data.map((r) => ({
@@ -544,7 +545,7 @@ export async function getOtherServices(): Promise<OtherServiceItem[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("other_services").select("*").order("display_order");
+      const { data } = await supabase.from("other_services").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         return data.map((r) => ({ id: r.id, icon: r.icon as IconName, title: { en: r.title_en, ar: r.title_ar }, text: { en: r.text_en, ar: r.text_ar } }));
       }
@@ -560,7 +561,7 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("gallery_images").select("*").order("display_order");
+      const { data } = await supabase.from("gallery_images").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         const m = await mediaMap(supabase, data.map((r) => r.image_id));
         return data.map((r) => {
@@ -580,7 +581,7 @@ export async function getContactAssurances(): Promise<ContactAssurance[]> {
   const supabase = await getPublicClient();
   if (supabase) {
     try {
-      const { data } = await supabase.from("contact_assurances").select("*").order("display_order");
+      const { data } = await supabase.from("contact_assurances").select("*").eq("is_active", true).order("display_order");
       if (data && data.length > 0) {
         return data.map((r) => ({ id: r.id, icon: r.icon as IconName, title: { en: r.title_en, ar: r.title_ar }, text: { en: r.text_en, ar: r.text_ar } }));
       }

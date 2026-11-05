@@ -95,7 +95,7 @@ export async function getNavbarSettings(): Promise<NavbarSettings> {
   if (!supabase) return fallback;
   try {
     const [{ data: nav }, { data: settings }] = await Promise.all([
-      supabase.from("navigation_items").select("*").order("display_order"),
+      supabase.from("navigation_items").select("*").eq("is_active", true).order("display_order"),
       supabase.from("navbar_settings").select("*").eq("id", true).maybeSingle(),
     ]);
     return {
@@ -118,7 +118,7 @@ export async function getSocialLinks(): Promise<SocialLink[]> {
   const supabase = await getPublicClient();
   if (!supabase) return fallbackSocial;
   try {
-    const { data } = await supabase.from("social_links").select("*").order("display_order");
+    const { data } = await supabase.from("social_links").select("*").eq("is_active", true).order("display_order");
     if (data && data.length > 0) {
       return data.map((r) => ({ key: r.platform as SocialLink["key"], label: r.label_en, icon: r.icon as SocialLink["icon"], href: r.value }));
     }
